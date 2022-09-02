@@ -1,12 +1,17 @@
 import 'package:beamer/beamer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:inzynierka/color_schemes.g.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/router.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  Intl.defaultLocale = 'pl';
+
   runApp(
     const ProviderScope(child: MyApp()),
   );
@@ -21,11 +26,43 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         useMaterial3: true,
-        primarySwatch: createMaterialColor(primary),
+        platform: TargetPlatform.android,
+        primarySwatch: createMaterialColor(AppColors.primary),
+        // colorScheme: lightColorScheme,
+        // colorSchemeSeed: AppColors.primary,
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+        ),
+        textTheme: TextTheme(
+          labelSmall: TextStyle(color: lightColorScheme.outline),
+        ),
+        cardTheme: CardTheme(
+          color: AppColors.gray,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        ),
+        cardColor: AppColors.gray,
       ),
       routeInformationParser: BeamerParser(),
       routerDelegate: RouterWrapper.routerDelegate,
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: RouterWrapper.routerDelegate),
+      builder: (context, child) => GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus!.unfocus();
+          }
+        },
+        child: child,
+      ),
+      localizationsDelegates: [...GlobalMaterialLocalizations.delegates],
+      locale: Locale('pl'),
+      supportedLocales: [Locale('en'), Locale('pl')],
     );
   }
 }

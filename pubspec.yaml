@@ -34,10 +34,17 @@ dependencies:
   firebase_storage: ^10.3.7
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   hooks_riverpod: ^1.0.4
   kiwi: ^4.0.2
   mobile_scanner: ^2.0.0
   modal_bottom_sheet: ^2.1.0
+  intl: ^0.17.0
+  collection: ^1.16.0
+  supercharged: ^2.1.1
+  animations: ^2.0.4
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

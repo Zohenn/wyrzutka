@@ -20,12 +20,15 @@ MaterialColor createMaterialColor(Color color) {
   return MaterialColor(color.value, swatch);
 }
 
-final primary = Color(0xff9AFFA1);
-final plastic = Color(0xffFCDF0A);
-final paper = Color(0xff008CD3);
-final glass = Color(0xff0A873F);
-final mixed = Color(0xff1C1B17);
-final bio = Color(0xff682123);
-//final gray = Color(0xffF8F8F8); // u mnie niewidoczny praktycznie
-final gray = Color(0xffeeeeee);
-final positive = Color(0xff21BA45);
+class AppColors {
+  static final primary = Color(0xff9AFFA1);
+  static final plastic = Color(0xffFCDF0A);
+  static final paper = Color(0xff008CD3);
+  static final glass = Color(0xff0A873F);
+  static final mixed = Color(0xff1C1B17);
+  static final bio = Color(0xff682123);
+
+//static final gray = Color(0xffF8F8F8); // u mnie niewidoczny praktycznie
+  static final gray = Color(0xffeeeeee);
+  static final positive = Color(0xff21BA45);
+}
