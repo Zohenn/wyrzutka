@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:inzynierka/bottom_bar_layout.dart';
 import 'package:inzynierka/screens/init_screen.dart';
+import 'package:inzynierka/screens/product_screen.dart';
 
 class RouterWrapper {
   static final routerDelegate = BeamerDelegate(
@@ -14,7 +15,7 @@ class RouterWrapper {
 
   static final bottomNavigationRoutes = {
     '/scan': (context, state, data) => const Scaffold(body: Center(child: Text('Skanuj'))),
-    '/products': (context, state, data) => const Scaffold(body: Center(child: Text('Produkty'))),
+    '/products': (context, state, data) => const Scaffold(body: ProductScreen()),
     '/profile': (context, state, data) => const Scaffold(body: Center(child: Text('Profil'))),
     '/menu': (context, state, data) => const Scaffold(body: Center(child: Text('Menu'))),
   };
