@@ -1,16 +1,11 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:inzynierka/bottom_bar_layout.dart';
-import 'package:inzynierka/main.dart';
 import 'package:inzynierka/screens/init_screen.dart';
 
 class RouterWrapper {
   static final routerDelegate = BeamerDelegate(
     initialPath: '/init',
-    routeListener: (_, __) {
-      print(_.location);
-      print(__);
-    },
     locationBuilder: RoutesLocationBuilder(routes: {
       '/': (context, state, data) => const BottomBarLayout(),
       '/init': (context, state, data) => const InitScreen(),
@@ -26,10 +21,8 @@ class RouterWrapper {
 
   static final bottomNavigationRouterDelegate = BeamerDelegate(
     initialPath: '/scan',
-    routeListener: (_, __) {
-      print(_.location);
-      print(__);
-    },
+    // without this 404 is opened from root beamer on hot reload
+    updateParent: false,
     locationBuilder: RoutesLocationBuilder(
       routes: bottomNavigationRoutes,
     ),
