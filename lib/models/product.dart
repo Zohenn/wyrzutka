@@ -14,7 +14,7 @@ class Product {
     required this.sortProposals,
     this.containers,
     // this.containersCount,
-    // required this.variants,
+    required this.variants,
     this.user,
     // this.addedDate,
   });
@@ -29,7 +29,7 @@ class Product {
   final List<Sort> sortProposals;
   final List<String>? containers;
   // final int? containersCount;
-  // final String variants;
+  final List<String> variants;
   final String? user;
   // final DateTime? addedDate;
 }

@@ -7,66 +7,26 @@ import '../models/sort.dart';
 
 class SortContainer extends StatelessWidget {
   final Sort sort;
-  final String? verified;
+  final bool verified;
 
   Map<ElementContainer, List<SortElement>> get elements {
     return groupBy([...sort.elements], (SortElement element) => element.container);
   }
 
-  const SortContainer({Key? key, required this.sort, this.verified}) : super(key: key);
+  const SortContainer({Key? key, required this.sort, required this.verified}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          for (var key in elements.keys) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: key.containerColor,
-                    child: Icon(Icons.question_mark, color: key.iconColor),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    key.name,
-                    style: Theme.of(context).textTheme.titleMedium!,
-                  ),
-                ],
-              ),
-            ),
-            for (var element in elements[key]!) ...[
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      element.name,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    if (element.description != null)
-                      Text(
-                        element.description!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                      ),
-                  ],
-                ),
-              ),
-              const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
-            ],
-          ],
+          for (var key in elements.keys) ...[SortContainerGroup(container: key, elements: elements[key]!)],
           Padding(
             padding: const EdgeInsets.all(16),
             child: ConditionalBuilder(
-              condition: verified != null,
+              condition: verified,
               ifTrue: () => Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -83,6 +43,67 @@ class SortContainer extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SortContainerGroup extends StatelessWidget {
+  final ElementContainer container;
+  final List<SortElement> elements;
+
+  const SortContainerGroup({
+    Key? key,
+    required this.container,
+    required this.elements,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: container.containerColor,
+                child: Icon(Icons.question_mark, color: container.iconColor),
+              ),
+              const SizedBox(width: 16),
+              Text(
+                container.name,
+                style: Theme.of(context).textTheme.titleMedium!,
+              ),
+            ],
+          ),
+        ),
+        for (var element in elements) ...[
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  element.name,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                ConditionalBuilder(
+                  condition: element.description != null,
+                  ifTrue: () => Text(
+                    element.description!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
+        ],
+      ],
     );
   }
 }

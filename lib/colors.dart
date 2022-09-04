@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/models/sortElement.dart';
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];

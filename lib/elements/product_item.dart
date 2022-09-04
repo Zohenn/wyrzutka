@@ -1,24 +1,14 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/elements/product_modal.dart';
 import 'package:inzynierka/models/sortElement.dart';
 import 'package:inzynierka/utils/pluralization.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
 
-List<AppUser> users = [
-  const AppUser(email: "1", name: "Wojtek", surname: "Brandeburg"),
-  const AppUser(email: "2", name: "Michał", surname: "Marciniak"),
-];
-
-AppUser? getUser(String? email) {
-  if (email != null) return users.firstWhereOrNull((element) => element.email == email);
-  return null;
-}
+import '../data/static_data.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -57,16 +47,17 @@ class ProductItem extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      clipBehavior: Clip.hardEdge,
-                      height: 40,
-                      width: 40,
-                      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                      child: Center(
-                        child: product.photo != ""
-                            ? Image.asset("assets/images/${product.photo}.png")
-                            : const Icon(Icons.question_mark),
-                      ),
-                    ),
+                        clipBehavior: Clip.hardEdge,
+                        height: 40,
+                        width: 40,
+                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                        child: Center(
+                          child: ConditionalBuilder(
+                            condition: product.photo != null,
+                            ifTrue: () => Image.asset("assets/images/${product.photo}.png"),
+                            ifFalse: () => const Icon(Icons.question_mark),
+                          ),
+                        )),
                     const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,36 +75,34 @@ class ProductItem extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                clipBehavior: Clip.hardEdge,
-                height: 40,
-                width: 40,
-                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                child: Center(
-                  child: product.containers != null
-                      ? Column(
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                child: ConditionalBuilder(
+                  condition: product.containers != null,
+                  ifTrue: () => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (var chunk in containers.chunked(2)) ...[
+                        Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            for (var chunk in containers.chunked(2)) ...[
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  for (var container in chunk)
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: ElementContainer.values.byName(container).containerColor,
-                                        borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                      ),
-                                      margin: const EdgeInsets.all(1.0),
-                                      height: 8,
-                                      width: 8,
-                                    ),
-                                ],
+                            for (var container in chunk)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: ElementContainer.values.byName(container).containerColor,
+                                  borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                ),
+                                margin: const EdgeInsets.all(1.0),
+                                height: 8,
+                                width: 8,
                               ),
-                            ],
                           ],
-                        )
-                      : const Icon(Icons.help_outline),
+                        ),
+                      ],
+                    ],
+                  ),
+                  ifFalse: () => const Icon(Icons.help_outline),
                 ),
               ),
             ],
