@@ -4,7 +4,9 @@ import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/elements/product_modal.dart';
+import 'package:inzynierka/models/sortElement.dart';
 import 'package:inzynierka/utils/pluralization.dart';
+import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -14,7 +16,7 @@ List<AppUser> users = [
 ];
 
 AppUser? getUser(String? email) {
-  if(email != null) return users.firstWhereOrNull((element) => element.email == email);
+  if (email != null) return users.firstWhereOrNull((element) => element.email == email);
   return null;
 }
 
@@ -26,7 +28,7 @@ class ProductItem extends StatelessWidget {
   List<String> get containers {
     final _containers = [...?product.containers];
     if (_containers.length < 4) {
-      _containers.addAll(List.generate(4 - _containers.length, (index) => ''));
+      _containers.addAll(List.generate(4 - _containers.length, (index) => 'empty'));
     }
     return _containers;
   }
@@ -38,12 +40,12 @@ class ProductItem extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
         showMaterialModalBottomSheet(
           context: context,
-          builder: (context) => ProductModal(product: product, user: getUser(product.user)),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topRight: Radius.circular(24), topLeft: Radius.circular(24)),
+          builder: (context) => DefaultBottomSheet(
+            child: ProductModal(product: product, user: getUser(product.user)),
           ),
+          backgroundColor: Colors.transparent,
           useRootNavigator: true,
+          enableDrag: false,
         );
       },
       child: Card(
@@ -60,7 +62,9 @@ class ProductItem extends StatelessWidget {
                       width: 40,
                       decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                       child: Center(
-                        child: product.photo != "" ? Image.asset("assets/images/${product.photo}.png") : const Icon(Icons.question_mark),
+                        child: product.photo != ""
+                            ? Image.asset("assets/images/${product.photo}.png")
+                            : const Icon(Icons.question_mark),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -97,7 +101,7 @@ class ProductItem extends StatelessWidget {
                                   for (var container in chunk)
                                     Container(
                                       decoration: BoxDecoration(
-                                        color: getContainerColor(context, container),
+                                        color: ElementContainer.values.byName(container).containerColor,
                                         borderRadius: const BorderRadius.all(Radius.circular(2)),
                                       ),
                                       margin: const EdgeInsets.all(1.0),

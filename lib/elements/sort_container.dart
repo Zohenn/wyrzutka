@@ -2,103 +2,84 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/sortElement.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 import '../models/sort.dart';
 
 class SortContainer extends StatelessWidget {
   final Sort sort;
   final String? verified;
 
-  Map<String, List<SortElement>> get elements {
-    return groupBy([...sort.elements], (SortElement element) => element.name);
-  }
-
-  String getFullContainerName(String name) {
-    switch(name) {
-      case 'plastic': return 'Metale i tworzywa sztuczne';
-      case 'paper': return 'Papier';
-      case 'bio': return 'Bytowe';
-      case 'mixed': return 'Zmieszane';
-      case 'glass': return 'Szkło';
-    }
-    return 'Brak';
+  Map<ElementContainer, List<SortElement>> get elements {
+    return groupBy([...sort.elements], (SortElement element) => element.container);
   }
 
   const SortContainer({Key? key, required this.sort, this.verified}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: const BoxDecoration(
-        color: AppColors.gray,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
+    return Card(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (int i = 0; i < elements.length; i++) ...[
+          for (var key in elements.keys) ...[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               child: Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: getContainerColor(context, elements.keys.elementAt(i))),
-                    child: Icon(Icons.question_mark, color: getContainerIconColor(elements.keys.elementAt(i))),
+                  CircleAvatar(
+                    backgroundColor: key.containerColor,
+                    child: Icon(Icons.question_mark, color: key.iconColor),
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    getFullContainerName(elements.keys.elementAt(i)),
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: ThemeData.light().colorScheme.onSurfaceVariant,
-                        ),
+                    key.name,
+                    style: Theme.of(context).textTheme.titleMedium!,
                   ),
                 ],
               ),
             ),
-            for (int j = 0; j < elements.values.elementAt(i).length; j++) ...[
+            for (var element in elements[key]!) ...[
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      elements.values.elementAt(i).elementAt(j).container,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: ThemeData.light().colorScheme.onSurface,
-                          ),
+                      element.name,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    if (elements.values.elementAt(i).elementAt(j).description != null)
+                    if (element.description != null)
                       Text(
-                        elements.values.elementAt(i).elementAt(j).description!,
+                        element.description!,
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall!
-                            .copyWith(color: ThemeData.light().colorScheme.onSurfaceVariant),
+                            .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                   ],
                 ),
               ),
-              const Divider(color: Color(0xffE0E0E0), thickness: 2),
+              const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
             ],
           ],
           Padding(
             padding: const EdgeInsets.all(16),
-            child: verified != null
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.done, color: AppColors.positive),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Zweryfikowano",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.black),
-                      )
-                    ],
+            child: ConditionalBuilder(
+              condition: verified != null,
+              ifTrue: () => Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.done, color: AppColors.positive),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Zweryfikowano",
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.black),
                   )
-                : const Text("TODO"),
+                ],
+              ),
+              ifFalse: () => const Text("TODO"),
+            ),
           ),
         ],
       ),

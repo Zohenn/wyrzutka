@@ -5,6 +5,7 @@ import 'package:inzynierka/elements/sort_container.dart';
 import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/symbol.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 
 final symbols = [
   const Symbol(id: "1", name: "Tektura", photo: "", description: "Opakowanie wykonane z tektury"),
@@ -35,12 +36,12 @@ class ProductModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SingleChildScrollView(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -63,7 +64,9 @@ class ProductModal extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(12)),
                         ),
                         child: Center(
-                          child: product.photo != "" ? Image.asset("assets/images/${product.photo}.png") : const Icon(Icons.question_mark),
+                          child: product.photo != ""
+                              ? Image.asset("assets/images/${product.photo}.png")
+                              : const Icon(Icons.question_mark),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -109,7 +112,7 @@ class ProductModal extends StatelessWidget {
                   ),
                 if (product.symbols.isNotEmpty) ...[
                   Text("Oznaczenia", style: Theme.of(context).textTheme.headlineSmall),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   for (String symbol in product.symbols) ...[
                     if (getSymbol(symbol) != null) ...[
                       Container(
@@ -151,50 +154,64 @@ class ProductModal extends StatelessWidget {
                     ],
                   ],
                 ],
-                if (user != null) ...[
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      color: AppColors.gray,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 52,
-                          height: 52,
-                          decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.primary),
-                          child: Center(
-                              child: Text(user!.name[0].toUpperCase() + user!.surname[0].toUpperCase(),
-                                  style: const TextStyle(fontWeight: FontWeight.bold))),
-                        ),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Produkt dodany przez",
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                                    color: ThemeData.light().colorScheme.onSurfaceVariant,
-                                  ),
-                            ),
-                            Text(
-                              "${user!.name} ${user!.surname}",
-                              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    color: ThemeData.light().colorScheme.onSurface,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ConditionalBuilder(
+                  condition: user != null,
+                  ifTrue: () => _ProductUser(user: user!),
+                ),
               ],
             ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ProductUser extends StatelessWidget {
+  const _ProductUser({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+
+  final AppUser user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.black,
+              child: Center(
+                child: Text(
+                  user.name[0].toUpperCase() + user.surname[0].toUpperCase(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Produkt dodany przez",
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                Text(
+                  "${user.name} ${user.surname}",
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -13,7 +13,47 @@ void main() {
   Intl.defaultLocale = 'pl';
 
   runApp(
-    const ProviderScope(child: MyApp()),
+    ProviderScope(
+      child: Theme(
+        data: ThemeData(
+          useMaterial3: true,
+          platform: TargetPlatform.android,
+          primarySwatch: createMaterialColor(AppColors.primary),
+          // colorScheme: lightColorScheme,
+          // colorSchemeSeed: AppColors.primary,
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+          ),
+          textTheme: TextTheme(
+            labelSmall: TextStyle(color: lightColorScheme.outline),
+          ),
+          cardTheme: CardTheme(
+            color: AppColors.gray,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              side: BorderSide.none,
+            ),
+            margin: EdgeInsets.zero,
+          ),
+          cardColor: AppColors.gray,
+          scaffoldBackgroundColor: Colors.white,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black,
+              backgroundColor: AppColors.primary, //createMaterialColor(AppColors.primary).shade50,
+              shadowColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+            ),
+          ),
+        ),
+        child: const MyApp(),
+      ),
+    ),
   );
 }
 
@@ -24,36 +64,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        useMaterial3: true,
-        platform: TargetPlatform.android,
-        primarySwatch: createMaterialColor(AppColors.primary),
-        // colorScheme: lightColorScheme,
-        // colorSchemeSeed: AppColors.primary,
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: EdgeInsets.fromLTRB(12, 12, 12, 12),
-        ),
-        textTheme: TextTheme(
-          labelSmall: TextStyle(color: lightColorScheme.outline),
-        ),
-        cardTheme: CardTheme(
-          color: AppColors.gray,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-        ),
-        cardColor: AppColors.gray,
-        scaffoldBackgroundColor: Colors.white,
-        elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.black,
-          backgroundColor: AppColors.primary,//createMaterialColor(AppColors.primary).shade50,
-          shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
-        ))
-      ),
+      theme: Theme.of(context),
       routeInformationParser: BeamerParser(),
       routerDelegate: RouterWrapper.routerDelegate,
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: RouterWrapper.routerDelegate),

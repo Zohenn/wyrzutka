@@ -82,8 +82,8 @@ class _ProductScreenState extends State<ProductsScreen> {
       photo: "woda",
       symbols: [],
       sort: Sort(elements: [
-        SortElement(container: 'Nakrętka', name: 'plastic', description: 'Odkręć i wyrzuć oddzielnie'),
-        SortElement(container: 'Butelka', name: 'plastic', description: 'Zgnieć przed wyrzuceniem')
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
       ]),
       verifiedBy: 'xxx',
       containers: ['plastic'],
@@ -96,7 +96,9 @@ class _ProductScreenState extends State<ProductsScreen> {
       photo: "",
       symbols: [],
       sort: Sort(
-        elements: [SortElement(container: 'Puszka', name: 'plastic', description: 'Zgnieć przed wyrzuceniem')],
+        elements: [
+          SortElement(name: 'Puszka', container: ElementContainer.plastic, description: 'Zgnieć przed wyrzuceniem')
+        ],
       ),
       verifiedBy: '2',
       containers: ['plastic'],
@@ -110,8 +112,8 @@ class _ProductScreenState extends State<ProductsScreen> {
       symbols: ["1", "2"],
       sort: Sort(
         elements: [
-          SortElement(container: 'Opakowanie', name: 'paper', description: 'Zgnieć przed wyrzuceniem'),
-          SortElement(container: 'Zużyte chusteczki', name: 'mixed')
+          SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
+          SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
         ],
       ),
       verifiedBy: '2',
@@ -119,24 +121,42 @@ class _ProductScreenState extends State<ProductsScreen> {
       user: "1",
       sortProposals: [],
     ),
-    const Product(id: 025896, name: "Papier toaletowy", photo: "", symbols: [], sortProposals: [], user: "1",),
+    const Product(
+      id: 025896,
+      name: "Papier toaletowy",
+      photo: "",
+      symbols: [],
+      sortProposals: [],
+      user: "1",
+    ),
     const Product(
       id: 254896,
       name: "Frugo",
       photo: "",
       symbols: [],
       sort: Sort(
-        elements: [SortElement(container: 'Puszka', name: 'plastic', description: 'Zgnieć przed wyrzuceniem')],
+        elements: [
+          SortElement(name: 'Puszka', container: ElementContainer.plastic, description: 'Zgnieć przed wyrzuceniem')
+        ],
       ),
       user: "2",
       sortProposals: [],
     ),
-    const Product(id: 485769, name: "Ręcznik papierowy", photo: "", symbols: ["1", "2"], sortProposals: [Sort(
-      elements: [
-        SortElement(container: 'Opakowanie', name: 'paper', description: 'Zgnieć przed wyrzuceniem'),
-        SortElement(container: 'Zużyte chusteczki', name: 'mixed')
-      ],
-    )], user: "1"),
+    const Product(
+        id: 485769,
+        name: "Ręcznik papierowy",
+        photo: "",
+        symbols: ["1", "2"],
+        sortProposals: [
+          Sort(
+            elements: [
+              SortElement(
+                  name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
+              SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
+            ],
+          )
+        ],
+        user: "1"),
     const Product(id: 485769, name: "Ręcznik papierowy", photo: "", symbols: ["1", "2"], sortProposals: [], user: "1"),
   ];
 

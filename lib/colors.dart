@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inzynierka/models/sortElement.dart';
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
@@ -31,30 +32,4 @@ class AppColors {
   static const gray = Color(0xffF8F8F8);
   //static final gray = Color(0xffeeeeee);
   static const positive = Color(0xff21BA45);
-}
-
-Color getContainerColor(BuildContext context, String container) {
-  switch (container) {
-    case "plastic":
-      return AppColors.plastic;
-    case "paper":
-      return AppColors.paper;
-    case "glass":
-      return AppColors.glass;
-    case "mixed":
-      return AppColors.mixed;
-    case "bio":
-      return AppColors.bio;
-  }
-  return Theme.of(context).cardColor;
-}
-
-Color getContainerIconColor(String container) {
-  switch (container) {
-    case "mixed":
-    case "bio":
-      return Colors.white;
-    default:
-      return Colors.black87;
-  }
 }
