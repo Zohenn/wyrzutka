@@ -3,7 +3,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:inzynierka/bottom_bar_layout.dart';
 import 'package:inzynierka/screens/init_screen.dart';
-import 'package:inzynierka/screens/product_screen.dart';
+import 'package:inzynierka/screens/products_screen.dart';
 
 wrapPage(Widget child, ValueKey key) => BeamPage(
       key: key,
@@ -33,7 +33,7 @@ class RouterWrapper {
 
   static final bottomNavigationRoutes = {
     '/scan': (context, state, data) => wrapPage(const Scaffold(body: Center(child: Text('Skanuj'))), ValueKey('/scan')),
-    '/products': (context, state, data) => wrapPage(const Scaffold(body: ProductScreen()), ValueKey('/products')),
+    '/products': (context, state, data) => wrapPage(const Scaffold(body: ProductsScreen()), ValueKey('/products')),
     '/profile': (context, state, data) =>
         wrapPage(const Scaffold(body: Center(child: Text('Profil'))), ValueKey('/profile')),
     '/menu': (context, state, data) => wrapPage(const Scaffold(body: Center(child: Text('Menu'))), ValueKey('/menu')),

@@ -46,6 +46,13 @@ class MyApp extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         ),
         cardColor: AppColors.gray,
+        scaffoldBackgroundColor: Colors.white,
+        elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.black,
+          backgroundColor: AppColors.primary,//createMaterialColor(AppColors.primary).shade50,
+          shadowColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+        ))
       ),
       routeInformationParser: BeamerParser(),
       routerDelegate: RouterWrapper.routerDelegate,

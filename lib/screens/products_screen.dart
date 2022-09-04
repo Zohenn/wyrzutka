@@ -5,6 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/elements/product_item.dart';
+import 'package:inzynierka/models/sort.dart';
+import 'package:inzynierka/models/sortElement.dart';
 
 class CustomColorSelectionHandle extends TextSelectionControls {
   CustomColorSelectionHandle(this.handleColor) : _controls = materialTextSelectionControls;
@@ -61,37 +63,82 @@ class CustomColorSelectionHandle extends TextSelectionControls {
   }
 }
 
-class ProductScreen extends StatefulWidget {
-  const ProductScreen({
+class ProductsScreen extends StatefulWidget {
+  const ProductsScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ProductScreen> createState() => _ProductScreenState();
+  State<ProductsScreen> createState() => _ProductScreenState();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _ProductScreenState extends State<ProductsScreen> {
   final searchController = TextEditingController();
-  final productsList = [
-    Product(name: "Woda niegazowana", photo: "woda", symbols: [], containers: ["plastic"]),
-    Product(name: "Napój energetyczny", photo: "", symbols: [], containers: []),
-    Product(name: "Chusteczki", photo: "", symbols: [], containers: ["paper", "mixed"]),
-    Product(name: "Papier toaletowy", photo: "", symbols: [], containers: []),
-    Product(name: "Frugo", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-    Product(name: "Ręcznik papierowy", photo: "", symbols: [], containers: []),
-  ];
 
-  void onSearchPress() {
-    print("Search pressed");
-  }
+  final productsList = [
+    const Product(
+      id: 354789,
+      name: "Woda niegazowana",
+      photo: "woda",
+      symbols: [],
+      sort: Sort(elements: [
+        SortElement(container: 'Nakrętka', name: 'plastic', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: 'Butelka', name: 'plastic', description: 'Zgnieć przed wyrzuceniem')
+      ]),
+      verifiedBy: 'xxx',
+      containers: ['plastic'],
+      user: "1",
+      sortProposals: [],
+    ),
+    const Product(
+      id: 145697,
+      name: "Napój energetyczny",
+      photo: "",
+      symbols: [],
+      sort: Sort(
+        elements: [SortElement(container: 'Puszka', name: 'plastic', description: 'Zgnieć przed wyrzuceniem')],
+      ),
+      verifiedBy: '2',
+      containers: ['plastic'],
+      sortProposals: [],
+      user: "1",
+    ),
+    const Product(
+      id: 547145,
+      name: "Chusteczki",
+      photo: "",
+      symbols: ["1", "2"],
+      sort: Sort(
+        elements: [
+          SortElement(container: 'Opakowanie', name: 'paper', description: 'Zgnieć przed wyrzuceniem'),
+          SortElement(container: 'Zużyte chusteczki', name: 'mixed')
+        ],
+      ),
+      verifiedBy: '2',
+      containers: ['paper', 'mixed'],
+      user: "1",
+      sortProposals: [],
+    ),
+    const Product(id: 025896, name: "Papier toaletowy", photo: "", symbols: [], sortProposals: [], user: "1",),
+    const Product(
+      id: 254896,
+      name: "Frugo",
+      photo: "",
+      symbols: [],
+      sort: Sort(
+        elements: [SortElement(container: 'Puszka', name: 'plastic', description: 'Zgnieć przed wyrzuceniem')],
+      ),
+      user: "2",
+      sortProposals: [],
+    ),
+    const Product(id: 485769, name: "Ręcznik papierowy", photo: "", symbols: ["1", "2"], sortProposals: [Sort(
+      elements: [
+        SortElement(container: 'Opakowanie', name: 'paper', description: 'Zgnieć przed wyrzuceniem'),
+        SortElement(container: 'Zużyte chusteczki', name: 'mixed')
+      ],
+    )], user: "1"),
+    const Product(id: 485769, name: "Ręcznik papierowy", photo: "", symbols: ["1", "2"], sortProposals: [], user: "1"),
+  ];
 
   void onFilterPress() {
     print("Filter pressed");
@@ -116,7 +163,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 height: 48,
                 margin: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).primaryColorLight,
                   borderRadius: const BorderRadius.all(Radius.circular(100)),
                 ),
                 child: Row(
@@ -128,8 +175,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           // border: InputBorder.none,
                           hintText: "Wyszukaj",
                           prefixIcon: const Icon(Icons.search, color: Colors.black),
-                          suffixIcon:
-                          IconButton(onPressed: onFilterPress, icon: const Icon(Icons.filter_list, color: Colors.black)),
+                          suffixIcon: IconButton(
+                              onPressed: onFilterPress, icon: const Icon(Icons.filter_list, color: Colors.black)),
                         ),
                         controller: searchController,
                         selectionControls: CustomColorSelectionHandle(Colors.black),

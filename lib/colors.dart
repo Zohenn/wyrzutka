@@ -21,14 +21,40 @@ MaterialColor createMaterialColor(Color color) {
 }
 
 class AppColors {
-  static final primary = Color(0xff9AFFA1);
-  static final plastic = Color(0xffFCDF0A);
-  static final paper = Color(0xff008CD3);
-  static final glass = Color(0xff0A873F);
-  static final mixed = Color(0xff1C1B17);
-  static final bio = Color(0xff682123);
+  static const primary = Color(0xff9AFFA1);
+  static const plastic = Color(0xffFCDF0A);
+  static const paper = Color(0xff008CD3);
+  static const glass = Color(0xff0A873F);
+  static const mixed = Color(0xff1C1B17);
+  static const bio = Color(0xff682123);
 
-//static final gray = Color(0xffF8F8F8); // u mnie niewidoczny praktycznie
-  static final gray = Color(0xffeeeeee);
-  static final positive = Color(0xff21BA45);
+  static const gray = Color(0xffF8F8F8);
+  //static final gray = Color(0xffeeeeee);
+  static const positive = Color(0xff21BA45);
+}
+
+Color getContainerColor(BuildContext context, String container) {
+  switch (container) {
+    case "plastic":
+      return AppColors.plastic;
+    case "paper":
+      return AppColors.paper;
+    case "glass":
+      return AppColors.glass;
+    case "mixed":
+      return AppColors.mixed;
+    case "bio":
+      return AppColors.bio;
+  }
+  return Theme.of(context).cardColor;
+}
+
+Color getContainerIconColor(String container) {
+  switch (container) {
+    case "mixed":
+    case "bio":
+      return Colors.white;
+    default:
+      return Colors.black87;
+  }
 }
