@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/screens/widgets/product_modal.dart';
+import 'package:inzynierka/screens/widgets/product_modal/product_modal.dart';
 import 'package:inzynierka/models/sortElement.dart';
 import 'package:inzynierka/utils/pluralization.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';

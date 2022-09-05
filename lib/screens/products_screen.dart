@@ -4,6 +4,7 @@ import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
+import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({
@@ -16,10 +17,6 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductsScreen> {
   final searchController = TextEditingController();
-
-  void onFilterPress() {
-    print("Filter pressed");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +50,7 @@ class _ProductScreenState extends State<ProductsScreen> {
                           decoration: const InputDecoration(
                             hintText: "Wyszukaj",
                             prefixIcon: Icon(Icons.search, color: Colors.black),
+                            // todo: change suffix to clear button if search text is not empty
                             suffixIcon: FilterButton(),
                           ),
                           controller: searchController,
@@ -97,8 +95,6 @@ class FilterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPopupMenuButton(
       icon: const Icon(Icons.filter_list),
-      color: Theme.of(context).scaffoldBackgroundColor,
-      shape: Theme.of(context).cardTheme.shape,
       itemBuilder: (context) => [
         const GenericPopupMenuItem(
           type: PopupMenuItemType.presentation,
@@ -122,79 +118,6 @@ class FilterButton extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-enum PopupMenuItemType {
-  presentation,
-  action,
-}
-
-class GenericPopupMenuItem<T> extends PopupMenuItem<T> {
-  const GenericPopupMenuItem({
-    super.key,
-    super.value,
-    super.enabled,
-    super.padding,
-    super.height,
-    super.mouseCursor,
-    super.child,
-    this.type = PopupMenuItemType.action,
-  });
-
-  final PopupMenuItemType type;
-
-  @override
-  PopupMenuItemState<T, GenericPopupMenuItem<T>> createState() => _GenericPopupMenuItemState<T>();
-}
-
-class _GenericPopupMenuItemState<T> extends PopupMenuItemState<T, GenericPopupMenuItem<T>> {
-  @override
-  void handleTap() {
-    widget.onTap?.call();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-    final bool isClickable = widget.type == PopupMenuItemType.action;
-    TextStyle style = widget.textStyle ?? popupMenuTheme.textStyle ?? theme.textTheme.subtitle1!;
-
-    if (!widget.enabled) {
-      style = style.copyWith(color: theme.disabledColor);
-    }
-
-    Widget item = AnimatedDefaultTextStyle(
-      style: style,
-      duration: kThemeChangeDuration,
-      child: Container(
-        alignment: AlignmentDirectional.centerStart,
-        constraints: BoxConstraints(minHeight: widget.height),
-        padding: widget.padding ?? EdgeInsets.symmetric(horizontal: isClickable ? 8.0 : 16.0),
-        child: buildChild(),
-      ),
-    );
-
-    if (!widget.enabled) {
-      final bool isDark = theme.brightness == Brightness.dark;
-      item = IconTheme.merge(
-        data: IconThemeData(opacity: isDark ? 0.5 : 0.38),
-        child: item,
-      );
-    }
-
-    return MergeSemantics(
-      child: Semantics(
-        enabled: widget.enabled,
-        button: true,
-        child: InkWell(
-          onTap: (widget.enabled && isClickable) ? handleTap : null,
-          canRequestFocus: widget.enabled,
-          child: item,
-        ),
-      ),
     );
   }
 }

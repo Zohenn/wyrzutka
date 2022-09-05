@@ -54,6 +54,13 @@ class AppTheme extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
           ),
         ),
+        popupMenuTheme: PopupMenuThemeData(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            side: BorderSide.none,
+          ),
+        ),
       ),
       child: child,
     );
