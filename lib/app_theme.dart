@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:inzynierka/color_schemes.g.dart';
 import 'package:inzynierka/colors.dart';
 
@@ -26,6 +27,9 @@ class AppTheme extends StatelessWidget {
           ),
           contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
         ),
+        // textTheme: GoogleFonts.notoSansTextTheme(
+        //   TextTheme(labelSmall: TextStyle(color: lightColorScheme.outline)),
+        // ),
         textTheme: TextTheme(
           labelSmall: TextStyle(color: lightColorScheme.outline),
         ),
@@ -40,11 +44,13 @@ class AppTheme extends StatelessWidget {
         ),
         cardColor: AppColors.gray,
         scaffoldBackgroundColor: Colors.white,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
             foregroundColor: Colors.black,
-            backgroundColor: AppColors.primary, //createMaterialColor(AppColors.primary).shade50,
-            shadowColor: Colors.transparent,
+            backgroundColor: AppColors.primary,
+            //createMaterialColor(AppColors.primary).shade50,
+            elevation: 0,
+            side: BorderSide.none,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
           ),
         ),

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/screens/widgets/sort_container.dart';
 import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/data/static_data.dart';
+import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:inzynierka/widgets/gutter_row.dart';
 
 class ProductModal extends HookWidget {
   final Product product;
@@ -14,18 +18,30 @@ class ProductModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _controller = useTabController(initialLength: 2);
+    final tabController = useTabController(initialLength: 2);
+    final index = useState(0);
+
+    tabController.addListener(() {
+      index.value = tabController.index;
+    });
+
+    final activeTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
+          backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
+        );
+    final inactiveTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
+          backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
+        );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
+        Padding(
           padding: const EdgeInsets.all(16),
           child: _ProductName(product: product),
         ),
         Flexible(
           child: TabBarView(
-            controller: _controller,
+            controller: tabController,
             children: [
               _ProductPage(product: product, user: user),
               _VariantPage(product: product),
@@ -34,28 +50,38 @@ class ProductModal extends HookWidget {
         ),
         Column(
           children: [
-            Divider(
-              thickness: 1,
-              height: 1,
-              color: Theme.of(context).primaryColorLight,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                border: Border(
+                  top: BorderSide(color: Theme.of(context).primaryColorLight),
+                ),
+              ),
+              child: GutterRow(
                 children: [
-                  Expanded(
-                    child: TabBar(
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Theme.of(context).primaryColorLight,
+                  AnimatedTheme(
+                    data: Theme.of(context).copyWith(
+                      outlinedButtonTheme:
+                          OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
+                    ),
+                    child: Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => tabController.animateTo(0),
+                        child: Text('Segregacja'),
                       ),
-                      //indicatorSize: TabBarIndicatorSize.label,
-                      controller: _controller,
-                      splashFactory: NoSplash.splashFactory,
-                      tabs: const [
-                        Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 24), child: Text("Segregacja")),
-                        Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 24), child: Text("Warianty")),
-                      ],
+                    ),
+                  ),
+                  AnimatedTheme(
+                    data: Theme.of(context).copyWith(
+                      outlinedButtonTheme:
+                          OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
+                    ),
+                    child: Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => tabController.animateTo(1),
+                        child: Text('Warianty'),
+                      ),
                     ),
                   ),
                   IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
@@ -80,13 +106,13 @@ class _VariantPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Column(
         children: [
           for (String variant in product.variants) ...[
             Card(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+                padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
                     Container(
@@ -128,23 +154,13 @@ class _ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: GutterColumn(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           _ProductSort(product: product),
-          const SizedBox(height: 16),
-          ConditionalBuilder(
-            condition: product.symbols.isNotEmpty,
-            ifTrue: () => Column(
-              children: [
-                _ProductSymbols(product: product),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
+          if (product.symbols.isNotEmpty) _ProductSymbols(product: product),
           ConditionalBuilder(
             condition: user != null,
             ifTrue: () => _ProductUser(user: user!),
@@ -170,50 +186,51 @@ class _ProductSymbols extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text("Oznaczenia", style: Theme.of(context).textTheme.headlineSmall),
-        for (String symbol in product.symbols) ...[
-          ConditionalBuilder(
-            condition: getSymbol(symbol) != null,
-            ifTrue: () => Card(
-              margin: const EdgeInsets.only(top: 8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      child: Icon(getIconByString(getSymbol(symbol)!.name)),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        const SizedBox(height: 8.0),
+        GutterColumn(
+          children: [
+            for (String symbol in product.symbols) ...[
+              ConditionalBuilder(
+                condition: getSymbol(symbol) != null,
+                ifTrue: () => Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+                    child: Row(
                       children: [
-                        Text(
-                          getSymbol(symbol)!.name,
-                          style: Theme.of(context).textTheme.titleMedium,
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          child: Icon(getIconByString(getSymbol(symbol)!.name)),
                         ),
-                        ConditionalBuilder(
-                          condition: getSymbol(symbol)!.description != null,
-                          ifTrue: () => Column(
-                            children: [
-                              const SizedBox(height: 4),
-                              Text(
-                                getSymbol(symbol)!.description!,
-                                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                                      color: ThemeData.light().colorScheme.onSurfaceVariant,
-                                    ),
+                        const SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              getSymbol(symbol)!.name,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            ConditionalBuilder(
+                              condition: getSymbol(symbol)!.description != null,
+                              ifTrue: () => Column(
+                                children: [
+                                  Text(
+                                    getSymbol(symbol)!.description!,
+                                    style: Theme.of(context).textTheme.labelSmall,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
+            ]
+          ],
+        ),
       ],
     );
   }
@@ -253,17 +270,32 @@ class _ProductSort extends StatelessWidget {
               ],
             ),
             ifFalse: () => Card(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
                 child: Center(
-                    child:
-                        Text("Brak wskazówek dotyczących segregacji", style: Theme.of(context).textTheme.titleMedium)),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SvgPicture.asset(
+                          'assets/images/no_data.svg',
+                          width: MediaQuery.of(context).size.width / 2,
+                        ),
+                      ),
+                      Text(
+                        'Brak wskazówek dotyczących segregacji.',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
           const SizedBox(height: 16),
           Center(
-            child: ElevatedButton(
+            child: OutlinedButton(
               onPressed: addSortProposal,
               child: const Text("Dodaj swoją propozycję"),
             ),
@@ -284,46 +316,45 @@ class _ProductName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorLight,
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            clipBehavior: Clip.hardEdge,
-            height: 56,
-            width: 56,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            child: Center(
-              child: ConditionalBuilder(
-                condition: product.photo != null,
-                ifTrue: () => Image.asset("assets/images/${product.photo}.png"),
-                ifFalse: () => const Icon(Icons.help_outline),
+    return Card(
+      color: Theme.of(context).primaryColorLight,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Container(
+              clipBehavior: Clip.hardEdge,
+              height: 56,
+              width: 56,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Center(
+                child: ConditionalBuilder(
+                  condition: product.photo != null,
+                  ifTrue: () => Image.asset("assets/images/${product.photo}.png"),
+                  ifFalse: () => const Icon(Icons.help_outline),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                product.name,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                product.id.toString(),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ],
-          ),
-        ],
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.name,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  product.id.toString(),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -341,7 +372,7 @@ class _ProductUser extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
             CircleAvatar(
@@ -360,9 +391,7 @@ class _ProductUser extends StatelessWidget {
               children: [
                 Text(
                   "Produkt dodany przez",
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
                 Text(
                   "${user.name} ${user.surname}",

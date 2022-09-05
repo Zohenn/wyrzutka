@@ -22,13 +22,13 @@ class SortContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (var key in elements.keys) ...[SortContainerGroup(container: key, elements: elements[key]!)],
+          for (var key in elements.keys) SortContainerGroup(container: key, elements: elements[key]!),
           Padding(
             padding: const EdgeInsets.all(16),
             child: ConditionalBuilder(
               condition: verified,
               ifTrue: () => Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Icon(Icons.done, color: AppColors.positive),
                   const SizedBox(width: 8),
@@ -63,7 +63,7 @@ class SortContainerGroup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           child: Row(
             children: [
               CircleAvatar(
@@ -92,10 +92,7 @@ class SortContainerGroup extends StatelessWidget {
                   condition: element.description != null,
                   ifTrue: () => Text(
                     element.description!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
               ],
