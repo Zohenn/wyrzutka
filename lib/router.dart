@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:inzynierka/bottom_bar_layout.dart';
+import 'package:inzynierka/screens/bottom_bar_layout.dart';
 import 'package:inzynierka/screens/init_screen.dart';
 import 'package:inzynierka/screens/products_screen.dart';
 

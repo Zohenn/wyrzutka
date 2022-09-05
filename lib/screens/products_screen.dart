@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:inzynierka/colors.dart';
-import 'package:inzynierka/elements/product_item.dart';
-import '../data/static_data.dart';
+import 'package:inzynierka/screens/widgets/product_item.dart';
+import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
+import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
 
 class ProductsScreen extends StatefulWidget {
@@ -50,10 +50,9 @@ class _ProductScreenState extends State<ProductsScreen> {
                       Expanded(
                         child: TextField(
                           cursorColor: Colors.black,
-                          decoration: InputDecoration(
-                            // border: InputBorder.none,
+                          decoration: const InputDecoration(
                             hintText: "Wyszukaj",
-                            prefixIcon: const Icon(Icons.search, color: Colors.black),
+                            prefixIcon: Icon(Icons.search, color: Colors.black),
                             suffixIcon: FilterButton(),
                           ),
                           controller: searchController,
@@ -97,11 +96,11 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPopupMenuButton(
-      icon: Icon(Icons.filter_list),
+      icon: const Icon(Icons.filter_list),
       color: Theme.of(context).scaffoldBackgroundColor,
       shape: Theme.of(context).cardTheme.shape,
       itemBuilder: (context) => [
-        GenericPopupMenuItem(
+        const GenericPopupMenuItem(
           type: PopupMenuItemType.presentation,
           child: Text('Segregacja'),
         ),
@@ -117,7 +116,7 @@ class FilterButton extends StatelessWidget {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   visualDensity: VisualDensity.compact,
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Text(filter.name),
               ],
             ),
@@ -197,60 +196,5 @@ class _GenericPopupMenuItemState<T> extends PopupMenuItemState<T, GenericPopupMe
         ),
       ),
     );
-  }
-}
-
-class CustomColorSelectionHandle extends TextSelectionControls {
-  CustomColorSelectionHandle(this.handleColor) : _controls = materialTextSelectionControls;
-
-  final Color handleColor;
-  final TextSelectionControls _controls;
-
-  /// Wrap the given handle builder with the needed theme data for
-  /// each platform to modify the color.
-  Widget _wrapWithThemeData(Widget Function(BuildContext) builder) => TextSelectionTheme(
-      data: TextSelectionThemeData(selectionHandleColor: handleColor), child: Builder(builder: builder));
-
-  @override
-  Widget buildHandle(
-      BuildContext context,
-      TextSelectionHandleType type,
-      double textLineHeight, [
-        VoidCallback? onTap,
-      ]) {
-    return _wrapWithThemeData((BuildContext context) => _controls.buildHandle(context, type, textLineHeight));
-  }
-
-  @override
-  Widget buildToolbar(
-      BuildContext context,
-      Rect globalEditableRegion,
-      double textLineHeight,
-      Offset position,
-      List<TextSelectionPoint> endpoints,
-      TextSelectionDelegate delegate,
-      ClipboardStatusNotifier? clipboardStatus,
-      Offset? lastSecondaryTapDownPosition,
-      ) {
-    return _controls.buildToolbar(
-      context,
-      globalEditableRegion,
-      textLineHeight,
-      position,
-      endpoints,
-      delegate,
-      clipboardStatus,
-      lastSecondaryTapDownPosition,
-    );
-  }
-
-  @override
-  Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight) {
-    return _controls.getHandleAnchor(type, textLineHeight);
-  }
-
-  @override
-  Size getHandleSize(double textLineHeight) {
-    return _controls.getHandleSize(textLineHeight);
   }
 }

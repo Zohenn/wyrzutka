@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/elements/product_modal.dart';
+import 'package:inzynierka/screens/widgets/product_modal.dart';
 import 'package:inzynierka/models/sortElement.dart';
 import 'package:inzynierka/utils/pluralization.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
-
-import '../data/static_data.dart';
+import 'package:inzynierka/data/static_data.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;

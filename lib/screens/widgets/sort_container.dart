@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/sortElement.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import '../models/sort.dart';
+import 'package:inzynierka/models/sort.dart';
 
 class SortContainer extends StatelessWidget {
   final Sort sort;

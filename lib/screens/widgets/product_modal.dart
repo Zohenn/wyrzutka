@@ -1,12 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:inzynierka/elements/sort_container.dart';
+import 'package:inzynierka/screens/widgets/sort_container.dart';
 import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import '../data/static_data.dart';
+import 'package:inzynierka/data/static_data.dart';
 
 class ProductModal extends HookWidget {
   final Product product;
@@ -27,7 +25,6 @@ class ProductModal extends HookWidget {
         ),
         Flexible(
           child: TabBarView(
-
             controller: _controller,
             children: [
               _ProductPage(product: product, user: user),
@@ -61,7 +58,7 @@ class ProductModal extends HookWidget {
                       ],
                     ),
                   ),
-                  IconButton(onPressed: () => Void, icon: const Icon(Icons.more_vert)),
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
                 ],
               ),
             ),
