@@ -72,7 +72,7 @@ class SortContainerGroup extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               Text(
-                container.name,
+                container.containerName,
                 style: Theme.of(context).textTheme.titleMedium!,
               ),
             ],

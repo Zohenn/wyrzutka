@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
 import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
 
-class ProductsScreen extends StatefulWidget {
+class ProductsScreen extends HookConsumerWidget {
   const ProductsScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ProductsScreen> createState() => _ProductScreenState();
-}
-
-class _ProductScreenState extends State<ProductsScreen> {
-  final searchController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final future = ref.watch(productsFutureProvider);
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Theme(
@@ -31,42 +27,45 @@ class _ProductScreenState extends State<ProductsScreen> {
               ),
         ),
         child: SafeArea(
-          child: NestedScrollView(
-            floatHeaderSlivers: true,
-            headerSliverBuilder: (context, _) => [
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 48,
-                  margin: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorLight,
-                    borderRadius: const BorderRadius.all(Radius.circular(100)),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          cursorColor: Colors.black,
-                          decoration: const InputDecoration(
-                            hintText: 'Wyszukaj',
-                            prefixIcon: Icon(Icons.search, color: Colors.black),
-                            // todo: change suffix to clear button if search text is not empty
-                            suffixIcon: FilterButton(),
+          child: future.when(
+            loading: () => Center(child: CircularProgressIndicator()),
+            error: (err, stack) => Center(child: Text(err.toString()),),
+            data: (products) => NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, _) => [
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: 48,
+                    margin: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColorLight,
+                      borderRadius: const BorderRadius.all(Radius.circular(100)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            cursorColor: Colors.black,
+                            decoration: const InputDecoration(
+                              hintText: 'Wyszukaj',
+                              prefixIcon: Icon(Icons.search, color: Colors.black),
+                              // todo: change suffix to clear button if search text is not empty
+                              suffixIcon: FilterButton(),
+                            ),
+                            selectionControls: CustomColorSelectionHandle(Colors.black),
                           ),
-                          controller: searchController,
-                          selectionControls: CustomColorSelectionHandle(Colors.black),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
-            body: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-              itemCount: productsList.length,
-              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-              itemBuilder: (BuildContext context, int index) => ProductItem(product: productsList[index]),
+                )
+              ],
+              body: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                itemCount: products.length,
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
+                itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
+              ),
             ),
           ),
         ),
