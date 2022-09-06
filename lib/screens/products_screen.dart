@@ -48,7 +48,7 @@ class _ProductScreenState extends State<ProductsScreen> {
                         child: TextField(
                           cursorColor: Colors.black,
                           decoration: const InputDecoration(
-                            hintText: "Wyszukaj",
+                            hintText: 'Wyszukaj',
                             prefixIcon: Icon(Icons.search, color: Colors.black),
                             // todo: change suffix to clear button if search text is not empty
                             suffixIcon: FilterButton(),

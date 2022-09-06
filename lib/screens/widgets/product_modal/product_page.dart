@@ -51,7 +51,7 @@ class _ProductSymbols extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text("Oznaczenia", style: Theme.of(context).textTheme.headlineSmall),
+        Text('Oznaczenia', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8.0),
         GutterColumn(
           children: [
@@ -112,7 +112,7 @@ class _ProductSort extends StatelessWidget {
 
   void addSortProposal() {
     // TODO
-    print("Button action");
+    print('Button action');
   }
 
   @override
@@ -128,7 +128,7 @@ class _ProductSort extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Propozycje segregacji", style: Theme.of(context).textTheme.headlineSmall),
+                Text('Propozycje segregacji', style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 8),
                 for (int i = 0; i < product.sortProposals.length; i++) ...[
                   SortContainer(sort: product.sortProposals[i], verified: false),
@@ -158,7 +158,7 @@ class _ProductSort extends StatelessWidget {
           Center(
             child: OutlinedButton(
               onPressed: addSortProposal,
-              child: const Text("Dodaj swoją propozycję"),
+              child: const Text('Dodaj swoją propozycję'),
             ),
           ),
         ],
@@ -197,11 +197,11 @@ class _ProductUser extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Produkt dodany przez",
+                  'Produkt dodany przez',
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
                 Text(
-                  "${user.name} ${user.surname}",
+                  '${user.name} ${user.surname}',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],

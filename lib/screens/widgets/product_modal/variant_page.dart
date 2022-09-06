@@ -31,7 +31,7 @@ class VariantPage extends StatelessWidget {
                         foregroundColor: Colors.black,
                         child: ConditionalBuilder(
                           condition: product.photo != null,
-                          ifTrue: () => Image.asset("assets/images/${product.photo}.png"),
+                          ifTrue: () => Image.asset('assets/images/${product.photo}.png'),
                           ifFalse: () => const Icon(Icons.question_mark),
                         ),
                       ),

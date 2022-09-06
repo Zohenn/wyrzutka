@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:inzynierka/models/sortElement.dart';
+import 'package:inzynierka/models/sort_element.dart';
 
 @immutable
 class Sort {

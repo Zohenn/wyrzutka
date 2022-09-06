@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_modal.dart';
-import 'package:inzynierka/models/sortElement.dart';
+import 'package:inzynierka/models/sort_element.dart';
 import 'package:inzynierka/utils/pluralization.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
@@ -53,7 +53,7 @@ class ProductItem extends StatelessWidget {
                         child: Center(
                           child: ConditionalBuilder(
                             condition: product.photo != null,
-                            ifTrue: () => Image.asset("assets/images/${product.photo}.png"),
+                            ifTrue: () => Image.asset('assets/images/${product.photo}.png'),
                             ifFalse: () => const Icon(Icons.question_mark),
                           ),
                         )),
@@ -66,7 +66,7 @@ class ProductItem extends StatelessWidget {
                         Text(
                           product.sort != null && product.verifiedBy != null
                               ? '${product.sort!.elements.length} ${pluralization('element', product.sort!.elements.length)}'
-                              : "Nieznane",
+                              : 'Nieznane',
                           style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ],

@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:inzynierka/colors.dart';
-import 'package:inzynierka/models/sortElement.dart';
+import 'package:inzynierka/models/sort_element.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/models/sort.dart';
 
@@ -33,12 +33,12 @@ class SortContainer extends StatelessWidget {
                   const Icon(Icons.done, color: AppColors.positive),
                   const SizedBox(width: 8),
                   Text(
-                    "Zweryfikowano",
+                    'Zweryfikowano',
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.black),
                   )
                 ],
               ),
-              ifFalse: () => const Text("TODO"),
+              ifFalse: () => const Text('TODO'),
             ),
           ),
         ],

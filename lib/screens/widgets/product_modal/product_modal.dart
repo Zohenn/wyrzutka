@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/screens/products_screen.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_page.dart';
 import 'package:inzynierka/screens/widgets/product_modal/variant_page.dart';
 import 'package:inzynierka/models/app_user.dart';
@@ -160,7 +159,7 @@ class _ProductName extends StatelessWidget {
               child: Center(
                 child: ConditionalBuilder(
                   condition: product.photo != null,
-                  ifTrue: () => Image.asset("assets/images/${product.photo}.png"),
+                  ifTrue: () => Image.asset('assets/images/${product.photo}.png'),
                   ifFalse: () => const Icon(Icons.help_outline),
                 ),
               ),
