@@ -65,4 +65,20 @@ class SortElement {
   final ElementContainer container;
   final String name;
   final String? description;
+
+  factory SortElement.fromFirestore(Map<String, dynamic> data) {
+    return SortElement(
+      container: data['container'],
+      name: data['name'],
+      description: data['description'],
+    );
+  }
+
+  static Map<String, Object?> toFirestore(SortElement element) {
+    return {
+      'container': element.container.index,
+      'name': element.name,
+      'description': element.description,
+    };
+  }
 }

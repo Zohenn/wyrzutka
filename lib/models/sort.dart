@@ -14,4 +14,19 @@ class Sort {
   final List<SortElement> elements;
   // final int votesBalance;
   // final List<Vote> votes;
+
+  factory Sort.fromFirestore(Map<String, dynamic> data) {
+    return Sort(
+      elements: data['elements'],
+    );
+  }
+
+  static Map<String, Object?> toFirestore(Sort sort) {
+    return {
+      'user': '',
+      'elements': sort.elements.map((e) => SortElement.toFirestore(e)),
+      'votesBalance': 0,
+      'votes': [],
+    };
+  }
 }

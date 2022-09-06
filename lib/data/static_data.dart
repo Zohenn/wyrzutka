@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../models/product.dart';
@@ -33,8 +35,8 @@ Symbol? getSymbol(String name) {
 }
 
 final productsList = [
-  const Product(
-    id: 354789,
+  Product(
+    id: '354789',
     name: "Woda niegazowana",
     photo: "woda",
     symbols: [],
@@ -45,11 +47,12 @@ final productsList = [
     verifiedBy: 'xxx',
     containers: ['plastic'],
     user: "1",
+    addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
     variants: [],
   ),
-  const Product(
-    id: 145697,
+  Product(
+    id: '145697',
     name: "Napój energetyczny",
     symbols: [],
     sort: Sort(
@@ -61,10 +64,11 @@ final productsList = [
     containers: ['plastic'],
     sortProposals: [],
     user: "1",
+    addedDate: DateTime(2022, 9, 2),
     variants: [],
   ),
-  const Product(
-    id: 547145,
+  Product(
+    id: '547145',
     name: "Chusteczki",
     symbols: ["1", "2"],
     sort: Sort(
@@ -76,22 +80,24 @@ final productsList = [
     verifiedBy: '2',
     containers: ['paper', 'mixed'],
     user: "1",
+    addedDate: DateTime(2022, 9, 3),
     sortProposals: [],
     variants: [
       "Chusteczki 90 szt.",
       "Chusteczki 150 szt.",
     ],
   ),
-  const Product(
-    id: 025896,
+  Product(
+    id: '025896',
     name: "Papier toaletowy",
     symbols: [],
     sortProposals: [],
     user: "1",
+    addedDate: DateTime(2022, 9, 4),
     variants: [],
   ),
-  const Product(
-    id: 254896,
+  Product(
+    id: '254896',
     name: "Frugo",
     symbols: [],
     sort: Sort(
@@ -100,11 +106,12 @@ final productsList = [
       ],
     ),
     user: "2",
+    addedDate: DateTime(2022, 9, 5),
     sortProposals: [],
     variants: [],
   ),
-  const Product(
-    id: 485769,
+  Product(
+    id: '485769',
     name: "Ręcznik papierowy",
     symbols: ["1", "2"],
     sortProposals: [
@@ -116,14 +123,16 @@ final productsList = [
       )
     ],
     user: "1",
+    addedDate: DateTime(2022, 9, 6),
     variants: [],
   ),
-  const Product(
-    id: 485769,
+  Product(
+    id: '485769',
     name: "Ręcznik papierowy",
     symbols: ["1", "2"],
     sortProposals: [],
     user: "1",
+    addedDate: DateTime(2022, 9, 7),
     variants: [],
   ),
 ];
