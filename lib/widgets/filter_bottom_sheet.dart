@@ -101,7 +101,7 @@ class FilterBottomSheet extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               OutlinedButton(
-                onPressed: () => Navigator.of(context).pop({}),
+                onPressed: () => Navigator.of(context).pop(<String, dynamic>{}),
                 style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
                   backgroundColor: const MaterialStatePropertyAll(Colors.white),
                   side: MaterialStatePropertyAll(
