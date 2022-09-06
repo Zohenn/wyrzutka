@@ -10,14 +10,14 @@ enum ElementContainer {
   glass,
   empty;
 
-  String get name {
+  String get containerName {
     switch (this) {
       case ElementContainer.plastic:
         return 'Metale i tworzywa sztuczne';
       case ElementContainer.paper:
         return 'Papier';
       case ElementContainer.bio:
-        return 'Bytowe';
+        return 'Bio';
       case ElementContainer.mixed:
         return 'Zmieszane';
       case ElementContainer.glass:
@@ -86,7 +86,7 @@ class SortElement {
 
   factory SortElement.fromFirestore(Map<String, dynamic> data) {
     return SortElement(
-      container: data['container'],
+      container: ElementContainer.values.byName(data['container']),
       name: data['name'],
       description: data['description'],
     );
@@ -94,7 +94,7 @@ class SortElement {
 
   static Map<String, Object?> toFirestore(SortElement element) {
     return {
-      'container': element.container.index,
+      'container': element.container.name,
       'name': element.name,
       'description': element.description,
     };

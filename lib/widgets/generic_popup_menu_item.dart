@@ -15,9 +15,11 @@ class GenericPopupMenuItem<T> extends PopupMenuItem<T> {
     super.mouseCursor,
     super.child,
     super.onTap,
+    this.backgroundColor,
     this.type = PopupMenuItemType.action,
   });
 
+  final Color? backgroundColor;
   final PopupMenuItemType type;
 
   @override
@@ -64,10 +66,13 @@ class _GenericPopupMenuItemState<T> extends PopupMenuItemState<T, GenericPopupMe
       child: Semantics(
         enabled: widget.enabled,
         button: true,
-        child: InkWell(
-          onTap: (widget.enabled && isClickable) ? handleTap : null,
-          canRequestFocus: widget.enabled,
-          child: item,
+        child: Material(
+          color: widget.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+          child: InkWell(
+            onTap: (widget.enabled && isClickable) ? handleTap : null,
+            canRequestFocus: widget.enabled,
+            child: item,
+          ),
         ),
       ),
     );

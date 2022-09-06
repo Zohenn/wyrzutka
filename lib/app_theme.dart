@@ -32,6 +32,7 @@ class AppTheme extends StatelessWidget {
         // ),
         textTheme: TextTheme(
           labelSmall: TextStyle(color: lightColorScheme.outline),
+          bodySmall: TextStyle(color: lightColorScheme.outline),
         ),
         cardTheme: CardTheme(
           color: AppColors.gray,
@@ -61,6 +62,11 @@ class AppTheme extends StatelessWidget {
             side: BorderSide.none,
           ),
         ),
+        dividerTheme: DividerThemeData(
+          thickness: 1,
+          color: Color(0xffE0E0E0),
+        ),
+        disabledColor: Color(0xffE0E0E0),
       ),
       child: child,
     );

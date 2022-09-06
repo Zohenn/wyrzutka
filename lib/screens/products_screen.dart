@@ -1,123 +1,126 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/colors.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
+import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
-import 'package:inzynierka/data/static_data.dart';
-import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
-import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
+import 'package:inzynierka/widgets/default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class ProductsScreen extends StatefulWidget {
+final _selectedFiltersProvider = StateProvider((ref) => <String, dynamic>{});
+final _futureProvider = FutureProvider((ref) => ref.watch(productsFutureProvider.future));
+final _innerFutureProvider = FutureProvider((ref) {
+  final selectedFilters = ref.watch(_selectedFiltersProvider);
+  if (selectedFilters.isEmpty) {
+    return ref.read(_futureProvider.future);
+  }
+  return ref.read(productRepositoryProvider).fetchMore(selectedFilters);
+});
+
+class ProductsScreen extends HookConsumerWidget {
   const ProductsScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ProductsScreen> createState() => _ProductScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filterGroups = [
+      FilterGroup(
+        ProductSortFilters.groupKey,
+        ProductSortFilters.groupName,
+        [
+          for (var filter in ProductSortFilters.values) Filter(filter.filterName, filter),
+        ],
+      ),
+      // todo: handle these filters
+      FilterGroup(
+        ProductContainerFilters.groupKey,
+        ProductContainerFilters.groupName,
+        [
+          for (var filter in ProductContainerFilters.values) Filter(filter.filterName, filter),
+        ],
+      ),
+    ];
+    final selectedFilters = ref.watch(_selectedFiltersProvider);
+    final future = ref.watch(_futureProvider);
+    final innerFuture = ref.watch(_innerFutureProvider);
 
-class _ProductScreenState extends State<ProductsScreen> {
-  final searchController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Theme(
         data: Theme.of(context).copyWith(
           textSelectionTheme: Theme.of(context).textSelectionTheme.copyWith(
-                selectionHandleColor: Colors.black,
                 selectionColor: Colors.black26,
-                cursorColor: Colors.black,
               ),
         ),
         child: SafeArea(
-          child: NestedScrollView(
-            floatHeaderSlivers: true,
-            headerSliverBuilder: (context, _) => [
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 48,
-                  margin: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorLight,
-                    borderRadius: const BorderRadius.all(Radius.circular(100)),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          cursorColor: Colors.black,
-                          decoration: const InputDecoration(
-                            hintText: 'Wyszukaj',
-                            prefixIcon: Icon(Icons.search, color: Colors.black),
-                            // todo: change suffix to clear button if search text is not empty
-                            suffixIcon: FilterButton(),
+          child: future.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, stack) => Center(
+              child: Text(err.toString()),
+            ),
+            data: (products) => NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, _) => [
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: 48,
+                    margin: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColorLight,
+                      borderRadius: const BorderRadius.all(Radius.circular(100)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              hintText: 'Wyszukaj',
+                              prefixIcon: const Icon(Icons.search, color: Colors.black),
+                              // todo: change suffix to clear button if search text is not empty
+                              suffixIcon: IconButton(
+                                onPressed: () async {
+                                  final result = await showDefaultBottomSheet<Filters>(
+                                    context: context,
+                                    builder: (context) => FilterBottomSheet(
+                                      groups: filterGroups,
+                                      selectedFilters: selectedFilters,
+                                    ),
+                                  );
+
+                                  if (result != null) {
+                                    ref.read(_selectedFiltersProvider.notifier).state = result;
+                                  }
+                                },
+                                icon: const Icon(Icons.filter_list),
+                              ),
+                            ),
+                            selectionControls: CustomColorSelectionHandle(Colors.black),
                           ),
-                          controller: searchController,
-                          selectionControls: CustomColorSelectionHandle(Colors.black),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                )
+              ],
+              body: innerFuture.when(
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
                 ),
-              )
-            ],
-            body: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-              itemCount: productsList.length,
-              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-              itemBuilder: (BuildContext context, int index) => ProductItem(product: productsList[index]),
+                error: (err, stack) => Center(child: Text(err.toString())),
+                data: (products) => ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                  itemCount: products.length,
+                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
+                  itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
+                ),
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class Filter {
-  const Filter(this.name, this.value);
-
-  final String name;
-  final String value;
-}
-
-const _filters = [
-  Filter('Zweryfikowano', 'verified'),
-  Filter('Niezweryfikowano', 'unverified'),
-  Filter('Brak propozycji', ''),
-];
-
-class FilterButton extends StatelessWidget {
-  const FilterButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPopupMenuButton(
-      icon: const Icon(Icons.filter_list),
-      itemBuilder: (context) => [
-        const GenericPopupMenuItem(
-          type: PopupMenuItemType.presentation,
-          child: Text('Segregacja'),
-        ),
-        for (var filter in _filters)
-          GenericPopupMenuItem(
-            child: Row(
-              children: [
-                Radio(
-                  value: filter,
-                  groupValue: _filters.first,
-                  onChanged: (val) {},
-                  activeColor: AppColors.positive,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                ),
-                const SizedBox(width: 8.0),
-                Text(filter.name),
-              ],
-            ),
-          ),
-      ],
     );
   }
 }
