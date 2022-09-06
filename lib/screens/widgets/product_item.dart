@@ -3,9 +3,9 @@ import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_modal.dart';
 import 'package:inzynierka/models/sort_element.dart';
 import 'package:inzynierka/utils/pluralization.dart';
+import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:inzynierka/data/static_data.dart';
 
@@ -27,14 +27,11 @@ class ProductItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-        showMaterialModalBottomSheet(
+        showDefaultBottomSheet(
           context: context,
           builder: (context) => DefaultBottomSheet(
             child: ProductModal(product: product, user: getUser(product.user)),
           ),
-          backgroundColor: Colors.transparent,
-          useRootNavigator: true,
-          enableDrag: false,
         );
       },
       child: Card(
@@ -46,17 +43,18 @@ class ProductItem extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                        clipBehavior: Clip.hardEdge,
-                        height: 40,
-                        width: 40,
-                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                        child: Center(
-                          child: ConditionalBuilder(
-                            condition: product.photo != null,
-                            ifTrue: () => Image.asset('assets/images/${product.photo}.png'),
-                            ifFalse: () => const Icon(Icons.question_mark),
-                          ),
-                        )),
+                      clipBehavior: Clip.hardEdge,
+                      height: 40,
+                      width: 40,
+                      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                      child: Center(
+                        child: ConditionalBuilder(
+                          condition: product.photo != null,
+                          ifTrue: () => Image.asset('assets/images/${product.photo}.png'),
+                          ifFalse: () => const Icon(Icons.question_mark),
+                        ),
+                      ),
+                    ),
                     const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
