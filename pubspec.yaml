@@ -40,7 +40,7 @@ dependencies:
   hooks_riverpod: ^1.0.4
   kiwi: ^4.0.2
   mobile_scanner: ^2.0.0
-  modal_bottom_sheet: ^2.1.0
+  modal_bottom_sheet: ^2.1.2
   intl: ^0.17.0
   collection: ^1.16.0
   supercharged: ^2.1.1
