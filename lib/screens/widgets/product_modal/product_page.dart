@@ -66,7 +66,7 @@ class _ProductSymbols extends StatelessWidget {
                         CircleAvatar(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
-                          child: Icon(getIconByString(getSymbol(symbol)!.name)),
+                          child: Image.asset('assets/images/symbols/$symbol.png'),
                         ),
                         const SizedBox(width: 16),
                         Column(

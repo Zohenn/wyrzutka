@@ -1,12 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import '../models/product.dart';
-import '../models/sort.dart';
-import '../models/sort_element.dart';
-import '../models/symbol.dart';
-import '../models/app_user.dart';
+import 'package:inzynierka/models/app_user.dart';
+import 'package:inzynierka/models/product.dart';
+import 'package:inzynierka/models/sort.dart';
+import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/models/symbol.dart';
 
 List<AppUser> users = [
   const AppUser(email: '1', name: 'Wojtek', surname: 'Brandeburg'),
@@ -19,16 +18,9 @@ AppUser? getUser(String? email) {
 }
 
 final symbols = [
-  const Symbol(id: '1', name: 'Tektura', photo: '', description: 'Opakowanie wykonane z tektury'),
-  const Symbol(id: '2', name: 'Dbaj o czystość', photo: '', description: 'Opakowanie wyrzuć do kosza'),
+  const Symbol(id: 'pap', name: 'Tektura', photo: '', description: 'Opakowanie wykonane z tektury'),
+  const Symbol(id: 'clean', name: 'Dbaj o czystość', photo: '', description: 'Opakowanie wyrzuć do kosza'),
 ];
-
-IconData getIconByString(String symbol) {
-  switch (symbol) {
-    default:
-      return Icons.question_mark;
-  }
-}
 
 Symbol? getSymbol(String name) {
   return symbols.firstWhereOrNull((element) => element.id == name);
@@ -39,7 +31,7 @@ final productsList = [
     id: '354789',
     name: 'Woda niegazowana',
     photo: 'woda',
-    symbols: [],
+    symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -54,6 +46,7 @@ final productsList = [
   Product(
     id: '145697',
     name: 'Napój energetyczny',
+    photo: 'monster',
     symbols: [],
     sort: Sort(
       elements: [
@@ -70,7 +63,8 @@ final productsList = [
   Product(
     id: '547145',
     name: 'Chusteczki',
-    symbols: ['1', '2'],
+    photo: 'chusteczki',
+    symbols: ['pap', 'clean'],
     sort: Sort(
       elements: [
         SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
@@ -98,11 +92,12 @@ final productsList = [
   ),
   Product(
     id: '254896',
-    name: 'Frugo',
+    name: 'Butelka',
     symbols: [],
     sort: Sort(
       elements: [
-        SortElement(name: 'Puszka', container: ElementContainer.plastic, description: 'Zgnieć przed wyrzuceniem')
+        SortElement(container: ElementContainer.glass, name: 'Butelka'),
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       ],
     ),
     user: '2',
@@ -113,7 +108,8 @@ final productsList = [
   Product(
     id: '485769',
     name: 'Ręcznik papierowy',
-    symbols: ['1', '2'],
+    photo: 'papier',
+    symbols: ['pap', 'clean'],
     sortProposals: [
       Sort(
         elements: [
@@ -128,9 +124,15 @@ final productsList = [
   ),
   Product(
     id: '485769',
-    name: 'Ręcznik papierowy',
-    symbols: ['1', '2'],
-    sortProposals: [],
+    name: 'Pieczywo',
+    symbols: [],
+    sortProposals: [
+      Sort(
+        elements: [
+          SortElement(name: 'Pieczywo', container: ElementContainer.bio)
+        ],
+      )
+    ],
     user: '1',
     addedDate: DateTime(2022, 9, 7),
     variants: [],

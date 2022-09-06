@@ -9,6 +9,24 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:inzynierka/data/static_data.dart';
 
+class ProductPhoto extends StatelessWidget {
+  const ProductPhoto({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConditionalBuilder(
+      condition: product.photo != null,
+      ifTrue: () => Image.asset('assets/images/products/${product.photo}.png'),
+      ifFalse: () => const Icon(Icons.question_mark),
+    );
+  }
+}
+
 class ProductItem extends StatelessWidget {
   final Product product;
 
@@ -51,11 +69,7 @@ class ProductItem extends StatelessWidget {
                         width: 40,
                         decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                         child: Center(
-                          child: ConditionalBuilder(
-                            condition: product.photo != null,
-                            ifTrue: () => Image.asset('assets/images/${product.photo}.png'),
-                            ifFalse: () => const Icon(Icons.question_mark),
-                          ),
+                          child: ProductPhoto(product: product),
                         )),
                     const SizedBox(width: 16),
                     Column(

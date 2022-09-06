@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inzynierka/app_icons.dart';
 import 'package:inzynierka/colors.dart';
 
 enum ElementContainer {
@@ -50,6 +51,23 @@ enum ElementContainer {
         return Colors.white;
       default:
         return Colors.black87;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case ElementContainer.plastic:
+        return AppIcons.plastic;
+      case ElementContainer.mixed:
+        return AppIcons.mixed;
+      case ElementContainer.paper:
+        return AppIcons.paper;
+      case ElementContainer.bio:
+        return AppIcons.bio;
+      case ElementContainer.glass:
+        return AppIcons.glass;
+      default:
+        return Icons.question_mark;
     }
   }
 }

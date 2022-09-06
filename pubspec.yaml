@@ -76,7 +76,13 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/
+    - assets/images/products/
+    - assets/images/symbols/
 
+  fonts:
+    - family: MyFlutterApp
+      fonts:
+        - asset: fonts/AppIcons.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

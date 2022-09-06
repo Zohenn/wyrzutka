@@ -68,7 +68,7 @@ class SortContainerGroup extends StatelessWidget {
             children: [
               CircleAvatar(
                 backgroundColor: container.containerColor,
-                child: Icon(Icons.question_mark, color: container.iconColor),
+                child: Icon(container.icon, color: container.iconColor),
               ),
               const SizedBox(width: 16),
               Text(

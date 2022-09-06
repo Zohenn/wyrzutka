@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_page.dart';
 import 'package:inzynierka/screens/widgets/product_modal/variant_page.dart';
 import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
 import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
@@ -157,11 +157,7 @@ class _ProductName extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
               child: Center(
-                child: ConditionalBuilder(
-                  condition: product.photo != null,
-                  ifTrue: () => Image.asset('assets/images/${product.photo}.png'),
-                  ifFalse: () => const Icon(Icons.help_outline),
-                ),
+                child: ProductPhoto(product: product),
               ),
             ),
             const SizedBox(width: 16),
