@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
-import 'package:inzynierka/data/static_data.dart';
-import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
-import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
-import 'package:inzynierka/widgets/radio_popup_menu_item.dart';
+import 'package:inzynierka/widgets/default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+typedef Filters = Map<String, dynamic>;
 
 final _selectedFiltersProvider = StateProvider((ref) => <String, dynamic>{});
 final _futureProvider = FutureProvider((ref) => ref.watch(productsFutureProvider.future));
 final _innerFutureProvider = FutureProvider((ref) {
   final selectedFilters = ref.watch(_selectedFiltersProvider);
-  if(selectedFilters.isEmpty){
+  if (selectedFilters.isEmpty) {
     return ref.read(_futureProvider.future);
   }
   return ref.read(productRepositoryProvider).fetchMore(selectedFilters);
@@ -35,23 +35,30 @@ class ProductsScreen extends HookConsumerWidget {
           for (var filter in ProductSortFilters.values) Filter(filter.filterName, filter),
         ],
       ),
+      // todo: handle these filters
+      FilterGroup(
+        ProductContainerFilters.groupKey,
+        ProductContainerFilters.groupName,
+        [
+          for (var filter in ProductContainerFilters.values) Filter(filter.filterName, filter),
+        ],
+      ),
     ];
     final selectedFilters = ref.watch(_selectedFiltersProvider);
-    final _future = ref.watch(_futureProvider);
-    final _innerFuture = ref.watch(_innerFutureProvider);
+    final future = ref.watch(_futureProvider);
+    final innerFuture = ref.watch(_innerFutureProvider);
+
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Theme(
         data: Theme.of(context).copyWith(
           textSelectionTheme: Theme.of(context).textSelectionTheme.copyWith(
-                selectionHandleColor: Colors.black,
                 selectionColor: Colors.black26,
-                cursorColor: Colors.black,
               ),
         ),
         child: SafeArea(
-          child: _future.when(
-            loading: () => Center(child: CircularProgressIndicator()),
+          child: future.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, stack) => Center(
               child: Text(err.toString()),
             ),
@@ -73,12 +80,26 @@ class ProductsScreen extends HookConsumerWidget {
                             cursorColor: Colors.black,
                             decoration: InputDecoration(
                               hintText: 'Wyszukaj',
-                              prefixIcon: Icon(Icons.search, color: Colors.black),
+                              prefixIcon: const Icon(Icons.search, color: Colors.black),
                               // todo: change suffix to clear button if search text is not empty
-                              suffixIcon: FilterButton(
-                                groups: filterGroups,
-                                selectedFilters: selectedFilters,
-                                onChanged: (newFilters) => ref.read(_selectedFiltersProvider.notifier).state = newFilters,
+                              suffixIcon: IconButton(
+                                onPressed: () async {
+                                  final result = await showMaterialModalBottomSheet<Filters>(
+                                    context: context,
+                                    useRootNavigator: true,
+                                    backgroundColor: Colors.transparent,
+                                    enableDrag: false,
+                                    builder: (context) => FilterBottomSheet(
+                                      groups: filterGroups,
+                                      selectedFilters: selectedFilters,
+                                    ),
+                                  );
+
+                                  if (result != null) {
+                                    ref.read(_selectedFiltersProvider.notifier).state = result;
+                                  }
+                                },
+                                icon: const Icon(Icons.filter_list),
                               ),
                             ),
                             selectionControls: CustomColorSelectionHandle(Colors.black),
@@ -89,8 +110,10 @@ class ProductsScreen extends HookConsumerWidget {
                   ),
                 )
               ],
-              body: _innerFuture.when(
-                loading: () => const Center(child: CircularProgressIndicator(),),
+              body: innerFuture.when(
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
                 error: (err, stack) => Center(child: Text(err.toString())),
                 data: (products) => ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
@@ -122,51 +145,145 @@ class Filter<T> {
   final T value;
 }
 
-class FilterButton extends HookWidget {
-  const FilterButton({
+class FilterBottomSheet extends HookWidget {
+  const FilterBottomSheet({
     Key? key,
     required this.groups,
     required this.selectedFilters,
-    required this.onChanged,
   }) : super(key: key);
 
   final List<FilterGroup> groups;
-  final Map<String, dynamic> selectedFilters;
-  final void Function(Map<String, dynamic>) onChanged;
+  final Filters selectedFilters;
 
   @override
   Widget build(BuildContext context) {
-    return CustomPopupMenuButton(
-      icon: const Icon(Icons.filter_list),
-      itemBuilder: (context) => [
-        for (var group in groups) ...[
-          GenericPopupMenuItem(
-            type: PopupMenuItemType.presentation,
-            child: Text(group.name),
-          ),
-          for (var filter in group.filters)
-            RadioPopupMenuItem<dynamic>(
-              radioValue: filter.value,
-              groupValue: selectedFilters[group.key],
-              onChanged: (val) {
-                final newFilters = {
-                  ...selectedFilters,
-                  group.key: filter.value,
-                };
-                onChanged(newFilters);
-              },
-              child: Text(filter.name),
+    final localFilters = useState(selectedFilters);
+    return DefaultBottomSheet(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            color: Theme.of(context).primaryColorLight,
+            child: Row(
+              children: [
+                const Icon(Icons.filter_list),
+                const SizedBox(width: 16.0),
+                Text(
+                  'Wybierz filtry',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
             ),
-          GenericPopupMenuItem(
-            type: PopupMenuItemType.action,
-            backgroundColor: Theme.of(context).primaryColorLight,
-            onTap: () => onChanged({}),
-            child: Center(
-              child: Text('Wyczyść'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: GutterColumn(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var group in groups)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        group.name,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Theme.of(context).textTheme.bodySmall!.color,
+                            ),
+                      ),
+                      const SizedBox(height: 4.0),
+                      Wrap(
+                        runSpacing: 8.0,
+                        spacing: 8.0,
+                        children: [
+                          for (var filter in group.filters)
+                            CustomFilterChip(
+                              filter: filter,
+                              selected: localFilters.value[group.key] == filter.value,
+                              onSelected: () {
+                                localFilters.value = {
+                                  ...localFilters.value,
+                                  group.key: filter.value,
+                                };
+                              },
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.0,
+              horizontal: 16.0,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              border: Border(top: BorderSide(color: Theme.of(context).primaryColor)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop({}),
+                  style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
+                        backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                        side: MaterialStatePropertyAll(
+                          BorderSide(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                  child: const Text('Wyczyść'),
+                ),
+                const SizedBox(width: 8.0),
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(localFilters.value),
+                  child: const Text('Zastosuj'),
+                ),
+              ],
             ),
           ),
         ],
-      ],
+      ),
+    );
+  }
+}
+
+class CustomFilterChip extends StatelessWidget {
+  const CustomFilterChip({
+    Key? key,
+    required this.filter,
+    required this.selected,
+    required this.onSelected,
+  }) : super(key: key);
+
+  final Filter filter;
+  final bool selected;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      decoration: BoxDecoration(
+        color: selected ? Theme.of(context).primaryColor : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: selected ? Theme.of(context).primaryColor : Theme.of(context).dividerColor),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Material(
+        type: MaterialType.transparency,
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: onSelected,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+            child: Text(filter.name),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -16,7 +16,7 @@ enum ElementContainer {
       case ElementContainer.paper:
         return 'Papier';
       case ElementContainer.bio:
-        return 'Bytowe';
+        return 'Bio';
       case ElementContainer.mixed:
         return 'Zmieszane';
       case ElementContainer.glass:
