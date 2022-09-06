@@ -2,7 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/models/product.dart';
+
+enum ProductSortFilters {
+  verified,
+  unverified,
+  noProposals;
+
+  static String get groupKey => 'sort';
+
+  static String get groupName => 'Segregacja';
+
+  String get filterName {
+    switch(this) {
+      case ProductSortFilters.verified:
+        return 'Zweryfikowano';
+      case ProductSortFilters.unverified:
+        return 'Niezweryfikowano';
+      case ProductSortFilters.noProposals:
+        return 'Brak propozycji';
+    }
+  }
+}
 
 final _productsCollection = FirebaseFirestore.instance.collection('products').withConverter(
   fromFirestore: Product.fromFirestore,
@@ -45,9 +65,26 @@ class ProductRepository {
 
   final Ref ref;
 
-  // Future<List<Product>> fetchMore() async {
-  //
-  // }
+  Future<List<Product>> fetchMore(Map<String, dynamic> filters) async {
+    Query<Product> query = _productsCollection.limit(10);
+    if(filters[ProductSortFilters.groupKey] != null){
+      final filter = filters[ProductSortFilters.groupKey] as ProductSortFilters;
+      switch(filter){
+        case ProductSortFilters.verified:
+          query = query.where('sort', isNull: false);
+          break;
+        case ProductSortFilters.unverified:
+          query = query.where('sort', isNull: true).where('sortProposals', isNotEqualTo: []);
+          break;
+        case ProductSortFilters.noProposals:
+          query = query.where('sort', isNull: true).where('sortProposals', isEqualTo: []);
+          break;
+      }
+    }
+
+    final querySnapshot = await query.get();
+    return querySnapshot.docs.map((e) => e.data()).toList();
+  }
 }
 
 
