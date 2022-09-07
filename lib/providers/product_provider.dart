@@ -78,6 +78,10 @@ class ProductsNotifier extends StateNotifier<List<Product>> {
   void addProducts(Iterable<Product> products) {
     state = [...state, ...products];
   }
+
+  void assignProducts(Iterable<Product> products) {
+    state = [...products];
+  }
 }
 
 final productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
@@ -96,6 +100,8 @@ class ProductRepository {
 
   final Ref ref;
 
+  static const int batchSize = 10;
+
   Future<Product?> fetchId(String id) async {
     final snapshot = await _productsCollection.doc(id).get();
     return snapshot.data();
@@ -105,7 +111,7 @@ class ProductRepository {
     Map<String, dynamic> filters = const {},
     DocumentSnapshot? startAfterDocument,
   }) async {
-    Query<Product> query = _productsCollection.limit(10);
+    Query<Product> query = _productsCollection.limit(batchSize);
     if (filters[ProductSortFilters.groupKey] != null) {
       final filter = filters[ProductSortFilters.groupKey] as ProductSortFilters;
       switch (filter) {

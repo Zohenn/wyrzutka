@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/data/static_data.dart';
+import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
 import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
 
 final _selectedFiltersProvider = StateProvider((ref) => <String, dynamic>{});
 final _futureProvider = FutureProvider((ref) => ref.watch(productsFutureProvider.future));
+final _productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
 final _innerFutureProvider = FutureProvider((ref) {
   final selectedFilters = ref.watch(_selectedFiltersProvider);
   if (selectedFilters.isEmpty) {
-    return ref.read(_futureProvider.future);
+    return ref.read(_futureProvider.future).then((value) {
+      print('add');
+      ref.read(_productsProvider.notifier).addProducts(value);
+    });
   }
-  return ref.read(productRepositoryProvider).fetchMore(filters: selectedFilters);
+  return ref.read(productRepositoryProvider).fetchMore(filters: selectedFilters).then((value) {
+    print('assign');
+    ref.read(_productsProvider.notifier).assignProducts(value);
+  });
 });
 
 class ProductsScreen extends HookConsumerWidget {
@@ -43,6 +54,9 @@ class ProductsScreen extends HookConsumerWidget {
     final selectedFilters = ref.watch(_selectedFiltersProvider);
     final future = ref.watch(_futureProvider);
     final innerFuture = ref.watch(_innerFutureProvider);
+    final products = ref.watch(_productsProvider);
+    final isFetchingMore = useState(false);
+    final fetchedAll = useState(false);
 
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -58,7 +72,7 @@ class ProductsScreen extends HookConsumerWidget {
             error: (err, stack) => Center(
               child: Text(err.toString()),
             ),
-            data: (products) => NestedScrollView(
+            data: (_) => NestedScrollView(
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, _) => [
                 SliverToBoxAdapter(
@@ -108,11 +122,33 @@ class ProductsScreen extends HookConsumerWidget {
                   child: CircularProgressIndicator(),
                 ),
                 error: (err, stack) => Center(child: Text(err.toString())),
-                data: (products) => ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  itemCount: products.length,
-                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-                  itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
+                data: (_) => NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    if (notification.metrics.extentAfter < 50.0 && products.length >= 10 && !fetchedAll.value && !isFetchingMore.value) {
+                      isFetchingMore.value = true;
+                      final repository = ref.read(productRepositoryProvider);
+                      repository
+                          .fetchMore(filters: selectedFilters, startAfterDocument: products.last.snapshot!)
+                          .then((value) {
+                        ref.read(_productsProvider.notifier).addProducts(value);
+                        fetchedAll.value = value.length < ProductRepository.batchSize;
+                      }).catchError((err, stack) {
+                        // todo
+                      }).whenComplete(() => isFetchingMore.value = false);
+                    }
+
+                    return false;
+                  },
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    itemCount: isFetchingMore.value ? products.length + 1 : products.length,
+                    separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
+                    itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
+                      condition: index < products.length,
+                      ifTrue: () => ProductItem(product: products[index]),
+                      ifFalse: () => Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
                 ),
               ),
             ),
