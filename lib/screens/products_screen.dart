@@ -4,9 +4,7 @@ import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
-import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 final _selectedFiltersProvider = StateProvider((ref) => <String, dynamic>{});
 final _futureProvider = FutureProvider((ref) => ref.watch(productsFutureProvider.future));
@@ -15,7 +13,7 @@ final _innerFutureProvider = FutureProvider((ref) {
   if (selectedFilters.isEmpty) {
     return ref.read(_futureProvider.future);
   }
-  return ref.read(productRepositoryProvider).fetchMore(selectedFilters);
+  return ref.read(productRepositoryProvider).fetchMore(filters: selectedFilters);
 });
 
 class ProductsScreen extends HookConsumerWidget {

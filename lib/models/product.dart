@@ -18,6 +18,7 @@ class Product {
     required this.variants,
     required this.user,
     required this.addedDate,
+    this.snapshot,
   });
 
   final String id;
@@ -33,6 +34,7 @@ class Product {
   final List<String> variants;
   final String user;
   final DateTime addedDate;
+  final DocumentSnapshot<Map<String, dynamic>>? snapshot;
 
   factory Product.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -53,6 +55,7 @@ class Product {
       variants: (data['variants'] as List).cast<String>(),
       user: data['user'],
       addedDate: (data['addedDate'] as Timestamp).toDate(),
+      snapshot: snapshot,
     );
   }
 
@@ -70,6 +73,7 @@ class Product {
       'variants': product.variants,
       'user': product.user,
       'addedDate': product.addedDate,
+      'searchName': product.name.toLowerCase(),
     };
   }
 }

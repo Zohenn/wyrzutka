@@ -14,7 +14,7 @@ enum ProductSortFilters {
   static String get groupName => 'Segregacja';
 
   String get filterName {
-    switch(this) {
+    switch (this) {
       case ProductSortFilters.verified:
         return 'Zweryfikowano';
       case ProductSortFilters.unverified:
@@ -38,7 +38,7 @@ enum ProductContainerFilters {
   static String get groupName => 'Pojemniki';
 
   String get filterName {
-    switch(this) {
+    switch (this) {
       case ProductContainerFilters.plastic:
         return ElementContainer.plastic.containerName;
       case ProductContainerFilters.paper:
@@ -56,9 +56,9 @@ enum ProductContainerFilters {
 }
 
 final _productsCollection = FirebaseFirestore.instance.collection('products').withConverter(
-  fromFirestore: Product.fromFirestore,
-  toFirestore: Product.toFirestore,
-);
+      fromFirestore: Product.fromFirestore,
+      toFirestore: Product.toFirestore,
+    );
 
 Future saveExampleData() async {
   return Future.wait(productsList.map((e) {
@@ -68,7 +68,7 @@ Future saveExampleData() async {
 }
 
 class ProductsNotifier extends StateNotifier<List<Product>> {
-  ProductsNotifier(): super([]);
+  ProductsNotifier() : super([]);
 
   // todo: check for duplicates
   void addProduct(Product product) {
@@ -96,11 +96,19 @@ class ProductRepository {
 
   final Ref ref;
 
-  Future<List<Product>> fetchMore([Map<String, dynamic> filters = const {}]) async {
+  Future<Product?> fetchId(String id) async {
+    final snapshot = await _productsCollection.doc(id).get();
+    return snapshot.data();
+  }
+
+  Future<List<Product>> fetchMore({
+    Map<String, dynamic> filters = const {},
+    DocumentSnapshot? startAfterDocument,
+  }) async {
     Query<Product> query = _productsCollection.limit(10);
-    if(filters[ProductSortFilters.groupKey] != null){
+    if (filters[ProductSortFilters.groupKey] != null) {
       final filter = filters[ProductSortFilters.groupKey] as ProductSortFilters;
-      switch(filter){
+      switch (filter) {
         case ProductSortFilters.verified:
           query = query.where('sort', isNull: false);
           break;
@@ -113,9 +121,11 @@ class ProductRepository {
       }
     }
 
+    if (startAfterDocument != null) {
+      query = query.startAfterDocument(startAfterDocument);
+    }
+
     final querySnapshot = await query.get();
     return querySnapshot.docs.map((e) => e.data()).toList();
   }
 }
-
-
