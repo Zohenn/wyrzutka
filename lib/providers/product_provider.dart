@@ -116,13 +116,17 @@ class ProductRepository {
       final filter = filters[ProductSortFilters.groupKey] as ProductSortFilters;
       switch (filter) {
         case ProductSortFilters.verified:
-          query = query.where('sort', isNull: false);
+          query = query.where('sort', isNull: false).orderBy('sort').orderBy(FieldPath.documentId);
           break;
         case ProductSortFilters.unverified:
-          query = query.where('sort', isNull: true).where('sortProposals', isNotEqualTo: []);
+          query = query
+              .where('sort', isNull: true)
+              .where('sortProposals', isNotEqualTo: [])
+              .orderBy('sortProposals')
+              .orderBy(FieldPath.documentId);
           break;
         case ProductSortFilters.noProposals:
-          query = query.where('sort', isNull: true).where('sortProposals', isEqualTo: []);
+          query = query.where('sort', isNull: true).where('sortProposals', isEqualTo: []).orderBy(FieldPath.documentId);
           break;
       }
     }

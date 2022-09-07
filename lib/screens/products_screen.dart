@@ -9,23 +9,25 @@ import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
 import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
+import 'package:inzynierka/widgets/future_builder.dart';
 
-final _selectedFiltersProvider = StateProvider((ref) => <String, dynamic>{});
-final _futureProvider = FutureProvider((ref) => ref.watch(productsFutureProvider.future));
-final _productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
-final _innerFutureProvider = FutureProvider((ref) {
-  final selectedFilters = ref.watch(_selectedFiltersProvider);
-  if (selectedFilters.isEmpty) {
-    return ref.read(_futureProvider.future).then((value) {
-      print('add');
-      ref.read(_productsProvider.notifier).addProducts(value);
-    });
-  }
-  return ref.read(productRepositoryProvider).fetchMore(filters: selectedFilters).then((value) {
-    print('assign');
-    ref.read(_productsProvider.notifier).assignProducts(value);
-  });
-});
+final _filterGroups = [
+  FilterGroup(
+    ProductSortFilters.groupKey,
+    ProductSortFilters.groupName,
+    [
+      for (var filter in ProductSortFilters.values) Filter(filter.filterName, filter),
+    ],
+  ),
+  // todo: handle these filters
+  FilterGroup(
+    ProductContainerFilters.groupKey,
+    ProductContainerFilters.groupName,
+    [
+      for (var filter in ProductContainerFilters.values) Filter(filter.filterName, filter),
+    ],
+  ),
+];
 
 class ProductsScreen extends HookConsumerWidget {
   const ProductsScreen({
@@ -34,29 +36,25 @@ class ProductsScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filterGroups = [
-      FilterGroup(
-        ProductSortFilters.groupKey,
-        ProductSortFilters.groupName,
-        [
-          for (var filter in ProductSortFilters.values) Filter(filter.filterName, filter),
-        ],
-      ),
-      // todo: handle these filters
-      FilterGroup(
-        ProductContainerFilters.groupKey,
-        ProductContainerFilters.groupName,
-        [
-          for (var filter in ProductContainerFilters.values) Filter(filter.filterName, filter),
-        ],
-      ),
-    ];
-    final selectedFilters = ref.watch(_selectedFiltersProvider);
-    final future = ref.watch(_futureProvider);
-    final innerFuture = ref.watch(_innerFutureProvider);
-    final products = ref.watch(_productsProvider);
+    final future = useState<Future?>(null);
+    final selectedFilters = useState<Filters>({});
+    final innerFuture = useState<Future?>(null);
+    final products = useState<List<Product>>([]);
     final isFetchingMore = useState(false);
     final fetchedAll = useState(false);
+    useEffect(() {
+      future.value = ref.read(productsFutureProvider.future).then((value) {
+        products.value.addAll(value);
+      });
+      return null;
+    }, []);
+    useEffect(() {
+      innerFuture.value = ref.read(productRepositoryProvider).fetchMore(filters: selectedFilters.value).then((value) {
+        products.value..clear()..addAll(value);
+        fetchedAll.value = false;
+      });
+      return null;
+    }, [selectedFilters.value]);
 
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -67,12 +65,9 @@ class ProductsScreen extends HookConsumerWidget {
               ),
         ),
         child: SafeArea(
-          child: future.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, stack) => Center(
-              child: Text(err.toString()),
-            ),
-            data: (_) => NestedScrollView(
+          child: FutureHandler(
+            future: future.value,
+            data: () => NestedScrollView(
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, _) => [
                 SliverToBoxAdapter(
@@ -97,13 +92,14 @@ class ProductsScreen extends HookConsumerWidget {
                                   final result = await showDefaultBottomSheet<Filters>(
                                     context: context,
                                     builder: (context) => FilterBottomSheet(
-                                      groups: filterGroups,
-                                      selectedFilters: selectedFilters,
+                                      groups: _filterGroups,
+                                      selectedFilters: selectedFilters.value,
                                     ),
                                   );
 
                                   if (result != null) {
-                                    ref.read(_selectedFiltersProvider.notifier).state = result;
+                                    selectedFilters.value = result;
+                                    // ref.read(_selectedFiltersProvider.notifier).state = result;
                                   }
                                 },
                                 icon: const Icon(Icons.filter_list),
@@ -117,20 +113,21 @@ class ProductsScreen extends HookConsumerWidget {
                   ),
                 )
               ],
-              body: innerFuture.when(
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                error: (err, stack) => Center(child: Text(err.toString())),
-                data: (_) => NotificationListener<ScrollNotification>(
+              body: FutureHandler(
+                future: innerFuture.value,
+                data: () => NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    if (notification.metrics.extentAfter < 50.0 && products.length >= 10 && !fetchedAll.value && !isFetchingMore.value) {
+                    if (notification.metrics.extentAfter < 50.0 &&
+                        products.value.length >= 10 &&
+                        !fetchedAll.value &&
+                        !isFetchingMore.value) {
                       isFetchingMore.value = true;
                       final repository = ref.read(productRepositoryProvider);
                       repository
-                          .fetchMore(filters: selectedFilters, startAfterDocument: products.last.snapshot!)
+                          .fetchMore(filters: selectedFilters.value, startAfterDocument: products.value.last.snapshot!)
                           .then((value) {
-                        ref.read(_productsProvider.notifier).addProducts(value);
+                            products.value = [...products.value, ...value];
+                        // ref.read(_productsProvider.notifier).addProducts(value);
                         fetchedAll.value = value.length < ProductRepository.batchSize;
                       }).catchError((err, stack) {
                         // todo
@@ -141,11 +138,11 @@ class ProductsScreen extends HookConsumerWidget {
                   },
                   child: ListView.separated(
                     padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                    itemCount: isFetchingMore.value ? products.length + 1 : products.length,
+                    itemCount: isFetchingMore.value ? products.value.length + 1 : products.value.length,
                     separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
                     itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                      condition: index < products.length,
-                      ifTrue: () => ProductItem(product: products[index]),
+                      condition: index < products.value.length,
+                      ifTrue: () => ProductItem(product: products.value[index]),
                       ifFalse: () => Center(child: CircularProgressIndicator()),
                     ),
                   ),
