@@ -29,7 +29,9 @@ class Product {
   final Sort? sort;
   final String? verifiedBy;
   final List<Sort> sortProposals;
+  // todo: make containers a dynamic getter
   final List<String>? containers;
+  // todo: remove this
   final int? containersCount;
   final List<String> variants;
   final String user;
@@ -51,7 +53,7 @@ class Product {
       verifiedBy: data['verifiedBy'],
       sortProposals: (data['sortProposals'] as List).cast<Map<String, dynamic>>().map((e) => Sort.fromFirestore(e)).toList(),
       containers: (data['containers'] as List?)?.cast<String>(),
-      containersCount: data['containersCount'],
+      containersCount: data['containerCount'],
       variants: (data['variants'] as List).cast<String>(),
       user: data['user'],
       addedDate: (data['addedDate'] as Timestamp).toDate(),
@@ -69,7 +71,7 @@ class Product {
       'verifiedBy': product.verifiedBy,
       'sortProposals': product.sortProposals.map((e) => Sort.toFirestore(e)).toList(),
       'containers': product.containers,
-      'containersCount': product.containersCount,
+      'containerCount': product.containers?.length ?? 0,
       'variants': product.variants,
       'user': product.user,
       'addedDate': product.addedDate,

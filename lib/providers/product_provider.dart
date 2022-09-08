@@ -131,6 +131,15 @@ class ProductRepository {
       }
     }
 
+    if (filters[ProductContainerFilters.groupKey] != null) {
+      final filter = filters[ProductContainerFilters.groupKey] as ProductContainerFilters;
+      if (filter != ProductContainerFilters.many) {
+        query = query.where('containers', arrayContains: filter.name);
+      } else {
+        query = query.where('containerCount', isGreaterThan: 1);
+      }
+    }
+
     if (startAfterDocument != null) {
       query = query.startAfterDocument(startAfterDocument);
     }
