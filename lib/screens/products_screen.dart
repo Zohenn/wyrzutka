@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product.dart';
@@ -50,7 +51,9 @@ class ProductsScreen extends HookConsumerWidget {
     }, []);
     useEffect(() {
       innerFuture.value = ref.read(productRepositoryProvider).fetchMore(filters: selectedFilters.value).then((value) {
-        products.value..clear()..addAll(value);
+        products.value
+          ..clear()
+          ..addAll(value);
         fetchedAll.value = false;
       });
       return null;
@@ -87,6 +90,7 @@ class ProductsScreen extends HookConsumerWidget {
                               hintText: 'Wyszukaj',
                               prefixIcon: const Icon(Icons.search, color: Colors.black),
                               // todo: change suffix to clear button if search text is not empty
+                              // todo: show sth when filters are active
                               suffixIcon: IconButton(
                                 onPressed: () async {
                                   final result = await showDefaultBottomSheet<Filters>(
@@ -126,7 +130,7 @@ class ProductsScreen extends HookConsumerWidget {
                       repository
                           .fetchMore(filters: selectedFilters.value, startAfterDocument: products.value.last.snapshot!)
                           .then((value) {
-                            products.value = [...products.value, ...value];
+                        products.value = [...products.value, ...value];
                         // ref.read(_productsProvider.notifier).addProducts(value);
                         fetchedAll.value = value.length < ProductRepository.batchSize;
                       }).catchError((err, stack) {
@@ -136,14 +140,30 @@ class ProductsScreen extends HookConsumerWidget {
 
                     return false;
                   },
-                  child: ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                    itemCount: isFetchingMore.value ? products.value.length + 1 : products.value.length,
-                    separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-                    itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                      condition: index < products.value.length,
-                      ifTrue: () => ProductItem(product: products.value[index]),
-                      ifFalse: () => Center(child: CircularProgressIndicator()),
+                  child: ConditionalBuilder(
+                    condition: products.value.isNotEmpty,
+                    ifTrue: () => ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                      itemCount: isFetchingMore.value ? products.value.length + 1 : products.value.length,
+                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
+                      itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
+                        condition: index < products.value.length,
+                        ifTrue: () => ProductItem(product: products.value[index]),
+                        ifFalse: () => Center(child: CircularProgressIndicator()),
+                      ),
+                    ),
+                    ifFalse: () => Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/empty_cart.svg',
+                            width: MediaQuery.of(context).size.width * 0.5,
+                          ),
+                          const SizedBox(height: 24.0),
+                          Text('Nie znaleziono produktów', style: Theme.of(context).textTheme.bodyLarge),
+                        ],
+                      ),
                     ),
                   ),
                 ),

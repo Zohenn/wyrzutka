@@ -62,8 +62,8 @@ class FilterBottomSheet extends HookWidget {
                     Text(
                       group.name,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall!.color,
-                      ),
+                            color: Theme.of(context).textTheme.bodySmall!.color,
+                          ),
                     ),
                     const SizedBox(height: 4.0),
                     Wrap(
@@ -75,10 +75,16 @@ class FilterBottomSheet extends HookWidget {
                             filter: filter,
                             selected: localFilters.value[group.key] == filter.value,
                             onSelected: () {
-                              localFilters.value = {
+                              final newFilters = {
                                 ...localFilters.value,
                                 group.key: filter.value,
                               };
+
+                              if (localFilters.value.containsKey(group.key)) {
+                                newFilters.remove(group.key);
+                              }
+
+                              localFilters.value = newFilters;
                             },
                           ),
                       ],
@@ -103,11 +109,11 @@ class FilterBottomSheet extends HookWidget {
               OutlinedButton(
                 onPressed: () => Navigator.of(context).pop(<String, dynamic>{}),
                 style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                  backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                  side: MaterialStatePropertyAll(
-                    BorderSide(color: Theme.of(context).primaryColor),
-                  ),
-                ),
+                      backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                      side: MaterialStatePropertyAll(
+                        BorderSide(color: Theme.of(context).primaryColor),
+                      ),
+                    ),
                 child: const Text('Wyczyść'),
               ),
               const SizedBox(width: 8.0),
