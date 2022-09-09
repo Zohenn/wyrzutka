@@ -22,6 +22,7 @@ MaterialColor createMaterialColor(Color color) {
 
 class AppColors {
   static const primary = Color(0xff9AFFA1);
+  static const primaryDarker = Color(0xff38A92C);
   static const plastic = Color(0xffFCDF0A);
   static const paper = Color(0xff008CD3);
   static const glass = Color(0xff0A873F);
