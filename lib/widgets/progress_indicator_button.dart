@@ -16,7 +16,11 @@ class ProgressIndicatorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: onPressed,
+      onPressed: () {
+        if (!isLoading) {
+          onPressed();
+        }
+      },
       child: Stack(
         alignment: Alignment.center,
         children: [

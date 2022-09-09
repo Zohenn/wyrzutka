@@ -40,6 +40,7 @@ class FilterBottomSheet extends HookWidget {
           padding: const EdgeInsets.all(16.0),
           color: Theme.of(context).primaryColorLight,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Icon(Icons.filter_list),
               const SizedBox(width: 16.0),

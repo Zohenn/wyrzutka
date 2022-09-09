@@ -12,16 +12,13 @@ class DefaultBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _child = Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Material(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(24), topLeft: Radius.circular(24)),
-        ),
-        clipBehavior: Clip.hardEdge,
-        child: child,
+    final _child = Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topRight: Radius.circular(24), topLeft: Radius.circular(24)),
       ),
+      clipBehavior: Clip.hardEdge,
+      child: child,
     );
     if (fullscreen) {
       return SafeArea(child: _child);
