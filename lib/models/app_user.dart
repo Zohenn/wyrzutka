@@ -4,11 +4,13 @@ import 'package:flutter/widgets.dart';
 @immutable
 class AppUser {
   const AppUser({
+    required this.id,
     required this.email,
     required this.name,
     required this.surname,
   });
 
+  final String id;
   final String email;
   final String name;
   final String surname;
@@ -19,6 +21,7 @@ class AppUser {
   ) {
     final data = snapshot.data()!;
     return AppUser(
+      id: snapshot.id,
       email: data['email'],
       name: data['name'],
       surname: data['surname'],

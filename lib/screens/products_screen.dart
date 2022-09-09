@@ -74,13 +74,8 @@ class ProductsScreen extends HookConsumerWidget {
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, _) => [
                 SliverToBoxAdapter(
-                  child: Container(
-                    height: 48,
-                    margin: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColorLight,
-                      borderRadius: const BorderRadius.all(Radius.circular(100)),
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Row(
                       children: [
                         Expanded(
@@ -88,6 +83,13 @@ class ProductsScreen extends HookConsumerWidget {
                             cursorColor: Colors.black,
                             decoration: InputDecoration(
                               hintText: 'Wyszukaj',
+                              fillColor: Theme.of(context).primaryColorLight,
+                              enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
+                                    borderSide: BorderSide.none,
+                                  ),
+                              focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder!.copyWith(
+                                borderSide: BorderSide.none,
+                              ),
                               prefixIcon: const Icon(Icons.search, color: Colors.black),
                               // todo: change suffix to clear button if search text is not empty
                               // todo: show sth when filters are active

@@ -11,7 +11,7 @@ class ProfileScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider.notifier).state;
+    final user = ref.watch(userProvider);
     useEffect(() {
       if (user == null) {
         WidgetsBinding.instance.addPostFrameCallback(
@@ -28,17 +28,43 @@ class ProfileScreen extends HookConsumerWidget {
       condition: user != null,
       ifTrue: () => ProfileScreenContent(),
       ifFalse: () => Center(
-        child: Text('We się zaloguj najpierw'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('We się zaloguj najpierw'),
+            OutlinedButton(
+              onPressed: () => showDefaultBottomSheet(
+                context: context,
+                fullScreen: true,
+                builder: (context) => SignInScreen(),
+              ),
+              child: Text('Logowanie'),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class ProfileScreenContent extends StatelessWidget {
+class ProfileScreenContent extends HookConsumerWidget {
   const ProfileScreenContent({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Container();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Zalogowany'),
+          OutlinedButton(
+            onPressed: () {
+              ref.read(authServiceProvider).signOut();
+            },
+            child: Text('Wyloguj'),
+          ),
+        ],
+      ),
+    );
   }
 }

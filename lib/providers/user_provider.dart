@@ -41,3 +41,37 @@ final initialUserProvider = FutureProvider<AppUser?>((ref) async {
 
   return null;
 });
+
+final authServiceProvider = Provider((ref) => AuthService(ref));
+
+class AuthService {
+  const AuthService(this.ref);
+
+  final Ref ref;
+  FirebaseAuth get auth => FirebaseAuth.instance;
+
+  Future signUp({
+    required String name,
+    required String surname,
+    required String email,
+    required String password,
+  }) async {
+    final userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+    final doc = _usersCollection.doc(userCredential.user!.uid);
+    final user = AppUser(id: doc.id, email: email, name: name, surname: surname);
+    await doc.set(user);
+    ref.read(userProvider.notifier).state = user;
+  }
+
+  Future signIn({ required String email, required String password}) async {
+    final userCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
+    final doc = _usersCollection.doc(userCredential.user!.uid);
+    final snapshot = await doc.get();
+    ref.read(userProvider.notifier).state = snapshot.data()!;
+  }
+
+  Future signOut() async {
+    await auth.signOut();
+    ref.read(userProvider.notifier).state = null;
+  }
+}

@@ -8,8 +8,8 @@ import 'package:inzynierka/models/sort_element.dart';
 import 'package:inzynierka/models/symbol.dart';
 
 List<AppUser> users = [
-  const AppUser(email: '1', name: 'Wojtek', surname: 'Brandeburg'),
-  const AppUser(email: '2', name: 'Michał', surname: 'Marciniak'),
+  const AppUser(id: '1', email: '1', name: 'Wojtek', surname: 'Brandeburg'),
+  const AppUser(id: '2', email: '2', name: 'Michał', surname: 'Marciniak'),
 ];
 
 AppUser? getUser(String? email) {
