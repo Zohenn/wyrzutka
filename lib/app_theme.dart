@@ -31,6 +31,14 @@ class AppTheme extends StatelessWidget {
             borderRadius: BorderRadius.circular(50),
             borderSide: BorderSide(color: AppColors.primary),
           ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: BorderSide(color: AppColors.negative),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: BorderSide(color: AppColors.primary),
+          ),
           floatingLabelStyle: TextStyle(color: Colors.black),
           contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
           // contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
