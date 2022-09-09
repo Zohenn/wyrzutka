@@ -6,11 +6,13 @@ class ProgressIndicatorButton extends StatelessWidget {
     Key? key,
     required this.onPressed,
     required this.child,
+    this.style,
     this.isLoading = false,
   }) : super(key: key);
 
   final VoidCallback onPressed;
   final Widget child;
+  final ButtonStyle? style;
   final bool isLoading;
 
   @override
@@ -21,6 +23,7 @@ class ProgressIndicatorButton extends StatelessWidget {
           onPressed();
         }
       },
+      style: style,
       child: Stack(
         alignment: Alignment.center,
         children: [

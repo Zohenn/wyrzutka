@@ -24,6 +24,8 @@ class SignUpScreen extends HookConsumerWidget {
     final email = useState('');
     final password = useState('');
     final passwordVisible = useState(false);
+    final isSigningUp = useState(false);
+    final isSigningUpWithGoogle = useState(false);
     final signInGestureRecognizer = useTapGestureRecognizer(
       onTap: () {
         Navigator.of(context, rootNavigator: true).pop();
@@ -34,7 +36,6 @@ class SignUpScreen extends HookConsumerWidget {
         );
       },
     );
-    final isSigningUp = useState(false);
 
     return Scaffold(
       body: CustomScrollView(
@@ -165,8 +166,23 @@ class SignUpScreen extends HookConsumerWidget {
                         child: Center(child: Text('Zarejestruj się')),
                       ),
                       Text('Lub', style: Theme.of(context).textTheme.labelLarge),
-                      OutlinedButton(
-                        onPressed: () {},
+                      ProgressIndicatorButton(
+                        isLoading: isSigningUpWithGoogle.value,
+                        onPressed: () async {
+                          isSigningUpWithGoogle.value = true;
+                          try {
+                            await ref
+                                .read(authServiceProvider)
+                                .signInWithGoogle();
+                            Navigator.of(context, rootNavigator: true).pop();
+                          } catch (e) {
+                            final code = e is FirebaseException ? e.code : '';
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd logowania.'),
+                            );
+                          }
+                          isSigningUpWithGoogle.value = false;
+                        },
                         style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
                               backgroundColor: MaterialStatePropertyAll(Colors.white),
                               side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),

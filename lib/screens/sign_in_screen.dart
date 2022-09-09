@@ -27,6 +27,7 @@ class SignInScreen extends HookConsumerWidget {
     final model = useRef(SignInModel());
     final passwordVisible = useState(false);
     final isSigningIn = useState(false);
+    final isSigningInWithGoogle = useState(false);
     final signUpGestureRecognizer = useTapGestureRecognizer(
       onTap: () {
         Navigator.of(context, rootNavigator: true).pop();
@@ -126,7 +127,7 @@ class SignInScreen extends HookConsumerWidget {
                             await ref
                                 .read(authServiceProvider)
                                 .signIn(email: model.value.email, password: model.value.password);
-                            Navigator.of(context).pop();
+                            Navigator.of(context, rootNavigator: true).pop();
                           } catch (e) {
                             final code = e is FirebaseException ? e.code : '';
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -138,8 +139,23 @@ class SignInScreen extends HookConsumerWidget {
                         child: Center(child: Text('Zaloguj się')),
                       ),
                       Text('Lub', style: Theme.of(context).textTheme.labelLarge),
-                      OutlinedButton(
-                        onPressed: () {},
+                      ProgressIndicatorButton(
+                        isLoading: isSigningInWithGoogle.value,
+                        onPressed: () async {
+                          isSigningInWithGoogle.value = true;
+                          try {
+                            await ref
+                                .read(authServiceProvider)
+                                .signInWithGoogle();
+                            Navigator.of(context, rootNavigator: true).pop();
+                          } catch (e) {
+                            final code = e is FirebaseException ? e.code : '';
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd logowania.'),
+                            );
+                          }
+                          isSigningInWithGoogle.value = false;
+                        },
                         style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
                               backgroundColor: MaterialStatePropertyAll(Colors.white),
                               side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
