@@ -81,7 +81,7 @@ class FilterBottomSheet extends HookWidget {
                                 group.key: filter.value,
                               };
 
-                              if (localFilters.value.containsKey(group.key)) {
+                              if (localFilters.value[group.key] == filter.value) {
                                 newFilters.remove(group.key);
                               }
 
