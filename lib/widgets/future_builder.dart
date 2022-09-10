@@ -16,6 +16,8 @@ class FutureHandler<T> extends StatelessWidget {
       future: future,
       builder: (context, snapshot) {
         if(snapshot.hasError){
+          debugPrint(snapshot.error.toString());
+          debugPrintStack(stackTrace: snapshot.stackTrace);
           return Center(child: Text(snapshot.error.toString()));
         }
 

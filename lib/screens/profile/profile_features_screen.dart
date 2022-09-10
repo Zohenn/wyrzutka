@@ -1,54 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/hooks/tap_gesture_recognizer.dart';
-import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
-import 'package:inzynierka/widgets/gutter_row.dart';
-
-class ProfileScreen extends HookConsumerWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider);
-    return SafeArea(
-      child: ConditionalBuilder(
-        condition: user != null,
-        ifTrue: () => ProfileScreenContent(),
-        ifFalse: () => ProfileFeaturesScreen(),
-      ),
-    );
-  }
-}
-
-class ProfileScreenContent extends HookConsumerWidget {
-  const ProfileScreenContent({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Zalogowany'),
-          OutlinedButton(
-            onPressed: () {
-              ref.read(authServiceProvider).signOut();
-            },
-            child: Text('Wyloguj'),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class ProfileFeaturesScreen extends HookWidget {
   const ProfileFeaturesScreen({Key? key}) : super(key: key);
@@ -126,15 +84,6 @@ class ProfileFeaturesScreen extends HookWidget {
                     ],
                   ),
                 ),
-                // Text('Masz już konto?', style: Theme.of(context).textTheme.labelLarge),
-                // OutlinedButton(
-                //   onPressed: () {},
-                //   style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                //     backgroundColor: MaterialStatePropertyAll(Colors.white),
-                //     side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
-                //   ),
-                //   child: Center(child: Text('Zaloguj się')),
-                // ),
               ],
             ),
           ],

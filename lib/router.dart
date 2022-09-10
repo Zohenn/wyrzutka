@@ -7,7 +7,7 @@ import 'package:inzynierka/screens/init_screen.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/screens/products_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/screens/profile_screen.dart';
+import 'package:inzynierka/screens/profile/profile_screen.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 
 wrapPage(Widget child, ValueKey key) => BeamPage(
