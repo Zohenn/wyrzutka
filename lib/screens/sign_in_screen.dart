@@ -10,6 +10,7 @@ import 'package:inzynierka/screens/sign_up_screen.dart';
 import 'package:inzynierka/utils/error_snack_bar.dart';
 import 'package:inzynierka/utils/firebase_errors.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
@@ -72,12 +73,7 @@ class SignInScreen extends HookConsumerWidget {
                           label: Text('Adres email'),
                         ),
                         onChanged: (value) => model.value.email = value,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Uzupełnij adres email';
-                          }
-                          return null;
-                        },
+                        validator: Validators.required('Uzupełnij adres email'),
                       ),
                       Column(
                         children: [
@@ -102,12 +98,7 @@ class SignInScreen extends HookConsumerWidget {
                               ),
                             ),
                             onChanged: (value) => model.value.password = value,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Uzupełnij hasło';
-                              }
-                              return null;
-                            },
+                            validator: Validators.required('Uzupełnij hasło'),
                           ),
                           // SizedBox(height: 6.0),
                           // Align(

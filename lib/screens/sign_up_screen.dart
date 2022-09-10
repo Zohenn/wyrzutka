@@ -10,8 +10,16 @@ import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/utils/error_snack_bar.dart';
 import 'package:inzynierka/utils/firebase_errors.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
+
+class SignUpModel {
+  String name = '';
+  String surname = '';
+  String email = '';
+  String password = '';
+}
 
 class SignUpScreen extends HookConsumerWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -19,10 +27,7 @@ class SignUpScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useRef(GlobalKey<FormState>());
-    final name = useState('');
-    final surname = useState('');
-    final email = useState('');
-    final password = useState('');
+    final model = useRef(SignUpModel());
     final passwordVisible = useState(false);
     final isSigningUp = useState(false);
     final isSigningUpWithGoogle = useState(false);
@@ -75,13 +80,8 @@ class SignUpScreen extends HookConsumerWidget {
                               decoration: InputDecoration(
                                 label: Text('Imię'),
                               ),
-                              onChanged: (value) => name.value = value,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Uzupełnij imię';
-                                }
-                                return null;
-                              },
+                              onChanged: (value) => model.value.name = value,
+                              validator: Validators.required('Uzupełnij imię'),
                             ),
                           ),
                           SizedBox(width: 16.0),
@@ -91,13 +91,8 @@ class SignUpScreen extends HookConsumerWidget {
                               decoration: InputDecoration(
                                 label: Text('Nazwisko'),
                               ),
-                              onChanged: (value) => surname.value = value,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Uzupełnij nazwisko';
-                                }
-                                return null;
-                              },
+                              onChanged: (value) => model.value.surname = value,
+                              validator: Validators.required('Uzupełnij nazwisko'),
                             ),
                           ),
                         ],
@@ -107,13 +102,8 @@ class SignUpScreen extends HookConsumerWidget {
                         decoration: InputDecoration(
                           label: Text('Adres email'),
                         ),
-                        onChanged: (value) => email.value = value,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Uzupełnij adres email';
-                          }
-                          return null;
-                        },
+                        onChanged: (value) => model.value.email = value,
+                        validator: Validators.required('Uzupełnij adres email'),
                       ),
                       TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -131,13 +121,8 @@ class SignUpScreen extends HookConsumerWidget {
                             ),
                           ),
                         ),
-                        onChanged: (value) => password.value = value,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Uzupełnij hasło';
-                          }
-                          return null;
-                        },
+                        onChanged: (value) => model.value.password = value,
+                        validator: Validators.required('Uzupełnij hasło'),
                       ),
                       ProgressIndicatorButton(
                         isLoading: isSigningUp.value,
@@ -149,10 +134,10 @@ class SignUpScreen extends HookConsumerWidget {
                           isSigningUp.value = true;
                           try {
                             await ref.read(authServiceProvider).signUp(
-                                  name: name.value,
-                                  surname: surname.value,
-                                  email: email.value,
-                                  password: password.value,
+                                  name: model.value.name,
+                                  surname: model.value.surname,
+                                  email: model.value.email,
+                                  password: model.value.password,
                                 );
                             Navigator.of(context, rootNavigator: true).pop();
                           } catch (e) {

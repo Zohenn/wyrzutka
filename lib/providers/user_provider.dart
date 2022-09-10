@@ -76,6 +76,7 @@ class AuthService {
   }
 
   Future _createUserDocFromGoogleCredential(UserCredential userCredential) {
+    // todo: perhaps there's a better way, since displayName can contain anything
     final user = userCredential.user!;
     final nameParts = user.displayName!.split(' ');
     final name = nameParts.first;

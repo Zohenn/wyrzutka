@@ -12,18 +12,6 @@ class ProfileScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
-    useEffect(() {
-      if (user == null) {
-        WidgetsBinding.instance.addPostFrameCallback(
-          (timeStamp) => showDefaultBottomSheet(
-            context: context,
-            fullScreen: true,
-            builder: (context) => SignInScreen(),
-          ),
-        );
-      }
-      return null;
-    }, []);
     return ConditionalBuilder(
       condition: user != null,
       ifTrue: () => ProfileScreenContent(),
