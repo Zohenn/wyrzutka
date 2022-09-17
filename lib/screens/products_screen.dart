@@ -20,7 +20,6 @@ final _filterGroups = [
       for (var filter in ProductSortFilters.values) Filter(filter.filterName, filter),
     ],
   ),
-  // todo: disable these filters if the above ones have value of noProposals, as it makes no sense and would always return nothing
   FilterGroup(
     ProductContainerFilters.groupKey,
     ProductContainerFilters.groupName,
@@ -100,6 +99,7 @@ class ProductsScreen extends HookConsumerWidget {
                                     builder: (context) => FilterBottomSheet(
                                       groups: _filterGroups,
                                       selectedFilters: selectedFilters.value,
+                                      single: true,
                                     ),
                                   );
 

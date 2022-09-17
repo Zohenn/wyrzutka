@@ -24,10 +24,12 @@ class FilterBottomSheet extends HookWidget {
     Key? key,
     required this.groups,
     required this.selectedFilters,
+    this.single = false,
   }) : super(key: key);
 
   final List<FilterGroup> groups;
   final Filters selectedFilters;
+  final bool single;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,7 @@ class FilterBottomSheet extends HookWidget {
                             selected: localFilters.value[group.key] == filter.value,
                             onSelected: () {
                               final newFilters = {
-                                ...localFilters.value,
+                                if(!single) ...localFilters.value,
                                 group.key: filter.value,
                               };
 
