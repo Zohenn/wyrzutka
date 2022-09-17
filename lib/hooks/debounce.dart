@@ -3,20 +3,27 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-typedef DebounceOnChanged = void Function(dynamic value);
-typedef DebounceEmit = void Function(dynamic value);
+typedef DebounceOnChanged<T> = void Function(T value);
+typedef DebounceEmit<T> = void Function(T value);
 
-DebounceOnChanged useDebounceHook({
+Debounce<T> useDebounceHook<T>({
   required DebounceEmit onEmit,
   Duration duration = const Duration(milliseconds: 500),
   List<Object?>? keys,
 }) {
   return use(
-    _DebounceHook(onEmit: onEmit, duration: duration, keys: keys),
+    _DebounceHook<T>(onEmit: onEmit, duration: duration, keys: keys),
   );
 }
 
-class _DebounceHook extends Hook<DebounceOnChanged> {
+class Debounce<T> {
+  const Debounce({ required this.onChanged, required this.cancel });
+
+  final DebounceOnChanged<T> onChanged;
+  final VoidCallback cancel;
+}
+
+class _DebounceHook<T> extends Hook<Debounce<T>> {
   const _DebounceHook({
     required this.onEmit,
     required this.duration,
@@ -27,10 +34,11 @@ class _DebounceHook extends Hook<DebounceOnChanged> {
   final Duration duration;
 
   @override
-  HookState<DebounceOnChanged, Hook<DebounceOnChanged>> createState() => _DebounceHookState();
+  HookState<Debounce<T>, Hook<Debounce<T>>> createState() => _DebounceHookState<T>();
 }
 
-class _DebounceHookState extends HookState<DebounceOnChanged, _DebounceHook> {
+class _DebounceHookState<T> extends HookState<Debounce<T>, _DebounceHook<T>> {
+  late final Debounce<T> debounce = Debounce(onChanged: onChanged, cancel: cancel);
   Timer? timer;
 
   void onChanged(dynamic value) {
@@ -43,8 +51,12 @@ class _DebounceHookState extends HookState<DebounceOnChanged, _DebounceHook> {
     });
   }
 
+  void cancel() {
+    timer?.cancel();
+  }
+
   @override
-  DebounceOnChanged build(BuildContext context) => onChanged;
+  Debounce<T> build(BuildContext context) => debounce;
 
   @override
   void dispose() => timer?.cancel();

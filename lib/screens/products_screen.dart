@@ -176,16 +176,18 @@ class _FilterSection extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final searchController = useTextEditingController();
     final searchText = useState('');
-    final onChanged = useDebounceHook(onEmit: (value) => onSearch(value as String));
+    final debounce = useDebounceHook(onEmit: (value) => onSearch(value));
 
     return Row(
       children: [
         Expanded(
           child: TextField(
+            controller: searchController,
             cursorColor: Colors.black,
             onChanged: (value) {
-              onChanged(value);
+              debounce.onChanged(value);
               searchText.value = value;
             },
             decoration: InputDecoration(
@@ -198,24 +200,36 @@ class _FilterSection extends HookWidget {
                     borderSide: BorderSide.none,
                   ),
               prefixIcon: const Icon(Icons.search, color: Colors.black),
-              // todo: change suffix to clear button if search text is not empty
               // todo: show sth when filters are active
-              suffixIcon: IconButton(
-                onPressed: () async {
-                  final result = await showDefaultBottomSheet<Filters>(
-                    context: context,
-                    builder: (context) => FilterBottomSheet(
-                      groups: _filterGroups,
-                      selectedFilters: selectedFilters,
-                      single: true,
-                    ),
-                  );
+              suffixIcon: ConditionalBuilder(
+                condition: searchText.value.isEmpty,
+                ifTrue: () => IconButton(
+                  onPressed: () async {
+                    final result = await showDefaultBottomSheet<Filters>(
+                      context: context,
+                      builder: (context) => FilterBottomSheet(
+                        groups: _filterGroups,
+                        selectedFilters: selectedFilters,
+                        single: true,
+                      ),
+                    );
 
-                  if (result != null) {
-                    onFiltersChanged(result);
-                  }
-                },
-                icon: const Icon(Icons.filter_list),
+                    if (result != null) {
+                      onFiltersChanged(result);
+                    }
+                  },
+                  icon: const Icon(Icons.filter_list),
+                ),
+                ifFalse: () => IconButton(
+                  onPressed: () {
+                    debounce.cancel();
+                    searchText.value = '';
+                    searchController.text = '';
+                    onSearch('');
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
               ),
             ),
             selectionControls: CustomColorSelectionHandle(Colors.black),
