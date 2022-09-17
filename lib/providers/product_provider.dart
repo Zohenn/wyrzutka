@@ -147,4 +147,10 @@ class ProductRepository {
     final querySnapshot = await query.get();
     return querySnapshot.docs.map((e) => e.data()).toList();
   }
+  
+  Future<List<Product>> search(String value) async {
+    value = value.toLowerCase();
+    final snapshot = await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
+    return snapshot.docs.map((e) => e.data()).toList();
+  }
 }

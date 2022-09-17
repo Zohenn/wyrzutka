@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
+import 'package:inzynierka/hooks/debounce.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
@@ -37,6 +38,7 @@ class ProductsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final future = useState<Future?>(null);
+    final searchText = useState('');
     final selectedFilters = useState<Filters>({});
     final innerFuture = useState<Future?>(null);
     final products = useState<List<Product>>([]);
@@ -48,6 +50,24 @@ class ProductsScreen extends HookConsumerWidget {
       });
       return null;
     }, []);
+
+    useEffect(() {
+      if (searchText.value.isNotEmpty) {
+        innerFuture.value = ref.read(productRepositoryProvider).search(searchText.value).then((value) {
+          products.value
+            ..clear()
+            ..addAll(value);
+        });
+      } else {
+        innerFuture.value = ref.read(productsFutureProvider.future).then((value) {
+          products.value..clear()..addAll(value);
+          fetchedAll.value = false;
+        });
+      }
+
+      return null;
+    }, [searchText.value]);
+
     useEffect(() {
       innerFuture.value = ref.read(productRepositoryProvider).fetchMore(filters: selectedFilters.value).then((value) {
         products.value
@@ -75,46 +95,10 @@ class ProductsScreen extends HookConsumerWidget {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            cursorColor: Colors.black,
-                            decoration: InputDecoration(
-                              hintText: 'Wyszukaj',
-                              fillColor: Theme.of(context).primaryColorLight,
-                              enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
-                                    borderSide: BorderSide.none,
-                                  ),
-                              focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder!.copyWith(
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon: const Icon(Icons.search, color: Colors.black),
-                              // todo: change suffix to clear button if search text is not empty
-                              // todo: show sth when filters are active
-                              suffixIcon: IconButton(
-                                onPressed: () async {
-                                  final result = await showDefaultBottomSheet<Filters>(
-                                    context: context,
-                                    builder: (context) => FilterBottomSheet(
-                                      groups: _filterGroups,
-                                      selectedFilters: selectedFilters.value,
-                                      single: true,
-                                    ),
-                                  );
-
-                                  if (result != null) {
-                                    selectedFilters.value = result;
-                                    // ref.read(_selectedFiltersProvider.notifier).state = result;
-                                  }
-                                },
-                                icon: const Icon(Icons.filter_list),
-                              ),
-                            ),
-                            selectionControls: CustomColorSelectionHandle(Colors.black),
-                          ),
-                        ),
-                      ],
+                    child: _FilterSection(
+                      selectedFilters: selectedFilters.value,
+                      onFiltersChanged: (filters) => selectedFilters.value = filters,
+                      onSearch: (String value) => searchText.value = value,
                     ),
                   ),
                 )
@@ -174,6 +158,70 @@ class ProductsScreen extends HookConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _FilterSection extends HookWidget {
+  const _FilterSection({
+    Key? key,
+    required this.selectedFilters,
+    required this.onSearch,
+    required this.onFiltersChanged,
+  }) : super(key: key);
+
+  final Filters selectedFilters;
+  final void Function(String) onSearch;
+  final void Function(Filters) onFiltersChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final searchText = useState('');
+    final onChanged = useDebounceHook(onEmit: (value) => onSearch(value as String));
+
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            cursorColor: Colors.black,
+            onChanged: (value) {
+              onChanged(value);
+              searchText.value = value;
+            },
+            decoration: InputDecoration(
+              hintText: 'Wyszukaj',
+              fillColor: Theme.of(context).primaryColorLight,
+              enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
+                    borderSide: BorderSide.none,
+                  ),
+              focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder!.copyWith(
+                    borderSide: BorderSide.none,
+                  ),
+              prefixIcon: const Icon(Icons.search, color: Colors.black),
+              // todo: change suffix to clear button if search text is not empty
+              // todo: show sth when filters are active
+              suffixIcon: IconButton(
+                onPressed: () async {
+                  final result = await showDefaultBottomSheet<Filters>(
+                    context: context,
+                    builder: (context) => FilterBottomSheet(
+                      groups: _filterGroups,
+                      selectedFilters: selectedFilters,
+                      single: true,
+                    ),
+                  );
+
+                  if (result != null) {
+                    onFiltersChanged(result);
+                  }
+                },
+                icon: const Icon(Icons.filter_list),
+              ),
+            ),
+            selectionControls: CustomColorSelectionHandle(Colors.black),
+          ),
+        ),
+      ],
     );
   }
 }
