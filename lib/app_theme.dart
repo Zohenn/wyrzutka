@@ -23,6 +23,10 @@ class AppTheme extends StatelessWidget {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: BorderSide(color: Color(0xffE0E0E0)),
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
             borderSide: BorderSide(color: AppColors.primary),

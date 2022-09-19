@@ -60,7 +60,9 @@ class ProductsScreen extends HookConsumerWidget {
         });
       } else {
         innerFuture.value = ref.read(productsFutureProvider.future).then((value) {
-          products.value..clear()..addAll(value);
+          products.value
+            ..clear()
+            ..addAll(value);
           fetchedAll.value = false;
         });
       }
@@ -130,12 +132,24 @@ class ProductsScreen extends HookConsumerWidget {
                     condition: products.value.isNotEmpty,
                     ifTrue: () => ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                      itemCount: isFetchingMore.value ? products.value.length + 1 : products.value.length,
+                      itemCount: isFetchingMore.value || searchText.value.isNotEmpty
+                          ? products.value.length + 1
+                          : products.value.length,
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
                       itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
                         condition: index < products.value.length,
                         ifTrue: () => ProductItem(product: products.value[index]),
-                        ifFalse: () => Center(child: CircularProgressIndicator()),
+                        ifFalse: () => ConditionalBuilder(
+                          condition: searchText.value.isEmpty,
+                          ifTrue: () => const Center(child: CircularProgressIndicator()),
+                          ifFalse: () => Center(
+                            child: Text(
+                              'W przypadku wyszukiwania po nazwie wyświetlanych jest 5 najbardziej trafnych wyników.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     ifFalse: () => Center(
@@ -184,6 +198,7 @@ class _FilterSection extends HookWidget {
       children: [
         Expanded(
           child: TextField(
+            readOnly: selectedFilters.isNotEmpty,
             controller: searchController,
             cursorColor: Colors.black,
             onChanged: (value) {
@@ -192,7 +207,9 @@ class _FilterSection extends HookWidget {
             },
             decoration: InputDecoration(
               hintText: 'Wyszukaj',
-              fillColor: Theme.of(context).primaryColorLight,
+              hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).hintColor),
+              // fillColor: Theme.of(context).primaryColorLight,
+              fillColor: selectedFilters.isEmpty ? Theme.of(context).primaryColorLight : Theme.of(context).dividerColor,
               enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
                     borderSide: BorderSide.none,
                   ),
@@ -200,10 +217,17 @@ class _FilterSection extends HookWidget {
                     borderSide: BorderSide.none,
                   ),
               prefixIcon: const Icon(Icons.search, color: Colors.black),
-              // todo: show sth when filters are active
               suffixIcon: ConditionalBuilder(
                 condition: searchText.value.isEmpty,
                 ifTrue: () => IconButton(
+                  style: selectedFilters.isEmpty
+                      ? null
+                      : ButtonStyle(
+                          backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                          side: MaterialStatePropertyAll(
+                            BorderSide(color: Theme.of(context).primaryColorLight, width: 2.0),
+                          ),
+                        ),
                   onPressed: () async {
                     final result = await showDefaultBottomSheet<Filters>(
                       context: context,
