@@ -26,6 +26,10 @@ Symbol? getSymbol(String name) {
   return symbols.firstWhereOrNull((element) => element.id == name);
 }
 
+Product? getProductById(String id) {
+  return productsList.firstWhereOrNull((element) => element.id == id);
+}
+
 final productsList = [
   Product(
     id: '354789',
@@ -59,6 +63,27 @@ final productsList = [
     user: '1',
     addedDate: DateTime(2022, 9, 2),
     variants: [],
+  ),
+  Product(
+    id: '1234567890128',
+    name: 'Chusteczki',
+    photo: 'chusteczki',
+    symbols: ['pap', 'clean'],
+    sort: Sort(
+      elements: [
+        SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
+        SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
+      ],
+    ),
+    verifiedBy: '2',
+    containers: ['paper', 'mixed'],
+    user: '1',
+    addedDate: DateTime(2022, 9, 3),
+    sortProposals: [],
+    variants: [
+      'Chusteczki 90 szt.',
+      'Chusteczki 150 szt.',
+    ],
   ),
   Product(
     id: '547145',
@@ -100,6 +125,7 @@ final productsList = [
         SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       ],
     ),
+    containers: ['glass', 'plastic'],
     user: '2',
     addedDate: DateTime(2022, 9, 5),
     sortProposals: [],

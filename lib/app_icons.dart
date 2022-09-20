@@ -12,10 +12,6 @@
 ///       - asset: fonts/MyFlutterApp.ttf
 ///
 /// 
-/// * Linearicons Free, Copyright (C) Linearicons.com
-///         Author:    Perxis
-///         License:   CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
-///         Homepage:  https://linearicons.com
 ///
 import 'package:flutter/widgets.dart';
 
@@ -25,9 +21,9 @@ class AppIcons {
   static const _kFontFam = 'MyFlutterApp';
   static const String? _kFontPkg = null;
 
-  static const IconData plastic = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData bio = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData mixed = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData paper = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData glass = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData bio = IconData(0xe849, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData plastic = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData glass = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

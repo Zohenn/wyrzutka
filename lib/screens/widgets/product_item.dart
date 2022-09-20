@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_modal.dart';
 import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/utils/pluralization.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
@@ -9,23 +10,7 @@ import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:inzynierka/data/static_data.dart';
 
-class ProductPhoto extends StatelessWidget {
-  const ProductPhoto({
-    Key? key,
-    required this.product,
-  }) : super(key: key);
 
-  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    return ConditionalBuilder(
-      condition: product.photo != null,
-      ifTrue: () => Image.asset('assets/images/products/${product.photo}.png'),
-      ifFalse: () => const Icon(Icons.question_mark),
-    );
-  }
-}
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -60,26 +45,23 @@ class ProductItem extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    Container(
-                      clipBehavior: Clip.hardEdge,
-                      height: 40,
-                      width: 40,
-                      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                      child: Center(
-                        child: ProductPhoto(product: product),
-                      ),
-                    ),
+                    ProductPhoto(product: product),
                     const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(product.name, style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(width: 8),
-                        Text(
-                          product.sort != null && product.verifiedBy != null
-                              ? '${product.sort!.elements.length} ${pluralization('element', product.sort!.elements.length)}'
-                              : 'Nieznane',
-                          style: Theme.of(context).textTheme.labelSmall,
+                        ConditionalBuilder(
+                          condition: product.sort != null,
+                          ifTrue: () => Text(
+                            '${product.sort!.elements.length} ${pluralization('element', product.sort!.elements.length)}',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                          ifFalse: () => Text(
+                            'Nieznane',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
                         ),
                       ],
                     ),
@@ -90,7 +72,7 @@ class ProductItem extends StatelessWidget {
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
                 child: ConditionalBuilder(
-                  condition: product.containers != null,
+                  condition: product.sort != null,
                   ifTrue: () => Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

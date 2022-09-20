@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/models/sort.dart';
 
@@ -28,16 +30,23 @@ class SortContainer extends StatelessWidget {
             child: ConditionalBuilder(
               condition: verified,
               ifTrue: () => Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.done, color: AppColors.positive),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Zweryfikowano',
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.black),
-                  )
+                  Row(
+                    children: [
+                      const Icon(Icons.done, color: AppColors.positive),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Zweryfikowano',
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.black),
+                      )
+                    ],
+                  ),
+                  // TODO add user provider
+                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
                 ],
               ),
+              // TODO not verified version
               ifFalse: () => const Text('TODO'),
             ),
           ),

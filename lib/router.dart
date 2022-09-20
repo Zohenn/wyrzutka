@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/bottom_bar_layout.dart';
 import 'package:inzynierka/screens/init_screen.dart';
+import 'package:inzynierka/screens/scanner_screen.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/screens/products_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -42,7 +43,7 @@ class RouterWrapper {
   );
 
   static final bottomNavigationRoutes = {
-    '/scan': (context, state, data) => wrapPage(const Scaffold(body: Center(child: Text('Skanuj'))), ValueKey('/scan')),
+    '/scan': (context, state, data) => wrapPage(const Scaffold(body: ScannerScreen()), ValueKey('/scan')),
     '/products': (context, state, data) => wrapPage(const Scaffold(body: ProductsScreen()), ValueKey('/products')),
     '/profile': (context, state, data) =>
         wrapPage(const Scaffold(body: ProfileScreen()), ValueKey('/profile')),

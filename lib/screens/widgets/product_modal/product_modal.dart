@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_page.dart';
 import 'package:inzynierka/screens/widgets/product_modal/variant_page.dart';
 import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
 import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
@@ -25,19 +25,16 @@ class ProductModal extends HookWidget {
     });
 
     final activeTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
-        );
+      backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
+    );
     final inactiveTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
-        );
+      backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: _ProductName(product: product),
-        ),
+        _ProductName(product: product),
         Flexible(
           child: TabBarView(
             controller: tabController,
@@ -62,7 +59,7 @@ class ProductModal extends HookWidget {
                   AnimatedTheme(
                     data: Theme.of(context).copyWith(
                       outlinedButtonTheme:
-                          OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
+                      OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
                     ),
                     child: Expanded(
                       child: OutlinedButton(
@@ -74,7 +71,7 @@ class ProductModal extends HookWidget {
                   AnimatedTheme(
                     data: Theme.of(context).copyWith(
                       outlinedButtonTheme:
-                          OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
+                      OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
                     ),
                     child: Expanded(
                       child: OutlinedButton(
@@ -142,7 +139,7 @@ class _ProductName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       color: Theme.of(context).primaryColorLight,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
