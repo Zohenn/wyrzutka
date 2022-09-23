@@ -69,7 +69,26 @@ class ProductPhoto extends StatelessWidget {
                           context: context,
                           builder: (context) => Dialog(
                             clipBehavior: Clip.hardEdge,
-                            child: Image.network(product!.photo!),
+                            backgroundColor: Colors.white,
+                            child: Image.network(
+                              product!.photo!,
+                              loadingBuilder: (context, child, progress) => Align(
+                                alignment: Alignment.center,
+                                heightFactor: 1.0,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: ConditionalBuilder(
+                                    condition: progress != null,
+                                    ifTrue: () => CircularProgressIndicator(
+                                      value: progress!.expectedTotalBytes != null
+                                          ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                                          : null,
+                                    ),
+                                    ifFalse: () => child,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         );
                       },
