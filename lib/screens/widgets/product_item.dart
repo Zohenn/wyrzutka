@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget {
         showDefaultBottomSheet(
           context: context,
           builder: (context) => DefaultBottomSheet(
-            child: ProductModal(product: product, user: getUser(product.user)),
+            child: ProductModal(product: product),
           ),
         );
       },

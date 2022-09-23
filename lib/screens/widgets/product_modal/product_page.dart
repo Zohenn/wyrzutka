@@ -5,6 +5,7 @@ import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/product_symbol.dart';
 import 'package:inzynierka/providers/product_symbol_provider.dart';
+import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_sort.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_symbols.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_user.dart';
@@ -16,17 +17,24 @@ class ProductPage extends HookConsumerWidget {
   const ProductPage({
     Key? key,
     required this.product,
-    required this.user,
   }) : super(key: key);
 
   final Product product;
-  final AppUser? user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final symbolRepository = ref.watch(productSymbolRepositoryProvider);
+    final userRepository = ref.watch(userRepositoryProvider);
     final symbols = useRef<List<ProductSymbol>>([]);
-    final future = useRef(symbolRepository.fetchIds(product.symbols).then((value) => symbols.value = value));
+    final user = useRef<AppUser?>(null);
+    final future = useRef(
+      Future.wait(
+        [
+          symbolRepository.fetchIds(product.symbols).then((value) => symbols.value = value),
+          userRepository.fetchId(product.user).then((value) => user.value = value),
+        ],
+      ),
+    );
     useAutomaticKeepAlive();
 
     return FutureHandler(
@@ -42,10 +50,7 @@ class ProductPage extends HookConsumerWidget {
               condition: product.symbols.isNotEmpty,
               ifTrue: () => ProductSymbols(product: product, symbols: symbols.value),
             ),
-            ConditionalBuilder(
-              condition: user != null,
-              ifTrue: () => ProductUser(user: user!),
-            ),
+            ProductUser(user: user.value),
           ],
         ),
       ),

@@ -12,10 +12,9 @@ import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 
 class ProductModal extends HookConsumerWidget {
-  final Product product;
-  final AppUser? user;
+  const ProductModal({Key? key, required this.product}) : super(key: key);
 
-  const ProductModal({Key? key, required this.product, this.user}) : super(key: key);
+  final Product product;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,7 +41,7 @@ class ProductModal extends HookConsumerWidget {
           child: TabBarView(
             controller: tabController,
             children: [
-              ProductPage(product: product, user: user),
+              ProductPage(product: product),
               VariantPage(product: product),
             ],
           ),

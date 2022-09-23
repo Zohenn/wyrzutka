@@ -15,6 +15,8 @@ class AppUser {
   final String name;
   final String surname;
 
+  String get displayName => '$name $surname';
+
   static AppUser fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,

@@ -42,6 +42,28 @@ final initialUserProvider = FutureProvider<AppUser?>((ref) async {
   return null;
 });
 
+final userRepositoryProvider = Provider((ref) => UserRepository());
+
+class UserRepository {
+  final Map<String, AppUser> cache = {};
+
+  Future<AppUser?> fetchId(String id, [bool skipCache = false]) async {
+    if (!skipCache && cache[id] != null) {
+      return cache[id];
+    }
+    final snapshot = await _usersCollection.doc(id).get();
+    final user = snapshot.data();
+    _addToCache(user);
+    return user;
+  }
+
+  void _addToCache(AppUser? user) {
+    if (user != null) {
+      cache[user.id] = user;
+    }
+  }
+}
+
 final authServiceProvider = Provider((ref) => AuthService(ref));
 
 class UserNotFoundException extends Error {}
