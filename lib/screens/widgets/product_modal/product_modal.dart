@@ -25,11 +25,11 @@ class ProductModal extends HookWidget {
     });
 
     final activeTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-      backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
-    );
+          backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
+        );
     final inactiveTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-      backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
-    );
+          backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
+        );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -59,7 +59,7 @@ class ProductModal extends HookWidget {
                   AnimatedTheme(
                     data: Theme.of(context).copyWith(
                       outlinedButtonTheme:
-                      OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
+                          OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
                     ),
                     child: Expanded(
                       child: OutlinedButton(
@@ -71,7 +71,7 @@ class ProductModal extends HookWidget {
                   AnimatedTheme(
                     data: Theme.of(context).copyWith(
                       outlinedButtonTheme:
-                      OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
+                          OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
                     ),
                     child: Expanded(
                       child: OutlinedButton(
@@ -84,7 +84,7 @@ class ProductModal extends HookWidget {
                   CustomPopupMenuButton(
                     itemBuilder: (context) => [
                       GenericPopupMenuItem(
-                        onTap: (){},
+                        onTap: () {},
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Row(
                           children: const [
@@ -95,7 +95,7 @@ class ProductModal extends HookWidget {
                         ),
                       ),
                       GenericPopupMenuItem(
-                        onTap: (){},
+                        onTap: () {},
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Row(
                           children: const [
@@ -106,7 +106,7 @@ class ProductModal extends HookWidget {
                         ),
                       ),
                       GenericPopupMenuItem(
-                        onTap: (){},
+                        onTap: () {},
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Row(
                           children: const [
@@ -145,17 +145,10 @@ class _ProductName extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Container(
-              clipBehavior: Clip.hardEdge,
-              height: 56,
-              width: 56,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Center(
-                child: ProductPhoto(product: product),
-              ),
+            ProductPhoto(
+              product: product,
+              type: ProductPhotoType.medium,
+              expandOnTap: true,
             ),
             const SizedBox(width: 16),
             Column(

@@ -34,7 +34,7 @@ final productsList = [
   Product(
     id: '354789',
     name: 'Woda niegazowana',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -50,7 +50,7 @@ final productsList = [
   Product(
     id: '145697',
     name: 'Napój energetyczny',
-    photo: 'monster',
+    photoSmall: 'monster',
     symbols: [],
     sort: Sort(
       elements: [
@@ -67,7 +67,7 @@ final productsList = [
   Product(
     id: '1234567890128',
     name: 'Chusteczki',
-    photo: 'chusteczki',
+    photoSmall: 'chusteczki',
     symbols: ['pap', 'clean'],
     sort: Sort(
       elements: [
@@ -88,7 +88,8 @@ final productsList = [
   Product(
     id: '547145',
     name: 'Chusteczki',
-    photo: 'chusteczki',
+    photo: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
+    photoSmall: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
     symbols: ['pap', 'clean'],
     sort: Sort(
       elements: [
@@ -134,7 +135,7 @@ final productsList = [
   Product(
     id: '485769',
     name: 'Ręcznik papierowy',
-    photo: 'papier',
+    photoSmall: 'papier',
     symbols: ['pap', 'clean'],
     sortProposals: [
       Sort(
@@ -166,7 +167,7 @@ final productsList = [
   Product(
     id: '3547892',
     name: 'Woda niegazowana2',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -182,7 +183,7 @@ final productsList = [
   Product(
     id: '3547893',
     name: 'Woda niegazowana3',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -198,7 +199,7 @@ final productsList = [
   Product(
     id: '3547894',
     name: 'Woda niegazowana4',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -214,7 +215,7 @@ final productsList = [
   Product(
     id: '3547895',
     name: 'Woda niegazowana5',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -230,7 +231,7 @@ final productsList = [
   Product(
     id: '3547896',
     name: 'Woda niegazowana6',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -246,7 +247,7 @@ final productsList = [
   Product(
     id: '3547897',
     name: 'Woda niegazowana7',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -262,7 +263,7 @@ final productsList = [
   Product(
     id: '3547898',
     name: 'Woda niegazowana8',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -278,7 +279,7 @@ final productsList = [
   Product(
     id: '3547899',
     name: 'Woda niegazowana9',
-    photo: 'woda',
+    photoSmall: 'woda',
     symbols: ['pap'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),

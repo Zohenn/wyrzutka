@@ -9,6 +9,7 @@ class Product {
     required this.name,
     this.keywords = const [],
     this.photo,
+    this.photoSmall,
     required this.symbols,
     this.sort,
     this.verifiedBy,
@@ -25,6 +26,7 @@ class Product {
   final String name;
   final List<String> keywords;
   final String? photo;
+  final String? photoSmall;
   final List<String> symbols;
   final Sort? sort;
   final String? verifiedBy;
@@ -48,6 +50,7 @@ class Product {
       name: data['name'],
       keywords: (data['keywords'] as List).cast<String>(),
       photo: data['photo'],
+      photoSmall: data['photoSmall'],
       symbols: (data['symbols'] as List).cast<String>(),
       sort: data['sort'] != null ? Sort.fromFirestore(data['sort']) : null,
       verifiedBy: data['verifiedBy'],
@@ -66,6 +69,7 @@ class Product {
       'name': product.name,
       'keywords': product.keywords,
       'photo': product.photo,
+      'photoSmall': product.photoSmall,
       'symbols': product.symbols,
       'sort': product.sort != null ? Sort.toFirestore(product.sort!) : null,
       'verifiedBy': product.verifiedBy,
