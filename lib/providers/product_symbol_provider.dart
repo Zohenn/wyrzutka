@@ -34,9 +34,11 @@ class ProductSymbolRepository {
   /// meaning the output list might be shorter than the input one.
   Future<List<ProductSymbol>> fetchIds(List<String> ids) async {
     final idsToFetch = ids.where((element) => cache[element] == null).toList();
-    final snapshot = await _productSymbolCollection.where(FieldPath.documentId, whereIn: idsToFetch).get();
-    for (var element in snapshot.docs) {
-      _addToCache(element.data());
+    if (idsToFetch.isNotEmpty) {
+      final snapshot = await _productSymbolCollection.where(FieldPath.documentId, whereIn: idsToFetch).get();
+      for (var element in snapshot.docs) {
+        _addToCache(element.data());
+      }
     }
     return ids
         .map((e) {

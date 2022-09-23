@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/product_symbol.dart';
 import 'package:inzynierka/providers/product_symbol_provider.dart';
+import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_page.dart';
 import 'package:inzynierka/screens/widgets/product_modal/variant_page.dart';
 import 'package:inzynierka/models/app_user.dart';
@@ -21,11 +22,9 @@ class ProductModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final symbolRepository = ref.watch(productSymbolRepositoryProvider);
     final tabController = useTabController(initialLength: 2);
     final index = useState(0);
-    final symbols = useState<List<ProductSymbol>>([]);
-    final future = useRef(symbolRepository.fetchIds(product.symbols).then((value) => symbols.value = value));
+    final user = ref.watch(userProvider);
 
     tabController.addListener(() {
       index.value = tabController.index;
@@ -38,107 +37,101 @@ class ProductModal extends HookConsumerWidget {
           backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
         );
 
-    return FutureHandler(
-      future: future.value,
-      data: () => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _ProductName(product: product),
-          Flexible(
-            child: TabBarView(
-              controller: tabController,
-              children: [
-                ProductPage(
-                  product: product,
-                  symbols: symbols.value,
-                  user: user,
-                ),
-                VariantPage(product: product),
-              ],
-            ),
-          ),
-          Column(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _ProductName(product: product),
+        Flexible(
+          child: TabBarView(
+            controller: tabController,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  border: Border(
-                    top: BorderSide(color: Theme.of(context).primaryColorLight),
-                  ),
-                ),
-                child: GutterRow(
-                  children: [
-                    AnimatedTheme(
-                      data: Theme.of(context).copyWith(
-                        outlinedButtonTheme:
-                            OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
-                      ),
-                      child: Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => tabController.animateTo(0),
-                          child: const Text('Segregacja'),
-                        ),
-                      ),
-                    ),
-                    AnimatedTheme(
-                      data: Theme.of(context).copyWith(
-                        outlinedButtonTheme:
-                            OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
-                      ),
-                      child: Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => tabController.animateTo(1),
-                          child: const Text('Warianty'),
-                        ),
-                      ),
-                    ),
-                    // todo: disable if not logged in
-                    CustomPopupMenuButton(
-                      itemBuilder: (context) => [
-                        GenericPopupMenuItem(
-                          onTap: () {},
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.add),
-                              SizedBox(width: 16.0),
-                              Flexible(child: Text('Zapisz na swojej liście')),
-                            ],
-                          ),
-                        ),
-                        GenericPopupMenuItem(
-                          onTap: () {},
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.edit),
-                              SizedBox(width: 16.0),
-                              Flexible(child: Text('Edytuj informacje')),
-                            ],
-                          ),
-                        ),
-                        GenericPopupMenuItem(
-                          onTap: () {},
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.delete),
-                              SizedBox(width: 16.0),
-                              Flexible(child: Text('Usuń produkt')),
-                            ],
-                          ),
-                        ),
-                      ],
-                      icon: const Icon(Icons.more_vert),
-                    ),
-                  ],
-                ),
-              ),
+              ProductPage(product: product, user: user),
+              VariantPage(product: product),
             ],
           ),
-        ],
-      ),
+        ),
+        Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                border: Border(
+                  top: BorderSide(color: Theme.of(context).primaryColorLight),
+                ),
+              ),
+              child: GutterRow(
+                children: [
+                  AnimatedTheme(
+                    data: Theme.of(context).copyWith(
+                      outlinedButtonTheme:
+                          OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
+                    ),
+                    child: Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => tabController.animateTo(0),
+                        child: const Text('Segregacja'),
+                      ),
+                    ),
+                  ),
+                  AnimatedTheme(
+                    data: Theme.of(context).copyWith(
+                      outlinedButtonTheme:
+                          OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
+                    ),
+                    child: Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => tabController.animateTo(1),
+                        child: const Text('Warianty'),
+                      ),
+                    ),
+                  ),
+                  CustomPopupMenuButton(
+                    enabled: user != null,
+                    tooltip: user == null ? 'Zaloguj się, aby odblokować dodatkowe funkcje' : null,
+                    itemBuilder: (context) => [
+                      GenericPopupMenuItem(
+                        onTap: () {},
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.add),
+                            SizedBox(width: 16.0),
+                            Flexible(child: Text('Zapisz na swojej liście')),
+                          ],
+                        ),
+                      ),
+                      GenericPopupMenuItem(
+                        onTap: () {},
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.edit),
+                            SizedBox(width: 16.0),
+                            Flexible(child: Text('Edytuj informacje')),
+                          ],
+                        ),
+                      ),
+                      GenericPopupMenuItem(
+                        onTap: () {},
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.delete),
+                            SizedBox(width: 16.0),
+                            Flexible(child: Text('Usuń produkt')),
+                          ],
+                        ),
+                      ),
+                    ],
+                    icon: const Icon(Icons.more_vert),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
