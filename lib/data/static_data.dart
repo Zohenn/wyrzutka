@@ -41,7 +41,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -58,7 +57,6 @@ final productsList = [
       ],
     ),
     verifiedBy: '2',
-    containers: ['plastic'],
     sortProposals: [],
     user: '1',
     addedDate: DateTime(2022, 9, 2),
@@ -76,7 +74,6 @@ final productsList = [
       ],
     ),
     verifiedBy: '2',
-    containers: ['paper', 'mixed'],
     user: '1',
     addedDate: DateTime(2022, 9, 3),
     sortProposals: [],
@@ -98,7 +95,6 @@ final productsList = [
       ],
     ),
     verifiedBy: '2',
-    containers: ['paper', 'mixed'],
     user: '1',
     addedDate: DateTime(2022, 9, 3),
     sortProposals: [],
@@ -126,7 +122,6 @@ final productsList = [
         SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       ],
     ),
-    containers: ['glass', 'plastic'],
     user: '2',
     addedDate: DateTime(2022, 9, 5),
     sortProposals: [],
@@ -174,7 +169,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -190,7 +184,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -206,7 +199,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -222,7 +214,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -238,7 +229,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -254,7 +244,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -270,7 +259,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],
@@ -286,7 +274,6 @@ final productsList = [
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
     ]),
     verifiedBy: 'xxx',
-    containers: ['plastic'],
     user: '1',
     addedDate: DateTime(2022, 9, 1),
     sortProposals: [],

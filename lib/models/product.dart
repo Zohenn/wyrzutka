@@ -14,8 +14,6 @@ class Product {
     this.sort,
     this.verifiedBy,
     required this.sortProposals,
-    this.containers,
-    this.containersCount,
     required this.variants,
     required this.user,
     required this.addedDate,
@@ -31,14 +29,18 @@ class Product {
   final Sort? sort;
   final String? verifiedBy;
   final List<Sort> sortProposals;
-  // todo: make containers a dynamic getter
-  final List<String>? containers;
-  // todo: remove this
-  final int? containersCount;
   final List<String> variants;
   final String user;
   final DateTime addedDate;
   final DocumentSnapshot<Map<String, dynamic>>? snapshot;
+
+  List<String>? get containers {
+    if(sort == null){
+      return null;
+    }
+
+    return Set<String>.from(sort!.elements.map((e) => e.container.name)).toList();
+  }
 
   factory Product.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -55,8 +57,6 @@ class Product {
       sort: data['sort'] != null ? Sort.fromFirestore(data['sort']) : null,
       verifiedBy: data['verifiedBy'],
       sortProposals: (data['sortProposals'] as List).cast<Map<String, dynamic>>().map((e) => Sort.fromFirestore(e)).toList(),
-      containers: (data['containers'] as List?)?.cast<String>(),
-      containersCount: data['containerCount'],
       variants: (data['variants'] as List).cast<String>(),
       user: data['user'],
       addedDate: (data['addedDate'] as Timestamp).toDate(),
@@ -74,6 +74,7 @@ class Product {
       'sort': product.sort != null ? Sort.toFirestore(product.sort!) : null,
       'verifiedBy': product.verifiedBy,
       'sortProposals': product.sortProposals.map((e) => Sort.toFirestore(e)).toList(),
+      // containers and containerCount is needed for queries
       'containers': product.containers,
       'containerCount': product.containers?.length ?? 0,
       'variants': product.variants,
