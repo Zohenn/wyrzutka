@@ -62,7 +62,7 @@ class ProductSymbols extends StatelessWidget {
                 ),
               ),
             ],
-            if (symbols.length == product.symbols.length)
+            if (symbols.length < product.symbols.length)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
