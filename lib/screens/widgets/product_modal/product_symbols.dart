@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:inzynierka/colors.dart';
-import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/product_symbol.dart';
 import 'package:inzynierka/utils/image_error_builder.dart';

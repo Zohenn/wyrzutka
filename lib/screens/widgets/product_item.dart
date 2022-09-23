@@ -10,8 +10,6 @@ import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:inzynierka/data/static_data.dart';
 
-
-
 class ProductItem extends StatelessWidget {
   final Product product;
 

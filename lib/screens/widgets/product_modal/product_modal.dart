@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/product_symbol.dart';
-import 'package:inzynierka/providers/product_symbol_provider.dart';
 import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_page.dart';
 import 'package:inzynierka/screens/widgets/product_modal/variant_page.dart';
@@ -10,7 +8,6 @@ import 'package:inzynierka/models/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/widgets/custom_popup_menu_button.dart';
-import 'package:inzynierka/widgets/future_builder.dart';
 import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 
