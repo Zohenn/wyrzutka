@@ -60,7 +60,7 @@ final _productsCollection = FirebaseFirestore.instance.collection('products').wi
       toFirestore: Product.toFirestore,
     );
 
-Future saveExampleData() async {
+Future saveExampleProductData() async {
   return Future.wait(productsList.map((e) {
     final doc = _productsCollection.doc(e.id);
     return doc.set(e);

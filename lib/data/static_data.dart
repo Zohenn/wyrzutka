@@ -5,7 +5,7 @@ import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/sort.dart';
 import 'package:inzynierka/models/sort_element.dart';
-import 'package:inzynierka/models/symbol.dart';
+import 'package:inzynierka/models/product_symbol.dart';
 
 List<AppUser> users = [
   const AppUser(id: '1', email: '1', name: 'Wojtek', surname: 'Brandeburg'),
@@ -18,11 +18,23 @@ AppUser? getUser(String? email) {
 }
 
 final symbols = [
-  const Symbol(id: 'pap', name: 'Tektura', photo: '', description: 'Opakowanie wykonane z tektury'),
-  const Symbol(id: 'clean', name: 'Dbaj o czystość', photo: '', description: 'Opakowanie wyrzuć do kosza'),
+  const ProductSymbol(
+    id: 'budlC2aRgOumb2c0RsQL',
+    name: 'Tektura',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Fpap.png?alt=media&token=17495d20-605a-4c1c-acc6-ad6df3f548e8',
+    description: 'Opakowanie wykonane z tektury',
+  ),
+  const ProductSymbol(
+    id: '6EudWBDUR1T8zgoqoYVl',
+    name: 'Dbaj o czystość',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Fclean.png?alt=media&token=6b0d3093-4545-458e-9842-75491c53e4fa',
+    description: 'Opakowanie wyrzuć do kosza',
+  ),
 ];
 
-Symbol? getSymbol(String name) {
+ProductSymbol? getSymbol(String name) {
   return symbols.firstWhereOrNull((element) => element.id == name);
 }
 
@@ -35,7 +47,7 @@ final productsList = [
     id: '354789',
     name: 'Woda niegazowana',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -66,7 +78,7 @@ final productsList = [
     id: '1234567890128',
     name: 'Chusteczki',
     photoSmall: 'chusteczki',
-    symbols: ['pap', 'clean'],
+    symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
     sort: Sort(
       elements: [
         SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
@@ -85,9 +97,11 @@ final productsList = [
   Product(
     id: '547145',
     name: 'Chusteczki',
-    photo: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
-    photoSmall: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
-    symbols: ['pap', 'clean'],
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
+    photoSmall:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
+    symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
     sort: Sort(
       elements: [
         SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
@@ -131,7 +145,7 @@ final productsList = [
     id: '485769',
     name: 'Ręcznik papierowy',
     photoSmall: 'papier',
-    symbols: ['pap', 'clean'],
+    symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
     sortProposals: [
       Sort(
         elements: [
@@ -150,9 +164,7 @@ final productsList = [
     symbols: [],
     sortProposals: [
       Sort(
-        elements: [
-          SortElement(name: 'Pieczywo', container: ElementContainer.bio)
-        ],
+        elements: [SortElement(name: 'Pieczywo', container: ElementContainer.bio)],
       )
     ],
     user: '1',
@@ -163,7 +175,7 @@ final productsList = [
     id: '3547892',
     name: 'Woda niegazowana2',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -178,7 +190,7 @@ final productsList = [
     id: '3547893',
     name: 'Woda niegazowana3',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -193,7 +205,7 @@ final productsList = [
     id: '3547894',
     name: 'Woda niegazowana4',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -208,7 +220,7 @@ final productsList = [
     id: '3547895',
     name: 'Woda niegazowana5',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -223,7 +235,7 @@ final productsList = [
     id: '3547896',
     name: 'Woda niegazowana6',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -238,7 +250,7 @@ final productsList = [
     id: '3547897',
     name: 'Woda niegazowana7',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -253,7 +265,7 @@ final productsList = [
     id: '3547898',
     name: 'Woda niegazowana8',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
@@ -268,7 +280,7 @@ final productsList = [
     id: '3547899',
     name: 'Woda niegazowana9',
     photoSmall: 'woda',
-    symbols: ['pap'],
+    symbols: ['budlC2aRgOumb2c0RsQL'],
     sort: Sort(elements: [
       SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
       SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')

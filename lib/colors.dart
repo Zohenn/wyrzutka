@@ -32,6 +32,7 @@ class AppColors {
   static const gray = Color(0xffF8F8F8);
   //static final gray = Color(0xffeeeeee);
   static const positive = Color(0xff21BA45);
+  static const warning = Color(0xFFF2C037);
   static const negative = Color(0xffff4d4d);
   static const negativeDark = Color(0xffb33636);
   static const negativeDarker = Color(0xff330f0f);

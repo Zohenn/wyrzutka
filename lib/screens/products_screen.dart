@@ -6,6 +6,7 @@ import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/hooks/debounce.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
+import 'package:inzynierka/providers/product_symbol_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
