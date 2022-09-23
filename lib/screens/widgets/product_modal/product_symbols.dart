@@ -3,6 +3,7 @@ import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/product_symbol.dart';
+import 'package:inzynierka/utils/image_error_builder.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
@@ -34,7 +35,10 @@ class ProductSymbols extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.white,
-                        foregroundImage: NetworkImage(symbol.photo),
+                        child: Image.network(
+                          symbol.photo,
+                          errorBuilder: imageErrorBuilder,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Column(

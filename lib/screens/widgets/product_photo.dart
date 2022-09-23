@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/product.dart';
+import 'package:inzynierka/utils/image_error_builder.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
 enum ProductPhotoType {
@@ -50,13 +51,7 @@ class ProductPhoto extends StatelessWidget {
                 padding: const EdgeInsets.all(4.0),
                 child: Image.network(
                   product!.photoSmall!,
-                  errorBuilder: (context, error, stackTrace) => const Tooltip(
-                    message: 'Zdjęcie niedostępne',
-                    child: Icon(
-                      Icons.error_outline,
-                      color: AppColors.negative,
-                    ),
-                  ),
+                  errorBuilder: imageErrorBuilder,
                 ),
               ),
               if (expandOnTap && product!.photo != null)
