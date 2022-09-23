@@ -47,7 +47,7 @@ class ProductPhoto extends StatelessWidget {
           ifTrue: () => Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.all(2.0),
+                padding: const EdgeInsets.all(4.0),
                 child: Image.network(
                   product!.photoSmall!,
                   errorBuilder: (context, error, stackTrace) => const Tooltip(
