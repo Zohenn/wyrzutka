@@ -25,11 +25,11 @@ class SortContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           for (var key in elements.keys) SortContainerGroup(container: key, elements: elements[key]!),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ConditionalBuilder(
-              condition: verified,
-              ifTrue: () => Row(
+          ConditionalBuilder(
+            condition: verified,
+            ifTrue: () => Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
@@ -46,8 +46,36 @@ class SortContainer extends StatelessWidget {
                   const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
                 ],
               ),
-              // TODO not verified version
-              ifFalse: () => const Text('TODO'),
+            ),
+            // TODO not verified version
+            ifFalse: () => Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Text(
+                    '24',
+                    style: TextStyle(color: AppColors.positive),
+                  ),
+                  SizedBox(width: 8.0),
+                  IconButton(
+                    onPressed: () {},
+                    color: AppColors.positive,
+                    icon: Icon(Icons.expand_less),
+                    style: ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.expand_more),
+                    style: ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
+                ],
+              ),
             ),
           ),
         ],
