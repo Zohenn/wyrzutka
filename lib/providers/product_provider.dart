@@ -107,6 +107,14 @@ class ProductRepository {
     return snapshot.data();
   }
 
+  Future<List<Product>> fetchIds(List<String> ids) async {
+    if (ids.isEmpty) {
+      return [];
+    }
+    final snapshot = await _productsCollection.where(FieldPath.documentId, whereIn: ids).get();
+    return snapshot.docs.map((e) => e.data()).toList();
+  }
+
   Future<List<Product>> fetchMore({
     Map<String, dynamic> filters = const {},
     DocumentSnapshot? startAfterDocument,
@@ -147,10 +155,11 @@ class ProductRepository {
     final querySnapshot = await query.get();
     return querySnapshot.docs.map((e) => e.data()).toList();
   }
-  
+
   Future<List<Product>> search(String value) async {
     value = value.toLowerCase();
-    final snapshot = await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
+    final snapshot =
+        await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
     return snapshot.docs.map((e) => e.data()).toList();
   }
 }

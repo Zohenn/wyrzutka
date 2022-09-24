@@ -109,12 +109,58 @@ final productsList = [
       ],
     ),
     verifiedBy: '2',
-    user: '1',
+    user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     addedDate: DateTime(2022, 9, 3),
     sortProposals: [],
     variants: [
-      'Chusteczki 90 szt.',
-      'Chusteczki 150 szt.',
+      '547146',
+      '547147',
+    ],
+  ),
+  Product(
+    id: '547146',
+    name: 'Chusteczki 90 szt.',
+    photo:
+    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
+    photoSmall:
+    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
+    symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
+    sort: Sort(
+      elements: [
+        SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
+        SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
+      ],
+    ),
+    verifiedBy: '2',
+    user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+    addedDate: DateTime(2022, 9, 3),
+    sortProposals: [],
+    variants: [
+      '547145',
+      '547147',
+    ],
+  ),
+  Product(
+    id: '547147',
+    name: 'Chusteczki 150 szt.',
+    photo:
+    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
+    photoSmall:
+    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
+    symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
+    sort: Sort(
+      elements: [
+        SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
+        SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
+      ],
+    ),
+    verifiedBy: '2',
+    user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+    addedDate: DateTime(2022, 9, 3),
+    sortProposals: [],
+    variants: [
+      '547145',
+      '547146',
     ],
   ),
   Product(
