@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_page.dart';
 import 'package:inzynierka/screens/widgets/product_modal/variant_page.dart';
-import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
@@ -20,7 +19,7 @@ class ProductModal extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tabController = useTabController(initialLength: 2);
     final index = useState(0);
-    final user = ref.watch(userProvider);
+    final authUser = ref.watch(authUserProvider);
 
     tabController.addListener(() {
       index.value = tabController.index;
@@ -83,8 +82,8 @@ class ProductModal extends HookConsumerWidget {
                     ),
                   ),
                   CustomPopupMenuButton(
-                    enabled: user != null,
-                    tooltip: user == null ? 'Zaloguj się, aby odblokować dodatkowe funkcje' : null,
+                    enabled: authUser != null,
+                    tooltip: authUser == null ? 'Zaloguj się, aby odblokować dodatkowe funkcje' : null,
                     itemBuilder: (context) => [
                       GenericPopupMenuItem(
                         onTap: () {},

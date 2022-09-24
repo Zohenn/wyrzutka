@@ -37,4 +37,18 @@ class AppUser {
       'surname': user.surname,
     };
   }
+
+  AppUser copyWith({
+    String? id,
+    String? email,
+    String? name,
+    String? surname,
+  }) {
+    return AppUser(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      surname: surname ?? this.surname,
+    );
+  }
 }

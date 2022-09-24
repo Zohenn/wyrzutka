@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/hooks/tap_gesture_recognizer.dart';
-import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
 import 'package:inzynierka/utils/error_snack_bar.dart';
 import 'package:inzynierka/utils/firebase_errors.dart';

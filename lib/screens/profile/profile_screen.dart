@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/profile/profile_features_screen.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
@@ -9,10 +9,10 @@ class ProfileScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider);
+    final authUser = ref.watch(authUserProvider);
     return SafeArea(
       child: ConditionalBuilder(
-        condition: user != null,
+        condition: authUser != null,
         ifTrue: () => ProfileScreenContent(),
         ifFalse: () => ProfileFeaturesScreen(),
       ),

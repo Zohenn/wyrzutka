@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
 
 class InitScreen extends HookConsumerWidget {
   const InitScreen({
@@ -10,7 +10,7 @@ class InitScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final initialUser = ref.watch(initialUserProvider);
+    final initialUser = ref.watch(initialAuthUserProvider);
     initialUser.whenData((value) => WidgetsBinding.instance
         .addPostFrameCallback(
             (timeStamp) => context.beamToReplacementNamed('/')));
