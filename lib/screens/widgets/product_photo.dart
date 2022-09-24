@@ -66,18 +66,14 @@ class ProductPhoto extends StatelessWidget {
                             backgroundColor: Colors.white,
                             child: Image.network(
                               product!.photo!,
-                              loadingBuilder: (context, child, progress) => Align(
+                              frameBuilder: (context, child, frame, _) => Align(
                                 alignment: Alignment.center,
                                 heightFactor: 1.0,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: ConditionalBuilder(
-                                    condition: progress != null,
-                                    ifTrue: () => CircularProgressIndicator(
-                                      value: progress!.expectedTotalBytes != null
-                                          ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
-                                          : null,
-                                    ),
+                                    condition: frame == null,
+                                    ifTrue: () => const CircularProgressIndicator(),
                                     ifFalse: () => child,
                                   ),
                                 ),
