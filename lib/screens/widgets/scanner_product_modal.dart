@@ -13,9 +13,9 @@ import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 
 class ScannerProductModal extends HookConsumerWidget {
-  final String id;
-
   const ScannerProductModal({Key? key, required this.id}) : super(key: key);
+
+  final String id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,7 +57,7 @@ class ScannerProductModal extends HookConsumerWidget {
             ),
           ),
           ConditionalBuilder(
-            condition: product != null,
+            condition: product.value != null,
             ifTrue: () => Column(
               children: [
                 Container(

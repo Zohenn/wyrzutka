@@ -99,7 +99,7 @@ class ScannerScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final cameraController = useScannerController();
-    final code = useState('');
+    final code = useState('485769');
     return Stack(
       children: [
         MobileScanner(
