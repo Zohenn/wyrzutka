@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/data/static_data.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/widgets/product_modal/product_sort.dart';
-import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:inzynierka/widgets/future_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 
-class ScannerProductModal extends HookWidget {
-  final String id;
-
+class ScannerProductModal extends HookConsumerWidget {
   const ScannerProductModal({Key? key, required this.id}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    final save = useState(false);
+  final String id;
 
-    Product? product = getProductById(id);
-    AppUser? user = getUser(product?.user);
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final save = useState(false);
+    final future = useState<Future?>(null);
+    final product = useState<Product?>(null);
+
+    useEffect(() {
+      future.value = ref.read(productRepositoryProvider).fetchId(id).then((value) => product.value = value);
+      return null;
+    }, []);
 
     final activeTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
           backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
@@ -30,76 +35,79 @@ class ScannerProductModal extends HookWidget {
           backgroundColor: const MaterialStatePropertyAll(Colors.white),
         );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Flexible(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-            child: GutterColumn(
-              children: [
-                _ProductName(product: product, id: id),
-                ConditionalBuilder(
-                  condition: product == null,
-                  ifTrue: () => const _UnknownProductInfo(),
-                  ifFalse: () => ProductSort(product: product!),
-                ),
-              ],
+    return FutureHandler(
+      future: future.value,
+      data: () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+              child: GutterColumn(
+                children: [
+                  _ProductName(product: product.value, id: id),
+                  ConditionalBuilder(
+                    condition: product.value == null,
+                    ifTrue: () => const _UnknownProductInfo(),
+                    ifFalse: () => ProductSort(product: product.value!),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        ConditionalBuilder(
-          condition: product != null,
-          ifTrue: () => Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  border: Border(
-                    top: BorderSide(color: Theme.of(context).primaryColorLight),
+          ConditionalBuilder(
+            condition: product.value != null,
+            ifTrue: () => Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    border: Border(
+                      top: BorderSide(color: Theme.of(context).primaryColorLight),
+                    ),
                   ),
-                ),
-                child: GutterRow(
-                  children: [
-                    AnimatedTheme(
-                      data: Theme.of(context).copyWith(
-                        outlinedButtonTheme:
-                            OutlinedButtonThemeData(style: save.value ? activeTabStyle : inactiveTabStyle),
+                  child: GutterRow(
+                    children: [
+                      AnimatedTheme(
+                        data: Theme.of(context).copyWith(
+                          outlinedButtonTheme:
+                              OutlinedButtonThemeData(style: save.value ? activeTabStyle : inactiveTabStyle),
+                        ),
+                        child: Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: Theme.of(context).primaryColor),
+                            ),
+                            onPressed: () => save.value = !save.value,
+                            child: const Text('Zapisz na liście'),
+                          ),
+                        ),
                       ),
-                      child: Expanded(
+                      Expanded(
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: Theme.of(context).primaryColor),
                           ),
-                          onPressed: () => save.value = !save.value,
-                          child: const Text('Zapisz na liście'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            showDefaultBottomSheet(
+                              context: context,
+                              builder: (context) => ProductModal(product: product.value!),
+                            );
+                          },
+                          child: const Text('Więcej informacji'),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Theme.of(context).primaryColor),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          showDefaultBottomSheet(
-                            context: context,
-                            builder: (context) => ProductModal(product: product!),
-                          );
-                        },
-                        child: const Text('Więcej informacji'),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
