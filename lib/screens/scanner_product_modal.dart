@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/providers/product_provider.dart';
-import 'package:inzynierka/screens/widgets/product_modal/product_modal.dart';
-import 'package:inzynierka/screens/widgets/product_modal/product_sort.dart';
+import 'package:inzynierka/screens/product_modal/product_modal.dart';
+import 'package:inzynierka/screens/product_modal/product_sort.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:inzynierka/screens/widgets/scanner_product_modal.dart';
+import 'package:inzynierka/screens/scanner_product_modal.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
