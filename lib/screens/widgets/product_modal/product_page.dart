@@ -25,16 +25,19 @@ class ProductPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final symbolRepository = ref.watch(productSymbolRepositoryProvider);
     final userRepository = ref.watch(userRepositoryProvider);
-    final symbols = useRef<List<ProductSymbol>>([]);
-    final user = useRef<AppUser?>(null);
-    final future = useRef(
+    final symbols = useState<List<ProductSymbol>>([]);
+    final user = useState<AppUser?>(null);
+    final future = useState<Future?>(null);
+    useEffect(() {
       Future.wait(
         [
           symbolRepository.fetchIds(product.symbols).then((value) => symbols.value = value),
           userRepository.fetchId(product.user).then((value) => user.value = value),
         ],
-      ),
-    );
+      );
+      return null;
+    }, []);
+
     useAutomaticKeepAlive();
 
     return FutureHandler(

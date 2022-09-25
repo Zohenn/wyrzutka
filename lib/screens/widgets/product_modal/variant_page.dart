@@ -10,18 +10,24 @@ import 'package:inzynierka/widgets/future_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class VariantPage extends HookConsumerWidget {
-  final Product product;
-
   const VariantPage({
     Key? key,
     required this.product,
   }) : super(key: key);
 
+  final Product product;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final variants = useRef<List<Product>>([]);
-    final future = useRef(productRepository.fetchIds(product.variants).then((value) => variants.value = value));
+    final variants = useState<List<Product>>([]);
+    final future = useState<Future?>(null);
+
+    useEffect(() {
+      productRepository.fetchIds(product.variants).then((value) => variants.value = value);
+      return null;
+    }, []);
+
     useAutomaticKeepAlive();
 
     return ConditionalBuilder(
