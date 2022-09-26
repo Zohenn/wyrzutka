@@ -4,10 +4,12 @@ class FutureHandler<T> extends StatelessWidget {
   const FutureHandler({
     Key? key,
     required this.future,
+    this.loading,
     required this.data,
   }) : super(key: key);
 
   final Future<T>? future;
+  final Widget Function()? loading;
   final Widget Function() data;
 
   @override
@@ -24,7 +26,7 @@ class FutureHandler<T> extends StatelessWidget {
         switch(snapshot.connectionState){
           case ConnectionState.waiting:
           case ConnectionState.active:
-            return const Center(child: const CircularProgressIndicator());
+            return loading?.call() ?? const Center(child: CircularProgressIndicator());
           case ConnectionState.none:
           case ConnectionState.done:
           return data();

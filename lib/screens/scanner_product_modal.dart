@@ -37,6 +37,13 @@ class ScannerProductModal extends HookConsumerWidget {
 
     return FutureHandler(
       future: future.value,
+      loading: () => const Padding(
+        padding: EdgeInsets.all(24.0),
+        child: Center(
+          heightFactor: 1.0,
+          child: CircularProgressIndicator(),
+        ),
+      ),
       data: () => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
