@@ -7,7 +7,7 @@ import 'package:inzynierka/hooks/barcode_camera.dart';
 import 'package:inzynierka/screens/scanner_product_modal.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/future_builder.dart';
+import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
@@ -102,69 +102,96 @@ class ScannerScreen extends HookWidget {
     }
   }
 
+  bool isPermissionError(Object error) {
+    return error is CameraException && error.code == 'CameraAccessDenied';
+  }
+
+  String errorText(Object error) {
+    if (isPermissionError(error)) {
+      return 'Zezwól aplikacji na dostęp do kamery, aby móc skorzystać ze skanera.';
+    }
+
+    return 'Błąd przy inicjalizacji kamery.';
+  }
+
   @override
   Widget build(BuildContext context) {
     // final scannerController = useScannerController();
     final camera = useBarcodeCamera();
-    final cameraFuture = useState<Future?>(null);
     final isScanning = useState(false);
     final code = useState('485769');
 
-    useEffect(() {
-      cameraFuture.value = camera.init();
-      return null;
-    }, []);
-
-    return FutureHandler(
-      future: cameraFuture.value,
-      data: () => Stack(
-        children: [
-          Positioned.fill(child: CameraPreview(camera.controller)),
-          // MobileScanner(
-          //   allowDuplicates: false,
-          //   controller: scannerController,
-          //   onDetect: (barcode, args) {
-          //     if (barcode.rawValue == null) {
-          //       code.value = '';
-          //       debugPrint('Failed to scan Barcode');
-          //     } else {
-          //       code.value = barcode.rawValue!;
-          //       debugPrint('Barcode found! ${code.value}');
-          //     }
-          //   },
-          // ),
-          Positioned.fill(
-            child: CustomPaint(
-              painter: ScannerAreaPainter(),
+    return SafeArea(
+      child: FutureHandler(
+        future: camera.initFuture,
+        data: () => Stack(
+          children: [
+            Positioned.fill(child: CameraPreview(camera.controller!)),
+            // MobileScanner(
+            //   allowDuplicates: false,
+            //   controller: scannerController,
+            //   onDetect: (barcode, args) {
+            //     if (barcode.rawValue == null) {
+            //       code.value = '';
+            //       debugPrint('Failed to scan Barcode');
+            //     } else {
+            //       code.value = barcode.rawValue!;
+            //       debugPrint('Barcode found! ${code.value}');
+            //     }
+            //   },
+            // ),
+            Positioned.fill(
+              child: CustomPaint(
+                painter: ScannerAreaPainter(),
+              ),
+            ),
+            GutterColumn(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GutterRow(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ProgressIndicatorButton(
+                      isLoading: isScanning.value,
+                      onPressed: () {
+                        isScanning.value = true;
+                        camera.scan().then((value) async {
+                          isScanning.value = false;
+                          await showProductModal(context, value?.rawValue ?? '');
+                          camera.controller!.resumePreview();
+                          // print('kuniec');
+                          // print(value?.rawValue);
+                        });
+                        // showProductModal(context, code.value);
+                      },
+                      child: const Text('Skanuj'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+              ],
+            ),
+          ],
+        ),
+        error: (error) => Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(errorText(error), textAlign: TextAlign.center),
+                const SizedBox(height: 16.0),
+                OutlinedButton(
+                  onPressed: () {
+                    camera.dispose();
+                    camera.initFuture;
+                  },
+                  child: const Text('Spróbuj ponownie'),
+                ),
+              ],
             ),
           ),
-          GutterColumn(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GutterRow(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ProgressIndicatorButton(
-                    isLoading: isScanning.value,
-                    onPressed: () {
-                      isScanning.value = true;
-                      camera.scan().then((value) async {
-                        isScanning.value = false;
-                        await showProductModal(context, value?.rawValue ?? '');
-                        camera.controller.resumePreview();
-                        // print('kuniec');
-                        // print(value?.rawValue);
-                      });
-                      // showProductModal(context, code.value);
-                    },
-                    child: const Text('Skanuj'),
-                  ),
-                ],
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.07),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

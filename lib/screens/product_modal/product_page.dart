@@ -10,7 +10,7 @@ import 'package:inzynierka/screens/product_modal/product_sort.dart';
 import 'package:inzynierka/screens/product_modal/product_symbols.dart';
 import 'package:inzynierka/screens/product_modal/product_user.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/future_builder.dart';
+import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProductPage extends HookConsumerWidget {

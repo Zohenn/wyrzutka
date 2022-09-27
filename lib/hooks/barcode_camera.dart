@@ -7,35 +7,69 @@ import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart
 BarcodeCameraWrapper useBarcodeCamera({
   List<Object?>? keys,
 }) {
-  return use(
+  final camera = use(
     const _BarcodeCameraHook(),
   );
+  useAppLifecycleState();
+  useOnAppLifecycleStateChange((previous, current) {
+    print('previous: $previous, current: $current');
+    switch (current) {
+      case AppLifecycleState.resumed:
+        camera.initFuture;
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.paused:
+        camera.dispose();
+        // TODO: Handle this case.
+        break;
+      case AppLifecycleState.detached:
+        // TODO: Handle this case.
+        break;
+    }
+  });
+  return camera;
 }
 
 class BarcodeCameraWrapper {
-  final List<CameraDescription> _cameras = [];
-  late final CameraController controller;
-  final BarcodeScanner scanner = BarcodeScanner(formats: [BarcodeFormat.ean8, BarcodeFormat.ean13]);
+  BarcodeCameraWrapper({ this.onInit });
 
-  CameraDescription? get _backCamera => _cameras.firstWhereOrNull((element) => element.lensDirection == CameraLensDirection.back);
+  final List<CameraDescription> _cameras = [];
+  CameraController? controller;
+  BarcodeScanner? scanner;
+  Future<void>? _initFuture;
+
+  final void Function()? onInit;
+
+  Future<void> get initFuture {
+    _initFuture ??= init();
+    return _initFuture!;
+  }
+
+  CameraDescription? get _backCamera =>
+      _cameras.firstWhereOrNull((element) => element.lensDirection == CameraLensDirection.back);
 
   Future<void> init() async {
-    _cameras..clear()..addAll(await availableCameras());
-    // todo: handle null
+    onInit?.call();
+    scanner = BarcodeScanner(formats: [BarcodeFormat.ean8, BarcodeFormat.ean13]);
+    _cameras
+      ..clear()
+      ..addAll(await availableCameras());
     controller = CameraController(_backCamera!, ResolutionPreset.high, enableAudio: false);
-    await controller.initialize();
+    await controller!.initialize();
   }
 
   Future<Barcode?> scan() async {
-    final picture = await controller.takePicture();
-    await controller.pausePreview();
+    final picture = await controller!.takePicture();
+    await controller!.pausePreview();
     final inputImage = InputImage.fromFilePath(picture.path);
-    return (await scanner.processImage(inputImage)).firstOrNull;
+    return (await scanner!.processImage(inputImage)).firstOrNull;
   }
 
   void dispose() {
-    scanner.close();
-    controller.dispose();
+    scanner?.close();
+    controller?.dispose();
+    _initFuture = null;
   }
 }
 
@@ -49,7 +83,7 @@ class _BarcodeCameraHook extends Hook<BarcodeCameraWrapper> {
 }
 
 class _BarcodeCameraHookState extends HookState<BarcodeCameraWrapper, _BarcodeCameraHook> {
-  final camera = BarcodeCameraWrapper();
+  late final camera = BarcodeCameraWrapper(onInit: () => setState((){}));
 
   @override
   BarcodeCameraWrapper build(BuildContext context) => camera;

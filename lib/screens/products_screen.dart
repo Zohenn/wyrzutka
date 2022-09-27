@@ -11,7 +11,7 @@ import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
 import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
-import 'package:inzynierka/widgets/future_builder.dart';
+import 'package:inzynierka/widgets/future_handler.dart';
 
 final _filterGroups = [
   FilterGroup(
