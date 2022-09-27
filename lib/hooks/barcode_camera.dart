@@ -12,19 +12,14 @@ BarcodeCameraWrapper useBarcodeCamera({
   );
   useAppLifecycleState();
   useOnAppLifecycleStateChange((previous, current) {
-    print('previous: $previous, current: $current');
     switch (current) {
       case AppLifecycleState.resumed:
         camera.initFuture;
         break;
-      case AppLifecycleState.inactive:
-        break;
       case AppLifecycleState.paused:
         camera.dispose();
-        // TODO: Handle this case.
         break;
-      case AppLifecycleState.detached:
-        // TODO: Handle this case.
+      default:
         break;
     }
   });

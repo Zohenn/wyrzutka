@@ -11,37 +11,6 @@ import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
-
-MobileScannerController useScannerController({
-  List<Object?>? keys,
-}) {
-  return use(
-    const _ScannerControllerHook(),
-  );
-}
-
-class _ScannerControllerHook extends Hook<MobileScannerController> {
-  const _ScannerControllerHook({
-    List<Object?>? keys,
-  }) : super(keys: keys);
-
-  @override
-  HookState<MobileScannerController, Hook<MobileScannerController>> createState() => _ScannerControllerHookState();
-}
-
-class _ScannerControllerHookState extends HookState<MobileScannerController, _ScannerControllerHook> {
-  late final controller = MobileScannerController();
-
-  @override
-  MobileScannerController build(BuildContext context) => controller;
-
-  @override
-  void dispose() => controller.dispose();
-
-  @override
-  String get debugLabel => 'useScannerController';
-}
 
 class ScannerAreaPainter extends CustomPainter {
   @override
@@ -116,10 +85,8 @@ class ScannerScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final scannerController = useScannerController();
     final camera = useBarcodeCamera();
     final isScanning = useState(false);
-    final code = useState('485769');
 
     return SafeArea(
       child: FutureHandler(
@@ -127,19 +94,6 @@ class ScannerScreen extends HookWidget {
         data: () => Stack(
           children: [
             Positioned.fill(child: CameraPreview(camera.controller!)),
-            // MobileScanner(
-            //   allowDuplicates: false,
-            //   controller: scannerController,
-            //   onDetect: (barcode, args) {
-            //     if (barcode.rawValue == null) {
-            //       code.value = '';
-            //       debugPrint('Failed to scan Barcode');
-            //     } else {
-            //       code.value = barcode.rawValue!;
-            //       debugPrint('Barcode found! ${code.value}');
-            //     }
-            //   },
-            // ),
             Positioned.fill(
               child: CustomPaint(
                 painter: ScannerAreaPainter(),
@@ -159,10 +113,7 @@ class ScannerScreen extends HookWidget {
                           isScanning.value = false;
                           await showProductModal(context, value?.rawValue ?? '');
                           camera.controller!.resumePreview();
-                          // print('kuniec');
-                          // print(value?.rawValue);
                         });
-                        // showProductModal(context, code.value);
                       },
                       child: const Text('Skanuj'),
                     ),
