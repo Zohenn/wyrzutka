@@ -1,8 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:image/image.dart';
 
 BarcodeCameraWrapper useBarcodeCamera({
   List<Object?>? keys,
@@ -27,7 +31,7 @@ BarcodeCameraWrapper useBarcodeCamera({
 }
 
 class BarcodeCameraWrapper {
-  BarcodeCameraWrapper({ this.onInit });
+  BarcodeCameraWrapper({this.onInit});
 
   final List<CameraDescription> _cameras = [];
   CameraController? controller;
@@ -57,8 +61,26 @@ class BarcodeCameraWrapper {
   Future<Barcode?> scan() async {
     final picture = await controller!.takePicture();
     await controller!.pausePreview();
+    final image = decodeImage(await picture.readAsBytes())!;
+    final offsetX = (image.width * 0.15).toInt();
+    final offsetY = (image.height * 0.15).toInt();
+    final croppedImage = copyCrop(image, offsetX, offsetY, (image.width * 0.7).toInt(), (image.height * 0.2).toInt());
+    final pictureFile = File(picture.path);
+    pictureFile.writeAsBytesSync(encodeJpg(croppedImage));
     final inputImage = InputImage.fromFilePath(picture.path);
-    return (await scanner!.processImage(inputImage)).firstOrNull;
+    final barcode = (await scanner!.processImage(inputImage)).firstOrNull;
+    pictureFile.delete();
+    return barcode;
+  }
+
+  Future<Uint8List> cropTest() async {
+    final picture = await controller!.takePicture();
+    // await controller!.pausePreview();
+    final image = decodeImage(await picture.readAsBytes())!;
+    final offsetX = (image.width * 0.15).toInt();
+    final offsetY = (image.height * 0.15).toInt();
+    final croppedImage = copyCrop(image, offsetX, offsetY, (image.width * 0.7).toInt(), (image.height * 0.2).toInt());
+    return Uint8List.fromList(encodeJpg(croppedImage));
   }
 
   void dispose() {
@@ -78,7 +100,7 @@ class _BarcodeCameraHook extends Hook<BarcodeCameraWrapper> {
 }
 
 class _BarcodeCameraHookState extends HookState<BarcodeCameraWrapper, _BarcodeCameraHook> {
-  late final camera = BarcodeCameraWrapper(onInit: () => setState((){}));
+  late final camera = BarcodeCameraWrapper(onInit: () => setState(() {}));
 
   @override
   BarcodeCameraWrapper build(BuildContext context) => camera;

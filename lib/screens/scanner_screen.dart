@@ -20,10 +20,14 @@ class ScannerAreaPainter extends CustomPainter {
       ..color = Colors.black.withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
-    Rect box = Rect.fromCenter(
-      center: Offset(size.width / 2, size.height / 4),
-      width: size.width * 0.7,
-      height: size.width * 0.3,
+    Rect box = Rect.fromLTWH(
+      size.width * 0.15,
+      size.height * 0.15,
+      size.width * 0.7,
+      size.height * 0.2,
+      // center: Offset(size.width / 2, size.height / 4),
+      // width: size.width * 0.7,
+      // height: size.width * 0.3,
     );
     var boxPaint = Paint()..blendMode = BlendMode.clear;
     canvas
@@ -109,6 +113,13 @@ class ScannerScreen extends HookWidget {
                       isLoading: isScanning.value,
                       onPressed: () {
                         isScanning.value = true;
+                        // camera.cropTest().then((value) async {
+                        //   isScanning.value = false;
+                        //   showDefaultBottomSheet(
+                        //     context: context,
+                        //     builder: (context) => Image.memory(value),
+                        //   );
+                        // });
                         camera.scan().then((value) async {
                           isScanning.value = false;
                           await showProductModal(context, value?.rawValue ?? '');
