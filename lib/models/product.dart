@@ -48,20 +48,6 @@ class Product with _$Product {
     );
   }
 
-  // final String id;
-  // final String name;
-  // final List<String> keywords;
-  // final String? photo;
-  // final String? photoSmall;
-  // final List<String> symbols;
-  // final Sort? sort;
-  // final String? verifiedBy;
-  // final Map<String, Sort> sortProposals;
-  // final List<String> variants;
-  // final String user;
-  // final DateTime addedDate;
-  // final DocumentSnapshot<Map<String, dynamic>>? snapshot;
-
   List<String>? get containers {
     if (sort == null) {
       return null;
