@@ -91,7 +91,7 @@ class ProductsNotifier extends StateNotifier<List<Product>> {
 
 final productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
 
-final productsFutureProvider = FutureProvider((ref) async {
+final productsFutureProvider = Provider((ref) async {
   final repository = ref.read(productRepositoryProvider);
   final products = await repository.fetchMore();
   ref.read(productsProvider.notifier).addProducts(products);

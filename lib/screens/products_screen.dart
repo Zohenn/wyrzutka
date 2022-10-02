@@ -45,7 +45,7 @@ class ProductsScreen extends HookConsumerWidget {
     final isFetchingMore = useState(false);
     final fetchedAll = useState(false);
     useEffect(() {
-      future.value = ref.read(productsFutureProvider.future).then((value) {
+      future.value = ref.read(productsFutureProvider).then((value) {
         products.value.addAll(value);
       });
       return null;
@@ -59,7 +59,7 @@ class ProductsScreen extends HookConsumerWidget {
             ..addAll(value);
         });
       } else {
-        innerFuture.value = ref.read(productsFutureProvider.future).then((value) {
+        innerFuture.value = ref.read(productsFutureProvider).then((value) {
           products.value
             ..clear()
             ..addAll(value);
