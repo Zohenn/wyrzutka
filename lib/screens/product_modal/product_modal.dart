@@ -21,13 +21,13 @@ class ProductModal extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
     final future = useState<Future?>(null);
-    final product = useState<Product?>(null);
+    final product = ref.watch(productProvider(id));
     final tabController = useTabController(initialLength: 2);
     final index = useState(0);
     final authUser = ref.watch(authUserProvider);
 
     useEffect(() {
-      future.value = productRepository.fetchId(id).then((value) => product.value = value);
+      future.value = productRepository.fetchId(id);
       return null;
     }, []);
 
@@ -47,13 +47,13 @@ class ProductModal extends HookConsumerWidget {
       data: () => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _ProductName(product: product.value!),
+          _ProductName(product: product!),
           Flexible(
             child: TabBarView(
               controller: tabController,
               children: [
-                ProductPage(product: product.value!),
-                VariantPage(product: product.value!),
+                ProductPage(product: product),
+                VariantPage(product: product),
               ],
             ),
           ),

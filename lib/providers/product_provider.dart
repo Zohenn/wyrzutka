@@ -98,13 +98,47 @@ final productsFutureProvider = FutureProvider((ref) async {
   return products;
 });
 
+class CacheNotifier<K, V> extends StateNotifier<Map<K, V>> {
+  CacheNotifier() : super({});
+
+  void add(K key, V value) {
+    state = {
+      ...state,
+      key: value,
+    };
+  }
+
+  void clear() {
+    state = {};
+  }
+
+  V? operator [](K key) {
+    return state[key];
+  }
+
+  void operator []=(K key, V value) {
+    add(key, value);
+  }
+}
+
+typedef ProductCache = CacheNotifier<String, Product>;
+
+final _productCacheProvider =
+    StateNotifierProvider<ProductCache, Map<String, Product>>((ref) => CacheNotifier<String, Product>());
+
+final productProvider = Provider.family<Product?, String>((ref, id) {
+  final cache = ref.watch(_productCacheProvider);
+  return cache[id];
+});
+
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
 class ProductRepository {
   ProductRepository(this.ref);
 
   final Ref ref;
-  final Map<String, Product> _cache = {};
+
+  ProductCache get _cache => ref.read(_productCacheProvider.notifier);
 
   static const int batchSize = 10;
 
@@ -210,23 +244,22 @@ class ProductRepository {
       transaction.update(
         productDoc,
         {
-          'sortProposals': {
-            sort.id: {
-              'votes': newVotes,
-            }
-          },
+          'sortProposals.${sort.id}.votes': newVotes.map((e) => Vote.toFirestore(e)).toList(),
         },
       );
       return newVotes;
     });
 
-    return product.copyWith(
+    final newProduct = product.copyWith(
       sortProposals: {
         ...product.sortProposals,
         sort.id:
             Sort(id: sort.id, user: sort.user, elements: sort.elements, voteBalance: sort.voteBalance, votes: newVotes),
       },
     );
+    _addToCache(newProduct);
+
+    return newProduct;
 
     // await _productsCollection.doc(product.id).update({
     //   'sortProposals': {
@@ -242,8 +275,8 @@ class ProductRepository {
     // }
   }
 
-  List<Product> _mapDocs(QuerySnapshot<Product> querySnapshot, [bool clearCache = false]){
-    if(clearCache){
+  List<Product> _mapDocs(QuerySnapshot<Product> querySnapshot, [bool clearCache = false]) {
+    if (clearCache) {
       _cache.clear();
     }
 

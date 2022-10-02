@@ -122,6 +122,8 @@ class ProductsScreen extends HookConsumerWidget {
                         // ref.read(_productsProvider.notifier).addProducts(value);
                         fetchedAll.value = value.length < ProductRepository.batchSize;
                       }).catchError((err, stack) {
+                        debugPrint(err.toString());
+                        debugPrintStack(stackTrace: stack);
                         // todo
                       }).whenComplete(() => isFetchingMore.value = false);
                     }

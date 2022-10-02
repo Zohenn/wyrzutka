@@ -8,15 +8,18 @@ import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/sort.dart';
 
 class SortContainer extends ConsumerWidget {
   const SortContainer({
     Key? key,
+    required this.product,
     required this.sort,
     required this.verified,
   }) : super(key: key);
 
+  final Product product;
   final Sort sort;
   final bool verified;
 
@@ -38,6 +41,7 @@ class SortContainer extends ConsumerWidget {
     final productRepository = ref.watch(productRepositoryProvider);
     final authUser = ref.watch(authUserProvider);
     final disableButtons = authUser == null || authUser.id == sort.user;
+    final userVote = sort.votes.firstWhereOrNull((element) => element.user == authUser?.id);
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,16 +80,22 @@ class SortContainer extends ConsumerWidget {
                     style: TextStyle(color: balanceColor(sort.voteBalance)),
                   ),
                   SizedBox(width: 8.0),
+                  // todo: add loading indicators
                   IconButton(
-                    onPressed: disableButtons ? null : () {},
-                    color: AppColors.positive,
+                    onPressed: disableButtons ? null : () {
+                      productRepository.updateVote(product, sort, authUser, true);
+                    },
+                    color: userVote?.value == true ? AppColors.positive : null,
                     icon: Icon(Icons.expand_less),
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
                   IconButton(
-                    onPressed: disableButtons ? null : () {},
+                    onPressed: disableButtons ? null : () {
+                      productRepository.updateVote(product, sort, authUser, false);
+                    },
+                    color: userVote?.value == false ? AppColors.negative : null,
                     icon: Icon(Icons.expand_more),
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
