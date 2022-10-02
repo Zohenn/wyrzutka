@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/product_modal/product_page.dart';
@@ -20,16 +21,11 @@ class ProductModal extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final future = useState<Future?>(null);
+    final future = useInitFuture<Product?>(() => productRepository.fetchId(id));
     final product = ref.watch(productProvider(id));
     final tabController = useTabController(initialLength: 2);
     final index = useState(0);
     final authUser = ref.watch(authUserProvider);
-
-    useEffect(() {
-      future.value = productRepository.fetchId(id);
-      return null;
-    }, []);
 
     tabController.addListener(() {
       index.value = tabController.index;
@@ -43,7 +39,7 @@ class ProductModal extends HookConsumerWidget {
         );
 
     return FutureHandler(
-      future: future.value,
+      future: future,
       data: () => Column(
         mainAxisSize: MainAxisSize.min,
         children: [

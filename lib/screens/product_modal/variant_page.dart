@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
@@ -21,19 +22,16 @@ class VariantPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
     final variants = useState<List<Product>>([]);
-    final future = useState<Future?>(null);
-
-    useEffect(() {
-      productRepository.fetchIds(product.variants).then((value) => variants.value = value);
-      return null;
-    }, []);
+    final future = useInitFuture<List<Product>>(
+      () => productRepository.fetchIds(product.variants).then((value) => variants.value = value),
+    );
 
     useAutomaticKeepAlive();
 
     return ConditionalBuilder(
       condition: product.variants.isNotEmpty,
       ifTrue: () => FutureHandler(
-        future: future.value,
+        future: future,
         data: () => SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
           child: GutterColumn(

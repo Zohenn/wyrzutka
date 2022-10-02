@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/product_modal/product_sort.dart';
@@ -20,13 +21,8 @@ class ScannerProductModal extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final save = useState(false);
-    final future = useState<Future?>(null);
-    final product = useState<Product?>(null);
-
-    useEffect(() {
-      future.value = ref.read(productRepositoryProvider).fetchId(id).then((value) => product.value = value);
-      return null;
-    }, []);
+    final future = useInitFuture<Product?>(() => ref.read(productRepositoryProvider).fetchId(id));
+    final product = ref.watch(productProvider(id));
 
     final activeTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
           backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
@@ -36,7 +32,7 @@ class ScannerProductModal extends HookConsumerWidget {
         );
 
     return FutureHandler(
-      future: future.value,
+      future: future,
       loading: () => const Padding(
         padding: EdgeInsets.all(24.0),
         child: Center(
@@ -53,18 +49,18 @@ class ScannerProductModal extends HookConsumerWidget {
               padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
               child: GutterColumn(
                 children: [
-                  _ProductName(product: product.value, id: id),
+                  _ProductName(product: product, id: id),
                   ConditionalBuilder(
-                    condition: product.value == null,
+                    condition: product == null,
                     ifTrue: () => const _UnknownProductInfo(),
-                    ifFalse: () => ProductSort(product: product.value!),
+                    ifFalse: () => ProductSort(product: product!),
                   ),
                 ],
               ),
             ),
           ),
           ConditionalBuilder(
-            condition: product.value != null,
+            condition: product != null,
             ifTrue: () => Column(
               children: [
                 Container(
@@ -101,7 +97,7 @@ class ScannerProductModal extends HookConsumerWidget {
                             Navigator.of(context).pop();
                             showDefaultBottomSheet(
                               context: context,
-                              builder: (context) => ProductModal(id: product.value!.id),
+                              builder: (context) => ProductModal(id: product!.id),
                             );
                           },
                           child: const Text('Więcej informacji'),
