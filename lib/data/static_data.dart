@@ -59,7 +59,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -74,7 +74,7 @@ final productsList = [
       ],
     ),
     verifiedBy: '2',
-    sortProposals: [],
+    sortProposals: {},
     user: '1',
     addedDate: DateTime(2022, 9, 2),
     variants: [],
@@ -94,7 +94,7 @@ final productsList = [
     verifiedBy: '2',
     user: '1',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       'Chusteczki 90 szt.',
       'Chusteczki 150 szt.',
@@ -118,7 +118,7 @@ final productsList = [
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       '547146',
       '547147',
@@ -142,7 +142,7 @@ final productsList = [
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       '547145',
       '547147',
@@ -166,7 +166,7 @@ final productsList = [
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       '547145',
       '547146',
@@ -176,7 +176,7 @@ final productsList = [
     id: '025896',
     name: 'Papier toaletowy',
     symbols: [],
-    sortProposals: [],
+    sortProposals: {},
     user: '1',
     addedDate: DateTime(2022, 9, 4),
     variants: [],
@@ -194,16 +194,17 @@ final productsList = [
     ),
     user: '2',
     addedDate: DateTime(2022, 9, 5),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
-    id: '485769',
+    id: '485768',
     name: 'Ręcznik papierowy',
     photoSmall: 'papier',
     symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
-    sortProposals: [
-      Sort(
+    sortProposals: {
+      '1': Sort(
+        id: '1',
         user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
         elements: [
           SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
@@ -212,7 +213,7 @@ final productsList = [
         voteBalance: 0,
         votes: [],
       ),
-    ],
+    },
     user: '1',
     addedDate: DateTime(2022, 9, 6),
     variants: [],
@@ -221,8 +222,9 @@ final productsList = [
     id: '485769',
     name: 'Pieczywo',
     symbols: [],
-    sortProposals: [
-      Sort(
+    sortProposals: {
+      '1': Sort(
+        id: '1',
         user: 'laCdqVLmRZL8qJDQeiPn',
         elements: [
           SortElement(name: 'Pieczywo', container: ElementContainer.bio),
@@ -235,7 +237,7 @@ final productsList = [
           ),
         ],
       ),
-    ],
+    },
     user: '1',
     addedDate: DateTime(2022, 9, 7),
     variants: [],
@@ -255,7 +257,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -273,7 +275,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -291,7 +293,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -309,7 +311,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -327,7 +329,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -345,7 +347,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -363,7 +365,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -381,7 +383,7 @@ final productsList = [
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
 ];

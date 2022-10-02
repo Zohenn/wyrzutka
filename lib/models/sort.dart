@@ -5,6 +5,7 @@ import 'package:inzynierka/models/vote.dart';
 @immutable
 class Sort {
   const Sort({
+    required this.id,
     required this.user,
     required this.elements,
     required this.voteBalance,
@@ -14,11 +15,13 @@ class Sort {
   const Sort.verified({
     required this.user,
     required this.elements,
-  })  : voteBalance = 0,
+  })  : id = '',
+        voteBalance = 0,
         votes = const <Vote>[];
 
   factory Sort.fromFirestore(Map<String, dynamic> data) {
     return Sort(
+      id: data['id'],
       user: data['user'],
       elements:
           (data['elements'] as List).cast<Map<String, dynamic>>().map((e) => SortElement.fromFirestore(e)).toList(),
@@ -27,6 +30,7 @@ class Sort {
     );
   }
 
+  final String id;
   final String user;
   final List<SortElement> elements;
   final int voteBalance;
@@ -34,6 +38,7 @@ class Sort {
 
   static Map<String, Object?> toFirestore(Sort sort) {
     return {
+      'id': sort.id,
       'user': sort.user,
       'elements': sort.elements.map((e) => SortElement.toFirestore(e)).toList(),
       'voteBalance': sort.voteBalance,

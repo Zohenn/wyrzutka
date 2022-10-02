@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
+import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
+import 'package:inzynierka/models/sort.dart';
 import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/models/vote.dart';
 
 enum ProductSortFilters {
   verified,
@@ -99,12 +104,18 @@ class ProductRepository {
   const ProductRepository(this.ref);
 
   final Ref ref;
+  final Map<String, Product> _cache = const {};
 
   static const int batchSize = 10;
 
-  Future<Product?> fetchId(String id) async {
+  Future<Product?> fetchId(String id, [bool skipCache = false]) async {
+    if (!skipCache && _cache[id] != null) {
+      return _cache[id];
+    }
     final snapshot = await _productsCollection.doc(id).get();
-    return snapshot.data();
+    final product = snapshot.data();
+    _addToCache(product);
+    return product;
   }
 
   Future<List<Product>> fetchIds(List<String> ids) async {
@@ -161,5 +172,71 @@ class ProductRepository {
     final snapshot =
         await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
     return snapshot.docs.map((e) => e.data()).toList();
+  }
+
+  // todo: mark as verified if voteBalance > 0
+  Future<void> updateVote(Product product, Sort sort, AppUser user, bool value) async {
+    // if(sort.votes)
+    final vote = Vote(user: user.id, value: value);
+    final remove = sort.votes.any((element) => element.user == user.id && element.value == value);
+    final productDoc = _productsCollection.doc(product.id);
+
+    final newVotes = await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final _product = (await productDoc.get()).data()!;
+      final _sort = _product.sortProposals[sort.id]!;
+      final previousVote = _sort.votes.firstWhereOrNull((vote) => vote.user == user.id);
+      List<Vote> newVotes;
+      if (previousVote == null) {
+        newVotes = [..._sort.votes, vote];
+        // transaction.update(productDoc, {
+        //   'sortProposals': {
+        //     sort.id: {
+        //       'votes': FieldValue.arrayUnion([vote]),
+        //     }
+        //   }
+        // });
+      } else if (previousVote.value == value) {
+        newVotes = [..._sort.votes]..remove(previousVote);
+        // transaction.update(productDoc, {
+        //   'sortProposals': {
+        //     sort.id: {
+        //       'votes': FieldValue.arrayRemove([vote]),
+        //     }
+        //   }
+        // });
+      } else {
+        newVotes = [..._sort.votes, vote]..remove(previousVote);
+      }
+      transaction.update(
+        productDoc,
+        {
+          'sortProposals': {
+            sort.id: {
+              'votes': newVotes,
+            }
+          },
+        },
+      );
+      return newVotes;
+    });
+
+    // await _productsCollection.doc(product.id).update({
+    //   'sortProposals': {
+    //     sort.id: {
+    //       'votes': remove ? FieldValue.arrayRemove([vote]) : FieldValue.arrayUnion([vote]),
+    //     }
+    //   },
+    // });
+    // if (remove) {
+    //   sort.votes.removeWhere((element) => element.user == user.id);
+    // } else {
+    //   sort.votes.add(vote);
+    // }
+  }
+
+  void _addToCache(Product? product) {
+    if (product != null) {
+      _cache[product.id] = product;
+    }
   }
 }

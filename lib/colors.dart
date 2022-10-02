@@ -21,6 +21,8 @@ MaterialColor createMaterialColor(Color color) {
 }
 
 class AppColors {
+  AppColors._();
+
   static const primary = Color(0xff9AFFA1);
   static const primaryDarker = Color(0xff38A92C);
   static const plastic = Color(0xffFCDF0A);
