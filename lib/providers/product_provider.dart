@@ -101,10 +101,10 @@ final productsFutureProvider = FutureProvider((ref) async {
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
 class ProductRepository {
-  const ProductRepository(this.ref);
+  ProductRepository(this.ref);
 
   final Ref ref;
-  final Map<String, Product> _cache = const {};
+  final Map<String, Product> _cache = {};
 
   static const int batchSize = 10;
 
@@ -122,8 +122,8 @@ class ProductRepository {
     if (ids.isEmpty) {
       return [];
     }
-    final snapshot = await _productsCollection.where(FieldPath.documentId, whereIn: ids).get();
-    return snapshot.docs.map((e) => e.data()).toList();
+    final querySnapshot = await _productsCollection.where(FieldPath.documentId, whereIn: ids).get();
+    return _mapDocs(querySnapshot);
   }
 
   Future<List<Product>> fetchMore({
@@ -164,18 +164,18 @@ class ProductRepository {
     }
 
     final querySnapshot = await query.get();
-    return querySnapshot.docs.map((e) => e.data()).toList();
+    return _mapDocs(querySnapshot, startAfterDocument == null);
   }
 
   Future<List<Product>> search(String value) async {
     value = value.toLowerCase();
-    final snapshot =
+    final querySnapshot =
         await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
-    return snapshot.docs.map((e) => e.data()).toList();
+    return _mapDocs(querySnapshot);
   }
 
   // todo: mark as verified if voteBalance > 0
-  Future<void> updateVote(Product product, Sort sort, AppUser user, bool value) async {
+  Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     // if(sort.votes)
     final vote = Vote(user: user.id, value: value);
     final remove = sort.votes.any((element) => element.user == user.id && element.value == value);
@@ -220,6 +220,14 @@ class ProductRepository {
       return newVotes;
     });
 
+    return product.copyWith(
+      sortProposals: {
+        ...product.sortProposals,
+        sort.id:
+            Sort(id: sort.id, user: sort.user, elements: sort.elements, voteBalance: sort.voteBalance, votes: newVotes),
+      },
+    );
+
     // await _productsCollection.doc(product.id).update({
     //   'sortProposals': {
     //     sort.id: {
@@ -232,6 +240,18 @@ class ProductRepository {
     // } else {
     //   sort.votes.add(vote);
     // }
+  }
+
+  List<Product> _mapDocs(QuerySnapshot<Product> querySnapshot, [bool clearCache = false]){
+    if(clearCache){
+      _cache.clear();
+    }
+
+    return querySnapshot.docs.map((snapshot) {
+      final data = snapshot.data();
+      _addToCache(data);
+      return data;
+    }).toList();
   }
 
   void _addToCache(Product? product) {

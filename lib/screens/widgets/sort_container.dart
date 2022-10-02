@@ -1,13 +1,22 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/models/sort.dart';
 
-class SortContainer extends StatelessWidget {
+class SortContainer extends ConsumerWidget {
+  const SortContainer({
+    Key? key,
+    required this.sort,
+    required this.verified,
+  }) : super(key: key);
+
   final Sort sort;
   final bool verified;
 
@@ -15,10 +24,20 @@ class SortContainer extends StatelessWidget {
     return groupBy([...sort.elements], (SortElement element) => element.container);
   }
 
-  const SortContainer({Key? key, required this.sort, required this.verified}) : super(key: key);
+  Color balanceColor(int balance) {
+    if (balance > 0) {
+      return AppColors.positive;
+    } else if (balance < 0) {
+      return AppColors.negative;
+    }
+    return Colors.black;
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productRepository = ref.watch(productRepositoryProvider);
+    final authUser = ref.watch(authUserProvider);
+    final disableButtons = authUser == null || authUser.id == sort.user;
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,12 +72,12 @@ class SortContainer extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    '24',
-                    style: TextStyle(color: AppColors.positive),
+                    sort.voteBalance.toString(),
+                    style: TextStyle(color: balanceColor(sort.voteBalance)),
                   ),
                   SizedBox(width: 8.0),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: disableButtons ? null : () {},
                     color: AppColors.positive,
                     icon: Icon(Icons.expand_less),
                     style: ButtonStyle(
@@ -66,13 +85,13 @@ class SortContainer extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: disableButtons ? null : () {},
                     icon: Icon(Icons.expand_more),
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  Expanded(child: SizedBox.shrink()),
+                  const Expanded(child: SizedBox.shrink()),
                   const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
                 ],
               ),
@@ -85,14 +104,13 @@ class SortContainer extends StatelessWidget {
 }
 
 class SortContainerGroup extends StatelessWidget {
-  final ElementContainer container;
-  final List<SortElement> elements;
-
   const SortContainerGroup({
     Key? key,
     required this.container,
     required this.elements,
   }) : super(key: key);
+  final ElementContainer container;
+  final List<SortElement> elements;
 
   @override
   Widget build(BuildContext context) {
