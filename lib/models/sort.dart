@@ -34,6 +34,7 @@ class Sort {
   final String user;
   final List<SortElement> elements;
   final int voteBalance;
+  // todo: perhaps this could be changed to Map<String, bool>?
   final List<Vote> votes;
 
   static Map<String, Object?> toFirestore(Sort sort) {

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/app_user.dart';
@@ -7,11 +8,15 @@ import 'package:inzynierka/models/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
+import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/sort.dart';
+import 'package:inzynierka/widgets/progress_indicator_icon_button.dart';
 
-class SortContainer extends ConsumerWidget {
+enum _UpdateVoteState { none, up, down }
+
+class SortContainer extends HookConsumerWidget {
   const SortContainer({
     Key? key,
     required this.product,
@@ -40,7 +45,9 @@ class SortContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
     final authUser = ref.watch(authUserProvider);
-    final disableButtons = authUser == null || authUser.id == sort.user;
+    final updateVoteState = useState(_UpdateVoteState.none);
+    final disableButtons =
+        updateVoteState.value != _UpdateVoteState.none || authUser == null || authUser.id == sort.user;
     final userVote = sort.votes.firstWhereOrNull((element) => element.user == authUser?.id);
     return Card(
       child: Column(
@@ -70,7 +77,6 @@ class SortContainer extends ConsumerWidget {
                 ],
               ),
             ),
-            // TODO not verified version
             ifFalse: () => Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -79,29 +85,41 @@ class SortContainer extends ConsumerWidget {
                     sort.voteBalance.toString(),
                     style: TextStyle(color: balanceColor(sort.voteBalance)),
                   ),
-                  SizedBox(width: 8.0),
-                  // todo: add loading indicators
-                  IconButton(
-                    onPressed: disableButtons ? null : () {
-                      productRepository.updateVote(product, sort, authUser, true);
-                    },
+                  const SizedBox(width: 8.0),
+                  ProgressIndicatorIconButton(
+                    isLoading: updateVoteState.value == _UpdateVoteState.up,
+                    spinnerColor: AppColors.positive,
+                    onPressed: disableButtons
+                        ? null
+                        : () async {
+                            updateVoteState.value = _UpdateVoteState.up;
+                            await asyncCall(context, () => productRepository.updateVote(product, sort, authUser, true));
+                            updateVoteState.value = _UpdateVoteState.none;
+                          },
                     color: userVote?.value == true ? AppColors.positive : null,
-                    icon: Icon(Icons.expand_less),
-                    style: ButtonStyle(
+                    icon: const Icon(Icons.expand_less),
+                    style: const ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  IconButton(
-                    onPressed: disableButtons ? null : () {
-                      productRepository.updateVote(product, sort, authUser, false);
-                    },
+                  ProgressIndicatorIconButton(
+                    isLoading: updateVoteState.value == _UpdateVoteState.down,
+                    spinnerColor: AppColors.negative,
+                    onPressed: disableButtons
+                        ? null
+                        : () async {
+                            updateVoteState.value = _UpdateVoteState.down;
+                            await asyncCall(context, () => productRepository.updateVote(product, sort, authUser, false));
+                            updateVoteState.value = _UpdateVoteState.none;
+                          },
                     color: userVote?.value == false ? AppColors.negative : null,
-                    icon: Icon(Icons.expand_more),
-                    style: ButtonStyle(
+                    icon: const Icon(Icons.expand_more),
+                    style: const ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
                   const Expanded(child: SizedBox.shrink()),
+                  // TODO add user provider
                   const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
                 ],
               ),

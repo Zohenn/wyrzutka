@@ -210,69 +210,51 @@ class ProductRepository {
 
   // todo: mark as verified if voteBalance > 0
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
-    // if(sort.votes)
     final vote = Vote(user: user.id, value: value);
-    final remove = sort.votes.any((element) => element.user == user.id && element.value == value);
     final productDoc = _productsCollection.doc(product.id);
 
-    final newVotes = await FirebaseFirestore.instance.runTransaction((transaction) async {
+    final transactionData = await FirebaseFirestore.instance.runTransaction<Map<String, dynamic>>((transaction) async {
       final _product = (await productDoc.get()).data()!;
       final _sort = _product.sortProposals[sort.id]!;
       final previousVote = _sort.votes.firstWhereOrNull((vote) => vote.user == user.id);
       List<Vote> newVotes;
       if (previousVote == null) {
         newVotes = [..._sort.votes, vote];
-        // transaction.update(productDoc, {
-        //   'sortProposals': {
-        //     sort.id: {
-        //       'votes': FieldValue.arrayUnion([vote]),
-        //     }
-        //   }
-        // });
+
       } else if (previousVote.value == value) {
         newVotes = [..._sort.votes]..remove(previousVote);
-        // transaction.update(productDoc, {
-        //   'sortProposals': {
-        //     sort.id: {
-        //       'votes': FieldValue.arrayRemove([vote]),
-        //     }
-        //   }
-        // });
       } else {
         newVotes = [..._sort.votes, vote]..remove(previousVote);
       }
+      final newBalance = newVotes.fold<int>(0, (previousValue, element) => previousValue + (element.value ? 1 : -1));
       transaction.update(
         productDoc,
         {
           'sortProposals.${sort.id}.votes': newVotes.map((e) => Vote.toFirestore(e)).toList(),
+          'sortProposals.${sort.id}.voteBalance': newBalance,
         },
       );
-      return newVotes;
+      return {
+        'votes': newVotes,
+        'balance': newBalance,
+      };
     });
 
     final newProduct = product.copyWith(
       sortProposals: {
         ...product.sortProposals,
-        sort.id:
-            Sort(id: sort.id, user: sort.user, elements: sort.elements, voteBalance: sort.voteBalance, votes: newVotes),
+        sort.id: Sort(
+          id: sort.id,
+          user: sort.user,
+          elements: sort.elements,
+          voteBalance: transactionData['balance'],
+          votes: transactionData['votes'],
+        ),
       },
     );
     _addToCache(newProduct);
 
     return newProduct;
-
-    // await _productsCollection.doc(product.id).update({
-    //   'sortProposals': {
-    //     sort.id: {
-    //       'votes': remove ? FieldValue.arrayRemove([vote]) : FieldValue.arrayUnion([vote]),
-    //     }
-    //   },
-    // });
-    // if (remove) {
-    //   sort.votes.removeWhere((element) => element.user == user.id);
-    // } else {
-    //   sort.votes.add(vote);
-    // }
   }
 
   List<Product> _mapDocs(QuerySnapshot<Product> querySnapshot, [bool clearCache = false]) {
