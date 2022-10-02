@@ -6,6 +6,7 @@ import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/sort.dart';
 import 'package:inzynierka/models/sort_element.dart';
 import 'package:inzynierka/models/product_symbol.dart';
+import 'package:inzynierka/models/vote.dart';
 
 List<AppUser> users = [
   const AppUser(id: '1', email: '1', name: 'Wojtek', surname: 'Brandeburg'),
@@ -48,14 +49,17 @@ final productsList = [
     name: 'Woda niegazowana',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -63,13 +67,14 @@ final productsList = [
     name: 'Napój energetyczny',
     photoSmall: 'monster',
     symbols: [],
-    sort: Sort(
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
       elements: [
         SortElement(name: 'Puszka', container: ElementContainer.plastic, description: 'Zgnieć przed wyrzuceniem')
       ],
     ),
     verifiedBy: '2',
-    sortProposals: [],
+    sortProposals: {},
     user: '1',
     addedDate: DateTime(2022, 9, 2),
     variants: [],
@@ -79,7 +84,8 @@ final productsList = [
     name: 'Chusteczki',
     photoSmall: 'chusteczki',
     symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
-    sort: Sort(
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
       elements: [
         SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
         SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
@@ -88,7 +94,7 @@ final productsList = [
     verifiedBy: '2',
     user: '1',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       'Chusteczki 90 szt.',
       'Chusteczki 150 szt.',
@@ -102,7 +108,8 @@ final productsList = [
     photoSmall:
         'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
     symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
-    sort: Sort(
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
       elements: [
         SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
         SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
@@ -111,7 +118,7 @@ final productsList = [
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       '547146',
       '547147',
@@ -121,11 +128,12 @@ final productsList = [
     id: '547146',
     name: 'Chusteczki 90 szt.',
     photo:
-    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
     photoSmall:
-    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
     symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
-    sort: Sort(
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
       elements: [
         SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
         SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
@@ -134,7 +142,7 @@ final productsList = [
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       '547145',
       '547147',
@@ -144,11 +152,12 @@ final productsList = [
     id: '547147',
     name: 'Chusteczki 150 szt.',
     photo:
-    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Foriginal.jpg?alt=media&token=3b7d4528-30b1-4d42-9a85-c69e9de913a1',
     photoSmall:
-    'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F547145%2Fsmall.jpg?alt=media&token=0c76315c-340f-44ed-a490-ae5af2deb1f6',
     symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
-    sort: Sort(
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
       elements: [
         SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
         SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
@@ -157,7 +166,7 @@ final productsList = [
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     addedDate: DateTime(2022, 9, 3),
-    sortProposals: [],
+    sortProposals: {},
     variants: [
       '547145',
       '547146',
@@ -167,7 +176,7 @@ final productsList = [
     id: '025896',
     name: 'Papier toaletowy',
     symbols: [],
-    sortProposals: [],
+    sortProposals: {},
     user: '1',
     addedDate: DateTime(2022, 9, 4),
     variants: [],
@@ -176,7 +185,8 @@ final productsList = [
     id: '254896',
     name: 'Butelka',
     symbols: [],
-    sort: Sort(
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
       elements: [
         SortElement(container: ElementContainer.glass, name: 'Butelka'),
         SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
@@ -184,22 +194,26 @@ final productsList = [
     ),
     user: '2',
     addedDate: DateTime(2022, 9, 5),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
-    id: '485769',
+    id: '485768',
     name: 'Ręcznik papierowy',
     photoSmall: 'papier',
     symbols: ['budlC2aRgOumb2c0RsQL', '6EudWBDUR1T8zgoqoYVl'],
-    sortProposals: [
-      Sort(
+    sortProposals: {
+      '1': Sort(
+        id: '1',
+        user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
         elements: [
           SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
           SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
         ],
-      )
-    ],
+        voteBalance: 0,
+        votes: [],
+      ),
+    },
     user: '1',
     addedDate: DateTime(2022, 9, 6),
     variants: [],
@@ -208,11 +222,22 @@ final productsList = [
     id: '485769',
     name: 'Pieczywo',
     symbols: [],
-    sortProposals: [
-      Sort(
-        elements: [SortElement(name: 'Pieczywo', container: ElementContainer.bio)],
-      )
-    ],
+    sortProposals: {
+      '1': Sort(
+        id: '1',
+        user: 'laCdqVLmRZL8qJDQeiPn',
+        elements: [
+          SortElement(name: 'Pieczywo', container: ElementContainer.bio),
+        ],
+        voteBalance: 1,
+        votes: [
+          Vote(
+            user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+            value: true,
+          ),
+        ],
+      ),
+    },
     user: '1',
     addedDate: DateTime(2022, 9, 7),
     variants: [],
@@ -222,14 +247,17 @@ final productsList = [
     name: 'Woda niegazowana2',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -237,14 +265,17 @@ final productsList = [
     name: 'Woda niegazowana3',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -252,14 +283,17 @@ final productsList = [
     name: 'Woda niegazowana4',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -267,14 +301,17 @@ final productsList = [
     name: 'Woda niegazowana5',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -282,14 +319,17 @@ final productsList = [
     name: 'Woda niegazowana6',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -297,14 +337,17 @@ final productsList = [
     name: 'Woda niegazowana7',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -312,14 +355,17 @@ final productsList = [
     name: 'Woda niegazowana8',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
   Product(
@@ -327,14 +373,17 @@ final productsList = [
     name: 'Woda niegazowana9',
     photoSmall: 'woda',
     symbols: ['budlC2aRgOumb2c0RsQL'],
-    sort: Sort(elements: [
-      SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
-      SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
-    ]),
+    sort: Sort.verified(
+      user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem')
+      ],
+    ),
     verifiedBy: 'xxx',
     user: '1',
     addedDate: DateTime(2022, 9, 1),
-    sortProposals: [],
+    sortProposals: {},
     variants: [],
   ),
 ];

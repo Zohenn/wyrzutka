@@ -21,7 +21,7 @@ class ProductSort extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConditionalBuilder(
       condition: product.sort != null,
-      ifTrue: () => SortContainer(sort: product.sort!, verified: true),
+      ifTrue: () => SortContainer(product: product, sort: product.sort!, verified: true),
       ifFalse: () => Column(
         children: [
           ConditionalBuilder(
@@ -32,8 +32,8 @@ class ProductSort extends StatelessWidget {
               children: [
                 Text('Propozycje segregacji', style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 8),
-                for (int i = 0; i < product.sortProposals.length; i++) ...[
-                  SortContainer(sort: product.sortProposals[i], verified: false),
+                for (var sortProposal in product.sortProposals.values) ...[
+                  SortContainer(product: product, sort: sortProposal, verified: false),
                 ],
               ],
             ),

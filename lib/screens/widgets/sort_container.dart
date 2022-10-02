@@ -1,13 +1,30 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
+import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:inzynierka/models/product.dart';
 import 'package:inzynierka/models/sort.dart';
+import 'package:inzynierka/widgets/progress_indicator_icon_button.dart';
 
-class SortContainer extends StatelessWidget {
+enum _UpdateVoteState { none, up, down }
+
+class SortContainer extends HookConsumerWidget {
+  const SortContainer({
+    Key? key,
+    required this.product,
+    required this.sort,
+    required this.verified,
+  }) : super(key: key);
+
+  final Product product;
   final Sort sort;
   final bool verified;
 
@@ -15,10 +32,23 @@ class SortContainer extends StatelessWidget {
     return groupBy([...sort.elements], (SortElement element) => element.container);
   }
 
-  const SortContainer({Key? key, required this.sort, required this.verified}) : super(key: key);
+  Color balanceColor(int balance) {
+    if (balance > 0) {
+      return AppColors.positive;
+    } else if (balance < 0) {
+      return AppColors.negative;
+    }
+    return Colors.black;
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productRepository = ref.watch(productRepositoryProvider);
+    final authUser = ref.watch(authUserProvider);
+    final updateVoteState = useState(_UpdateVoteState.none);
+    final disableButtons =
+        updateVoteState.value != _UpdateVoteState.none || authUser == null || authUser.id == sort.user;
+    final userVote = sort.votes.firstWhereOrNull((element) => element.user == authUser?.id);
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,32 +77,49 @@ class SortContainer extends StatelessWidget {
                 ],
               ),
             ),
-            // TODO not verified version
             ifFalse: () => Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
                   Text(
-                    '24',
-                    style: TextStyle(color: AppColors.positive),
+                    sort.voteBalance.toString(),
+                    style: TextStyle(color: balanceColor(sort.voteBalance)),
                   ),
-                  SizedBox(width: 8.0),
-                  IconButton(
-                    onPressed: () {},
-                    color: AppColors.positive,
-                    icon: Icon(Icons.expand_less),
-                    style: ButtonStyle(
+                  const SizedBox(width: 8.0),
+                  ProgressIndicatorIconButton(
+                    isLoading: updateVoteState.value == _UpdateVoteState.up,
+                    spinnerColor: AppColors.positive,
+                    onPressed: disableButtons
+                        ? null
+                        : () async {
+                            updateVoteState.value = _UpdateVoteState.up;
+                            await asyncCall(context, () => productRepository.updateVote(product, sort, authUser, true));
+                            updateVoteState.value = _UpdateVoteState.none;
+                          },
+                    color: userVote?.value == true ? AppColors.positive : null,
+                    icon: const Icon(Icons.expand_less),
+                    style: const ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.expand_more),
-                    style: ButtonStyle(
+                  ProgressIndicatorIconButton(
+                    isLoading: updateVoteState.value == _UpdateVoteState.down,
+                    spinnerColor: AppColors.negative,
+                    onPressed: disableButtons
+                        ? null
+                        : () async {
+                            updateVoteState.value = _UpdateVoteState.down;
+                            await asyncCall(context, () => productRepository.updateVote(product, sort, authUser, false));
+                            updateVoteState.value = _UpdateVoteState.none;
+                          },
+                    color: userVote?.value == false ? AppColors.negative : null,
+                    icon: const Icon(Icons.expand_more),
+                    style: const ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  Expanded(child: SizedBox.shrink()),
+                  const Expanded(child: SizedBox.shrink()),
+                  // TODO add user provider
                   const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
                 ],
               ),
@@ -85,14 +132,13 @@ class SortContainer extends StatelessWidget {
 }
 
 class SortContainerGroup extends StatelessWidget {
-  final ElementContainer container;
-  final List<SortElement> elements;
-
   const SortContainerGroup({
     Key? key,
     required this.container,
     required this.elements,
   }) : super(key: key);
+  final ElementContainer container;
+  final List<SortElement> elements;
 
   @override
   Widget build(BuildContext context) {

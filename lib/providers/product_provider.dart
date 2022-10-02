@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
+import 'package:inzynierka/models/app_user.dart';
 import 'package:inzynierka/models/product.dart';
+import 'package:inzynierka/models/sort.dart';
 import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/models/vote.dart';
 
 enum ProductSortFilters {
   verified,
@@ -93,26 +98,66 @@ final productsFutureProvider = FutureProvider((ref) async {
   return products;
 });
 
+class CacheNotifier<K, V> extends StateNotifier<Map<K, V>> {
+  CacheNotifier() : super({});
+
+  void add(K key, V value) {
+    state = {
+      ...state,
+      key: value,
+    };
+  }
+
+  void clear() {
+    state = {};
+  }
+
+  V? operator [](K key) {
+    return state[key];
+  }
+
+  void operator []=(K key, V value) {
+    add(key, value);
+  }
+}
+
+typedef ProductCache = CacheNotifier<String, Product>;
+
+final _productCacheProvider =
+    StateNotifierProvider<ProductCache, Map<String, Product>>((ref) => CacheNotifier<String, Product>());
+
+final productProvider = Provider.family<Product?, String>((ref, id) {
+  final cache = ref.watch(_productCacheProvider);
+  return cache[id];
+});
+
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
 class ProductRepository {
-  const ProductRepository(this.ref);
+  ProductRepository(this.ref);
 
   final Ref ref;
 
+  ProductCache get _cache => ref.read(_productCacheProvider.notifier);
+
   static const int batchSize = 10;
 
-  Future<Product?> fetchId(String id) async {
+  Future<Product?> fetchId(String id, [bool skipCache = false]) async {
+    if (!skipCache && _cache[id] != null) {
+      return _cache[id];
+    }
     final snapshot = await _productsCollection.doc(id).get();
-    return snapshot.data();
+    final product = snapshot.data();
+    _addToCache(product);
+    return product;
   }
 
   Future<List<Product>> fetchIds(List<String> ids) async {
     if (ids.isEmpty) {
       return [];
     }
-    final snapshot = await _productsCollection.where(FieldPath.documentId, whereIn: ids).get();
-    return snapshot.docs.map((e) => e.data()).toList();
+    final querySnapshot = await _productsCollection.where(FieldPath.documentId, whereIn: ids).get();
+    return _mapDocs(querySnapshot);
   }
 
   Future<List<Product>> fetchMore({
@@ -153,13 +198,80 @@ class ProductRepository {
     }
 
     final querySnapshot = await query.get();
-    return querySnapshot.docs.map((e) => e.data()).toList();
+    return _mapDocs(querySnapshot, startAfterDocument == null);
   }
 
   Future<List<Product>> search(String value) async {
     value = value.toLowerCase();
-    final snapshot =
+    final querySnapshot =
         await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
-    return snapshot.docs.map((e) => e.data()).toList();
+    return _mapDocs(querySnapshot);
+  }
+
+  // todo: mark as verified if voteBalance > 0
+  Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
+    final vote = Vote(user: user.id, value: value);
+    final productDoc = _productsCollection.doc(product.id);
+
+    final transactionData = await FirebaseFirestore.instance.runTransaction<Map<String, dynamic>>((transaction) async {
+      final _product = (await productDoc.get()).data()!;
+      final _sort = _product.sortProposals[sort.id]!;
+      final previousVote = _sort.votes.firstWhereOrNull((vote) => vote.user == user.id);
+      List<Vote> newVotes;
+      if (previousVote == null) {
+        newVotes = [..._sort.votes, vote];
+
+      } else if (previousVote.value == value) {
+        newVotes = [..._sort.votes]..remove(previousVote);
+      } else {
+        newVotes = [..._sort.votes, vote]..remove(previousVote);
+      }
+      final newBalance = newVotes.fold<int>(0, (previousValue, element) => previousValue + (element.value ? 1 : -1));
+      transaction.update(
+        productDoc,
+        {
+          'sortProposals.${sort.id}.votes': newVotes.map((e) => Vote.toFirestore(e)).toList(),
+          'sortProposals.${sort.id}.voteBalance': newBalance,
+        },
+      );
+      return {
+        'votes': newVotes,
+        'balance': newBalance,
+      };
+    });
+
+    final newProduct = product.copyWith(
+      sortProposals: {
+        ...product.sortProposals,
+        sort.id: Sort(
+          id: sort.id,
+          user: sort.user,
+          elements: sort.elements,
+          voteBalance: transactionData['balance'],
+          votes: transactionData['votes'],
+        ),
+      },
+    );
+    _addToCache(newProduct);
+
+    return newProduct;
+  }
+
+  List<Product> _mapDocs(QuerySnapshot<Product> querySnapshot, [bool clearCache = false]) {
+    if (clearCache) {
+      _cache.clear();
+    }
+
+    return querySnapshot.docs.map((snapshot) {
+      final data = snapshot.data();
+      _addToCache(data);
+      return data;
+    }).toList();
+  }
+
+  void _addToCache(Product? product) {
+    if (product != null) {
+      _cache[product.id] = product;
+    }
   }
 }

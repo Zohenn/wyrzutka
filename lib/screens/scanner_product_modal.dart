@@ -101,7 +101,7 @@ class ScannerProductModal extends HookConsumerWidget {
                             Navigator.of(context).pop();
                             showDefaultBottomSheet(
                               context: context,
-                              builder: (context) => ProductModal(product: product.value!),
+                              builder: (context) => ProductModal(id: product.value!.id),
                             );
                           },
                           child: const Text('Więcej informacji'),
