@@ -1,54 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-@immutable
-class AppUser {
-  const AppUser({
-    required this.id,
-    required this.email,
-    required this.name,
-    required this.surname,
-  });
+part 'app_user.freezed.dart';
+part 'app_user.g.dart';
 
-  final String id;
-  final String email;
-  final String name;
-  final String surname;
+toNull(_) => null;
+
+@freezed
+class AppUser with _$AppUser {
+  const AppUser._();
+
+  const factory AppUser({
+    @JsonKey(toJson: toNull, includeIfNull: false) required String id,
+    required String email,
+    required String name,
+    required String surname,
+  }) = _AppUser;
+
+  factory AppUser.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      SnapshotOptions? options,
+      ) {
+    final data = snapshot.data()!;
+    return AppUser.fromJson({
+      'id': snapshot.id,
+      ...data,
+    });
+  }
+
+  factory AppUser.fromJson(Map<String, dynamic> json) => _$AppUserFromJson(json);
 
   String get displayName => '$name $surname';
 
-  static AppUser fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
-    final data = snapshot.data()!;
-    return AppUser(
-      id: snapshot.id,
-      email: data['email'],
-      name: data['name'],
-      surname: data['surname'],
-    );
-  }
-
   static Map<String, Object?> toFirestore(AppUser user, SetOptions? options) {
-    return {
-      'email': user.email,
-      'name': user.name,
-      'surname': user.surname,
-    };
-  }
-
-  AppUser copyWith({
-    String? id,
-    String? email,
-    String? name,
-    String? surname,
-  }) {
-    return AppUser(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      name: name ?? this.name,
-      surname: surname ?? this.surname,
-    );
+    return user.toJson();
   }
 }
