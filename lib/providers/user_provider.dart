@@ -23,7 +23,7 @@ class UserRepository {
   }
 
   Future<AppUser> create(AppUser user) async {
-    final doc = _usersCollection.doc();
+    final doc = _usersCollection.doc(user.id.isNotEmpty ? user.id : null);
     await doc.set(user);
     return user.copyWith(id: doc.id);
   }

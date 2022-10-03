@@ -69,7 +69,7 @@ class AuthService {
   }) async {
     // todo: use id from userCredential
     final user = await userRepository.create(
-      AppUser(id: '', email: email, name: name, surname: surname),
+      AppUser(id: userCredential.user!.uid, email: email, name: name, surname: surname),
     );
     ref.read(authUserProvider.notifier).state = user;
   }
