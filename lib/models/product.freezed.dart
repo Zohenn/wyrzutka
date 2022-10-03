@@ -14,8 +14,13 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Product _$ProductFromJson(Map<String, dynamic> json) {
+  return _Product.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Product {
+  @JsonKey(toJson: toJsonNull, includeIfNull: false)
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   List<String> get keywords => throw _privateConstructorUsedError;
@@ -27,10 +32,13 @@ mixin _$Product {
   Map<String, Sort> get sortProposals => throw _privateConstructorUsedError;
   List<String> get variants => throw _privateConstructorUsedError;
   String get user => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: dateTimeFromJson)
   DateTime get addedDate => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
   DocumentSnapshot<Map<String, dynamic>>? get snapshot =>
       throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ProductCopyWith<Product> get copyWith => throw _privateConstructorUsedError;
 }
@@ -40,7 +48,8 @@ abstract class $ProductCopyWith<$Res> {
   factory $ProductCopyWith(Product value, $Res Function(Product) then) =
       _$ProductCopyWithImpl<$Res>;
   $Res call(
-      {String id,
+      {@JsonKey(toJson: toJsonNull, includeIfNull: false)
+          String id,
       String name,
       List<String> keywords,
       String? photo,
@@ -51,8 +60,12 @@ abstract class $ProductCopyWith<$Res> {
       Map<String, Sort> sortProposals,
       List<String> variants,
       String user,
-      DateTime addedDate,
-      DocumentSnapshot<Map<String, dynamic>>? snapshot});
+      @JsonKey(fromJson: dateTimeFromJson)
+          DateTime addedDate,
+      @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
+          DocumentSnapshot<Map<String, dynamic>>? snapshot});
+
+  $SortCopyWith<$Res>? get sort;
 }
 
 /// @nodoc
@@ -134,6 +147,17 @@ class _$ProductCopyWithImpl<$Res> implements $ProductCopyWith<$Res> {
               as DocumentSnapshot<Map<String, dynamic>>?,
     ));
   }
+
+  @override
+  $SortCopyWith<$Res>? get sort {
+    if (_value.sort == null) {
+      return null;
+    }
+
+    return $SortCopyWith<$Res>(_value.sort!, (value) {
+      return _then(_value.copyWith(sort: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -143,7 +167,8 @@ abstract class _$$_ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
       __$$_ProductCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String id,
+      {@JsonKey(toJson: toJsonNull, includeIfNull: false)
+          String id,
       String name,
       List<String> keywords,
       String? photo,
@@ -154,8 +179,13 @@ abstract class _$$_ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
       Map<String, Sort> sortProposals,
       List<String> variants,
       String user,
-      DateTime addedDate,
-      DocumentSnapshot<Map<String, dynamic>>? snapshot});
+      @JsonKey(fromJson: dateTimeFromJson)
+          DateTime addedDate,
+      @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
+          DocumentSnapshot<Map<String, dynamic>>? snapshot});
+
+  @override
+  $SortCopyWith<$Res>? get sort;
 }
 
 /// @nodoc
@@ -241,10 +271,11 @@ class __$$_ProductCopyWithImpl<$Res> extends _$ProductCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_Product extends _Product {
   const _$_Product(
-      {required this.id,
+      {@JsonKey(toJson: toJsonNull, includeIfNull: false)
+          required this.id,
       required this.name,
       final List<String> keywords = const [],
       this.photo,
@@ -255,15 +286,21 @@ class _$_Product extends _Product {
       required final Map<String, Sort> sortProposals,
       required final List<String> variants,
       required this.user,
-      required this.addedDate,
-      this.snapshot})
+      @JsonKey(fromJson: dateTimeFromJson)
+          required this.addedDate,
+      @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
+          this.snapshot})
       : _keywords = keywords,
         _symbols = symbols,
         _sortProposals = sortProposals,
         _variants = variants,
         super._();
 
+  factory _$_Product.fromJson(Map<String, dynamic> json) =>
+      _$$_ProductFromJson(json);
+
   @override
+  @JsonKey(toJson: toJsonNull, includeIfNull: false)
   final String id;
   @override
   final String name;
@@ -308,8 +345,10 @@ class _$_Product extends _Product {
   @override
   final String user;
   @override
+  @JsonKey(fromJson: dateTimeFromJson)
   final DateTime addedDate;
   @override
+  @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
   final DocumentSnapshot<Map<String, dynamic>>? snapshot;
 
   @override
@@ -340,6 +379,7 @@ class _$_Product extends _Product {
             const DeepCollectionEquality().equals(other.snapshot, snapshot));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -361,11 +401,19 @@ class _$_Product extends _Product {
   @override
   _$$_ProductCopyWith<_$_Product> get copyWith =>
       __$$_ProductCopyWithImpl<_$_Product>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_ProductToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Product extends Product {
   const factory _Product(
-      {required final String id,
+      {@JsonKey(toJson: toJsonNull, includeIfNull: false)
+          required final String id,
       required final String name,
       final List<String> keywords,
       final String? photo,
@@ -376,11 +424,16 @@ abstract class _Product extends Product {
       required final Map<String, Sort> sortProposals,
       required final List<String> variants,
       required final String user,
-      required final DateTime addedDate,
-      final DocumentSnapshot<Map<String, dynamic>>? snapshot}) = _$_Product;
+      @JsonKey(fromJson: dateTimeFromJson)
+          required final DateTime addedDate,
+      @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
+          final DocumentSnapshot<Map<String, dynamic>>? snapshot}) = _$_Product;
   const _Product._() : super._();
 
+  factory _Product.fromJson(Map<String, dynamic> json) = _$_Product.fromJson;
+
   @override
+  @JsonKey(toJson: toJsonNull, includeIfNull: false)
   String get id;
   @override
   String get name;
@@ -403,8 +456,10 @@ abstract class _Product extends Product {
   @override
   String get user;
   @override
+  @JsonKey(fromJson: dateTimeFromJson)
   DateTime get addedDate;
   @override
+  @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
   DocumentSnapshot<Map<String, dynamic>>? get snapshot;
   @override
   @JsonKey(ignore: true)

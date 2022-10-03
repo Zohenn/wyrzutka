@@ -3,13 +3,18 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inzynierka/models/sort.dart';
 
 part 'product.freezed.dart';
+part 'product.g.dart';
+
+snapshotFromJson(_) => _;
+dateTimeFromJson(Timestamp? timestamp) => timestamp?.toDate();
+toJsonNull(_) => null;
 
 @freezed
 class Product with _$Product {
   const Product._();
 
   const factory Product({
-    required String id,
+    @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
     required String name,
     @Default([]) List<String> keywords,
     String? photo,
@@ -20,8 +25,9 @@ class Product with _$Product {
     required Map<String, Sort> sortProposals,
     required List<String> variants,
     required String user,
-    required DateTime addedDate,
-    DocumentSnapshot<Map<String, dynamic>>? snapshot,
+    @JsonKey(fromJson: dateTimeFromJson) required DateTime addedDate,
+    @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
+        DocumentSnapshot<Map<String, dynamic>>? snapshot,
   }) = _Product;
 
   factory Product.fromFirestore(
@@ -29,24 +35,14 @@ class Product with _$Product {
     SnapshotOptions? options,
   ) {
     final data = snapshot.data()!;
-    return Product(
-      id: snapshot.id,
-      name: data['name'],
-      keywords: (data['keywords'] as List).cast<String>(),
-      photo: data['photo'],
-      photoSmall: data['photoSmall'],
-      symbols: (data['symbols'] as List).cast<String>(),
-      sort: data['sort'] != null ? Sort.fromFirestore(data['sort']) : null,
-      verifiedBy: data['verifiedBy'],
-      sortProposals: (data['sortProposals'] as Map)
-          .cast<String, Map<String, dynamic>>()
-          .map((key, value) => MapEntry(key, Sort.fromFirestore(value))),
-      variants: (data['variants'] as List).cast<String>(),
-      user: data['user'],
-      addedDate: (data['addedDate'] as Timestamp).toDate(),
-      snapshot: snapshot,
-    );
+    return Product.fromJson({
+      'id': snapshot.id,
+      'snapshot': snapshot,
+      ...data,
+    });
   }
+
+  factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 
   List<String>? get containers {
     if (sort == null) {
@@ -57,22 +53,6 @@ class Product with _$Product {
   }
 
   static Map<String, Object?> toFirestore(Product product, SetOptions? options) {
-    return {
-      'name': product.name,
-      'keywords': product.keywords,
-      'photo': product.photo,
-      'photoSmall': product.photoSmall,
-      'symbols': product.symbols,
-      'sort': product.sort != null ? Sort.toFirestore(product.sort!) : null,
-      'verifiedBy': product.verifiedBy,
-      'sortProposals': product.sortProposals.map((key, value) => MapEntry(key, Sort.toFirestore(value))),
-      // containers and containerCount is needed for queries
-      'containers': product.containers,
-      'containerCount': product.containers?.length ?? 0,
-      'variants': product.variants,
-      'user': product.user,
-      'addedDate': product.addedDate,
-      'searchName': product.name.toLowerCase(),
-    };
+    return product.toJson();
   }
 }

@@ -230,7 +230,7 @@ class ProductRepository {
       transaction.update(
         productDoc,
         {
-          'sortProposals.${sort.id}.votes': newVotes.map((e) => Vote.toFirestore(e)).toList(),
+          'sortProposals.${sort.id}.votes': newVotes.map((e) => e.toJson()).toList(),
           'sortProposals.${sort.id}.voteBalance': newBalance,
         },
       );
@@ -243,6 +243,7 @@ class ProductRepository {
     final newProduct = product.copyWith(
       sortProposals: {
         ...product.sortProposals,
+        // todo: use copyWith
         sort.id: Sort(
           id: sort.id,
           user: sort.user,

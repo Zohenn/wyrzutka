@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inzynierka/app_icons.dart';
 import 'package:inzynierka/colors.dart';
+
+part 'sort_element.freezed.dart';
+part 'sort_element.g.dart';
 
 enum ElementContainer {
   plastic,
@@ -71,31 +75,13 @@ IconData get icon {
 }
 }
 
-@immutable
-class SortElement {
-  const SortElement({
-    required this.container,
-    required this.name,
-    this.description,
-  });
+@freezed
+class SortElement with _$SortElement {
+  const factory SortElement({
+    required ElementContainer container,
+    required String name,
+    String? description,
+  }) = _SortElement;
 
-  final ElementContainer container;
-  final String name;
-  final String? description;
-
-  factory SortElement.fromFirestore(Map<String, dynamic> data) {
-    return SortElement(
-      container: ElementContainer.values.byName(data['container']),
-      name: data['name'],
-      description: data['description'],
-    );
-  }
-
-  static Map<String, Object?> toFirestore(SortElement element) {
-    return {
-      'container': element.container.name,
-      'name': element.name,
-      'description': element.description,
-    };
-  }
+  factory SortElement.fromJson(Map<String, dynamic> json) => _$SortElementFromJson(json);
 }

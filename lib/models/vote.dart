@@ -1,26 +1,14 @@
-import 'package:flutter/widgets.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-@immutable
-class Vote {
-  const Vote({
-    required this.user,
-    required this.value,
-  });
+part 'vote.freezed.dart';
+part 'vote.g.dart';
 
-  factory Vote.fromFirestore(Map<String, dynamic> data) {
-    return Vote(
-      user: data['user'],
-      value: data['value'],
-    );
-  }
+@freezed
+class Vote with _$Vote {
+  const factory Vote({
+    required String user,
+    required bool value,
+  }) = _Vote;
 
-  final String user;
-  final bool value;
-
-  static toFirestore(Vote vote) {
-    return {
-      'user': vote.user,
-      'value': vote.value,
-    };
-  }
+  factory Vote.fromJson(Map<String, dynamic> json) => _$VoteFromJson(json);
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
+// todo: migrate to freezed
 @immutable
 class ProductSymbol {
   const ProductSymbol({
