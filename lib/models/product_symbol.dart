@@ -1,39 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-// todo: migrate to freezed
-@immutable
-class ProductSymbol {
-  const ProductSymbol({
-    required this.id,
-    required this.name,
-    required this.photo,
-    this.description,
-  });
+part 'product_symbol.freezed.dart';
+part 'product_symbol.g.dart';
 
-  final String id;
-  final String name;
-  final String photo;
-  final String? description;
+toJsonNull(_) => null;
+
+// Symbol already exists within Dart.
+@freezed
+class ProductSymbol with _$ProductSymbol {
+  const factory ProductSymbol({
+    @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
+    required String name,
+    required String photo,
+    String? description,
+  }) = _ProductSymbol;
 
   factory ProductSymbol.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
     final data = snapshot.data()!;
-    return ProductSymbol(
-      id: snapshot.id,
-      name: data['name'],
-      photo: data['photo'],
-      description: data['description'],
-    );
+    return ProductSymbol.fromJson({
+      'id': snapshot.id,
+      ...data,
+    });
   }
 
+  factory ProductSymbol.fromJson(Map<String, dynamic> json) => _$ProductSymbolFromJson(json);
+
   static Map<String, Object?> toFirestore(ProductSymbol product, SetOptions? options) {
-    return {
-      'name': product.name,
-      'photo': product.photo,
-      'description': product.description,
-    };
+    return product.toJson();
   }
 }

@@ -23,7 +23,8 @@ mixin _$Sort {
   String get id => throw _privateConstructorUsedError;
   String get user => throw _privateConstructorUsedError;
   List<SortElement> get elements => throw _privateConstructorUsedError;
-  int get voteBalance => throw _privateConstructorUsedError;
+  int get voteBalance =>
+      throw _privateConstructorUsedError; // todo: perhaps this could be changed to Map<String, bool>?
   List<Vote> get votes => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -166,7 +167,9 @@ class _$_Sort implements _Sort {
 
   @override
   final int voteBalance;
+// todo: perhaps this could be changed to Map<String, bool>?
   final List<Vote> _votes;
+// todo: perhaps this could be changed to Map<String, bool>?
   @override
   List<Vote> get votes {
     // ignore: implicit_dynamic_type
@@ -232,7 +235,7 @@ abstract class _Sort implements Sort {
   List<SortElement> get elements;
   @override
   int get voteBalance;
-  @override
+  @override // todo: perhaps this could be changed to Map<String, bool>?
   List<Vote> get votes;
   @override
   @JsonKey(ignore: true)
