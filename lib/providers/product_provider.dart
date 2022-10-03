@@ -242,14 +242,7 @@ class ProductRepository {
     final newProduct = product.copyWith(
       sortProposals: {
         ...product.sortProposals,
-        // todo: use copyWith
-        sort.id: Sort(
-          id: sort.id,
-          user: sort.user,
-          elements: sort.elements,
-          voteBalance: transactionData['balance'],
-          votes: transactionData['votes'],
-        ),
+        sort.id: sort.copyWith(voteBalance: transactionData['balance'], votes: transactionData['votes']),
       },
     );
     _addToCache(newProduct);
