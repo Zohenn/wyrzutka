@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/models/product.dart';
+import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/utils/image_error_builder.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 

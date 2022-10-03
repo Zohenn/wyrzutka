@@ -1,12 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:collection/collection.dart';
-import 'package:inzynierka/models/app_user.dart';
-import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/models/sort.dart';
-import 'package:inzynierka/models/sort_element.dart';
-import 'package:inzynierka/models/product_symbol.dart';
-import 'package:inzynierka/models/vote.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/models/product/sort.dart';
+import 'package:inzynierka/models/product/sort_element.dart';
+import 'package:inzynierka/models/product_symbol/product_symbol.dart';
+import 'package:inzynierka/models/product/vote.dart';
 
 List<AppUser> users = [
   const AppUser(id: '1', email: '1', name: 'Wojtek', surname: 'Brandeburg'),

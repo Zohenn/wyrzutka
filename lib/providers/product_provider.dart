@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
-import 'package:inzynierka/models/app_user.dart';
-import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/models/sort.dart';
-import 'package:inzynierka/models/sort_element.dart';
-import 'package:inzynierka/models/vote.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/models/product/sort.dart';
+import 'package:inzynierka/models/product/sort_element.dart';
+import 'package:inzynierka/models/product/vote.dart';
 
 enum ProductSortFilters {
   verified,

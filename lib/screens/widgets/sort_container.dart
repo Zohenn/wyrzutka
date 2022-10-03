@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
-import 'package:inzynierka/models/app_user.dart';
-import 'package:inzynierka/models/sort_element.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/models/product.dart';
-import 'package:inzynierka/models/sort.dart';
+import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/widgets/progress_indicator_icon_button.dart';
 
 enum _UpdateVoteState { none, up, down }

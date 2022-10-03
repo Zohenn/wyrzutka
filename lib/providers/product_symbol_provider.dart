@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
-import 'package:inzynierka/models/product_symbol.dart';
+import 'package:inzynierka/models/product_symbol/product_symbol.dart';
 
 final _productSymbolCollection = FirebaseFirestore.instance.collection('symbols').withConverter(
       fromFirestore: ProductSymbol.fromFirestore,

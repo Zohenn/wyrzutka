@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inzynierka/models/sort.dart';
+import 'package:inzynierka/models/product/sort.dart';
 
 part 'product.freezed.dart';
 part 'product.g.dart';

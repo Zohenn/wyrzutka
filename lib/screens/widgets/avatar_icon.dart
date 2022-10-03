@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/models/app_user.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
 class AvatarIcon extends StatelessWidget {

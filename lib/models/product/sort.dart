@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inzynierka/models/sort_element.dart';
-import 'package:inzynierka/models/vote.dart';
+import 'package:inzynierka/models/product/sort_element.dart';
+import 'package:inzynierka/models/product/vote.dart';
 
 part 'sort.freezed.dart';
 part 'sort.g.dart';

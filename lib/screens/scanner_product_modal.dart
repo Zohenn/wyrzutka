@@ -4,7 +4,7 @@ import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/product_modal/product_sort.dart';
-import 'package:inzynierka/models/product.dart';
+import 'package:inzynierka/models/product/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';

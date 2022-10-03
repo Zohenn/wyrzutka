@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
 
 final _usersCollection = FirebaseFirestore.instance.collection('users').withConverter(
       fromFirestore: AppUser.fromFirestore,
