@@ -67,7 +67,6 @@ class AuthService {
     required String name,
     required String surname,
   }) async {
-    // todo: use id from userCredential
     final user = await userRepository.create(
       AppUser(id: userCredential.user!.uid, email: email, name: name, surname: surname),
     );
