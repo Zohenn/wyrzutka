@@ -21,11 +21,13 @@ class ProductModal extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
+
     final future = useInitFuture<Product?>(() => productRepository.fetchId(id));
     final product = ref.watch(productProvider(id));
+    final authUser = ref.watch(authUserProvider);
+
     final tabController = useTabController(initialLength: 2);
     final index = useState(0);
-    final authUser = ref.watch(authUserProvider);
 
     tabController.addListener(() {
       index.value = tabController.index;

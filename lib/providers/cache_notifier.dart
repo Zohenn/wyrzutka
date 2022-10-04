@@ -15,6 +15,13 @@ ProviderFamily<V?, String> createCacheItemProvider<V>(CacheProvider<V> cacheProv
   });
 }
 
+ProviderFamily<List<V>, List<String>> createCacheItemsProvider<V>(CacheProvider<V> cacheProvider) {
+  return Provider.family<List<V>, List<String>>((ref, ids) {
+    final cache = ref.watch(cacheProvider);
+    return ids.map((id) => cache[id]).where((element) => element != null).cast<V>().toList();
+  });
+}
+
 class CacheNotifier<V> extends StateNotifier<Map<String, V>> {
   CacheNotifier() : super({});
 

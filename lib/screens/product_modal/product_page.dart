@@ -26,16 +26,17 @@ class ProductPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final symbolRepository = ref.watch(productSymbolRepositoryProvider);
     final userRepository = ref.watch(userRepositoryProvider);
-    final symbols = useState<List<ProductSymbol>>([]);
-    final user = useState<AppUser?>(null);
+
     final future = useInitFuture(
       () => Future.wait(
         [
-          symbolRepository.fetchIds(product.symbols).then((value) => symbols.value = value),
-          userRepository.fetchId(product.user).then((value) => user.value = value),
+          symbolRepository.fetchIds(product.symbols),
+          userRepository.fetchId(product.user),
         ],
       ),
     );
+    final symbols = ref.watch(productSymbolsProvider(product.symbols));
+    final user = ref.watch(userProvider(product.user));
 
     useAutomaticKeepAlive();
 
@@ -50,9 +51,9 @@ class ProductPage extends HookConsumerWidget {
             ProductSort(product: product),
             ConditionalBuilder(
               condition: product.symbols.isNotEmpty,
-              ifTrue: () => ProductSymbols(product: product, symbols: symbols.value),
+              ifTrue: () => ProductSymbols(product: product, symbols: symbols),
             ),
-            ProductUser(user: user.value),
+            ProductUser(user: user),
           ],
         ),
       ),

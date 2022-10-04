@@ -11,7 +11,8 @@ final _productSymbolCollection = FirebaseFirestore.instance.collection('symbols'
 
 final _productSymbolCacheProvider = createCacheProvider<ProductSymbol>();
 
-final productProvider = createCacheItemProvider(_productSymbolCacheProvider);
+final productSymbolProvider = createCacheItemProvider(_productSymbolCacheProvider);
+final productSymbolsProvider = createCacheItemsProvider(_productSymbolCacheProvider);
 
 final productSymbolRepositoryProvider = Provider((ref) => ProductSymbolRepository(ref));
 

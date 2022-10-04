@@ -21,10 +21,11 @@ class VariantPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final variants = useState<List<Product>>([]);
+
     final future = useInitFuture<List<Product>>(
-      () => productRepository.fetchIds(product.variants).then((value) => variants.value = value),
+      () => productRepository.fetchIds(product.variants),
     );
+    final variants = ref.watch(productsProvider(product.variants));
 
     useAutomaticKeepAlive();
 
@@ -37,7 +38,7 @@ class VariantPage extends HookConsumerWidget {
           child: GutterColumn(
             children: [
               // todo: make these clickable, I suppose?
-              for (var variant in variants.value) ...[
+              for (var variant in variants) ...[
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),

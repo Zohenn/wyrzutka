@@ -89,18 +89,19 @@ class ProductsNotifier extends StateNotifier<List<Product>> {
   }
 }
 
-final productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
+final productsListProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
 
 final productsFutureProvider = Provider((ref) async {
   final repository = ref.read(productRepositoryProvider);
   final products = await repository.fetchMore();
-  ref.read(productsProvider.notifier).addProducts(products);
+  ref.read(productsListProvider.notifier).addProducts(products);
   return products;
 });
 
 final _productCacheProvider = createCacheProvider<Product>();
 
 final productProvider = createCacheItemProvider(_productCacheProvider);
+final productsProvider = createCacheItemsProvider(_productCacheProvider);
 
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
