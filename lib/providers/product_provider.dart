@@ -7,6 +7,7 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/product/vote.dart';
+import 'package:inzynierka/providers/cache_notifier.dart';
 
 enum ProductSortFilters {
   verified,
@@ -97,33 +98,10 @@ final productsFutureProvider = Provider((ref) async {
   return products;
 });
 
-class CacheNotifier<K, V> extends StateNotifier<Map<K, V>> {
-  CacheNotifier() : super({});
-
-  void add(K key, V value) {
-    state = {
-      ...state,
-      key: value,
-    };
-  }
-
-  void clear() {
-    state = {};
-  }
-
-  V? operator [](K key) {
-    return state[key];
-  }
-
-  void operator []=(K key, V value) {
-    add(key, value);
-  }
-}
-
-typedef ProductCache = CacheNotifier<String, Product>;
+typedef ProductCache = CacheNotifier<Product>;
 
 final _productCacheProvider =
-    StateNotifierProvider<ProductCache, Map<String, Product>>((ref) => CacheNotifier<String, Product>());
+    StateNotifierProvider<ProductCache, Map<String, Product>>((ref) => CacheNotifier<Product>());
 
 final productProvider = Provider.family<Product?, String>((ref, id) {
   final cache = ref.watch(_productCacheProvider);
@@ -132,32 +110,19 @@ final productProvider = Provider.family<Product?, String>((ref, id) {
 
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
-class ProductRepository {
+class ProductRepository with CacheNotifierMixin<Product> {
   ProductRepository(this.ref);
 
+  @override
   final Ref ref;
 
-  ProductCache get _cache => ref.read(_productCacheProvider.notifier);
+  @override
+  ProductCache get cache => ref.read(_productCacheProvider.notifier);
+
+  @override
+  CollectionReference<Product> get collection => _productsCollection;
 
   static const int batchSize = 10;
-
-  Future<Product?> fetchId(String id, [bool skipCache = false]) async {
-    if (!skipCache && _cache[id] != null) {
-      return _cache[id];
-    }
-    final snapshot = await _productsCollection.doc(id).get();
-    final product = snapshot.data();
-    _addToCache(product);
-    return product;
-  }
-
-  Future<List<Product>> fetchIds(List<String> ids) async {
-    if (ids.isEmpty) {
-      return [];
-    }
-    final querySnapshot = await _productsCollection.where(FieldPath.documentId, whereIn: ids).get();
-    return _mapDocs(querySnapshot);
-  }
 
   Future<List<Product>> fetchMore({
     Map<String, dynamic> filters = const {},
@@ -197,14 +162,14 @@ class ProductRepository {
     }
 
     final querySnapshot = await query.get();
-    return _mapDocs(querySnapshot, startAfterDocument == null);
+    return mapDocs(querySnapshot, startAfterDocument == null);
   }
 
   Future<List<Product>> search(String value) async {
     value = value.toLowerCase();
     final querySnapshot =
         await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
-    return _mapDocs(querySnapshot);
+    return mapDocs(querySnapshot);
   }
 
   // todo: mark as verified if voteBalance > 0
@@ -245,26 +210,8 @@ class ProductRepository {
         sort.id: sort.copyWith(voteBalance: transactionData['balance'], votes: transactionData['votes']),
       },
     );
-    _addToCache(newProduct);
+    addToCache(newProduct.id, newProduct);
 
     return newProduct;
-  }
-
-  List<Product> _mapDocs(QuerySnapshot<Product> querySnapshot, [bool clearCache = false]) {
-    if (clearCache) {
-      _cache.clear();
-    }
-
-    return querySnapshot.docs.map((snapshot) {
-      final data = snapshot.data();
-      _addToCache(data);
-      return data;
-    }).toList();
-  }
-
-  void _addToCache(Product? product) {
-    if (product != null) {
-      _cache[product.id] = product;
-    }
   }
 }
