@@ -8,15 +8,9 @@ final _usersCollection = FirebaseFirestore.instance.collection('users').withConv
       toFirestore: AppUser.toFirestore,
     );
 
-typedef UserCache = CacheNotifier<AppUser>;
+final _userCacheProvider = createCacheProvider<AppUser>();
 
-final _userCacheProvider =
-StateNotifierProvider<UserCache, Map<String, AppUser>>((ref) => CacheNotifier<AppUser>());
-
-final userProvider = Provider.family<AppUser?, String>((ref, id) {
-  final cache = ref.watch(_userCacheProvider);
-  return cache[id];
-});
+final userProvider = createCacheItemProvider(_userCacheProvider);
 
 final userRepositoryProvider = Provider((ref) => UserRepository(ref));
 
@@ -27,7 +21,7 @@ class UserRepository with CacheNotifierMixin {
   final Ref ref;
 
   @override
-  UserCache get cache => ref.read(_userCacheProvider.notifier);
+  CacheNotifier<AppUser> get cache => ref.read(_userCacheProvider.notifier);
 
   @override
   CollectionReference<AppUser> get collection => _usersCollection;

@@ -98,15 +98,9 @@ final productsFutureProvider = Provider((ref) async {
   return products;
 });
 
-typedef ProductCache = CacheNotifier<Product>;
+final _productCacheProvider = createCacheProvider<Product>();
 
-final _productCacheProvider =
-    StateNotifierProvider<ProductCache, Map<String, Product>>((ref) => CacheNotifier<Product>());
-
-final productProvider = Provider.family<Product?, String>((ref, id) {
-  final cache = ref.watch(_productCacheProvider);
-  return cache[id];
-});
+final productProvider = createCacheItemProvider(_productCacheProvider);
 
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
@@ -117,7 +111,7 @@ class ProductRepository with CacheNotifierMixin<Product> {
   final Ref ref;
 
   @override
-  ProductCache get cache => ref.read(_productCacheProvider.notifier);
+  CacheNotifier<Product> get cache => ref.read(_productCacheProvider.notifier);
 
   @override
   CollectionReference<Product> get collection => _productsCollection;
@@ -184,7 +178,6 @@ class ProductRepository with CacheNotifierMixin<Product> {
       List<Vote> newVotes;
       if (previousVote == null) {
         newVotes = [..._sort.votes, vote];
-
       } else if (previousVote.value == value) {
         newVotes = [..._sort.votes]..remove(previousVote);
       } else {
