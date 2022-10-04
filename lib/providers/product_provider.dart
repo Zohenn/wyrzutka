@@ -4,61 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/product/vote.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
-
-enum ProductSortFilters {
-  verified,
-  unverified,
-  noProposals;
-
-  static String get groupKey => 'sort';
-
-  static String get groupName => 'Segregacja';
-
-  String get filterName {
-    switch (this) {
-      case ProductSortFilters.verified:
-        return 'Zweryfikowano';
-      case ProductSortFilters.unverified:
-        return 'Niezweryfikowano';
-      case ProductSortFilters.noProposals:
-        return 'Brak propozycji';
-    }
-  }
-}
-
-enum ProductContainerFilters {
-  plastic,
-  paper,
-  bio,
-  mixed,
-  glass,
-  many;
-
-  static String get groupKey => 'containers';
-
-  static String get groupName => 'Pojemniki';
-
-  String get filterName {
-    switch (this) {
-      case ProductContainerFilters.plastic:
-        return ElementContainer.plastic.containerName;
-      case ProductContainerFilters.paper:
-        return ElementContainer.paper.containerName;
-      case ProductContainerFilters.bio:
-        return ElementContainer.bio.containerName;
-      case ProductContainerFilters.mixed:
-        return ElementContainer.mixed.containerName;
-      case ProductContainerFilters.glass:
-        return ElementContainer.glass.containerName;
-      case ProductContainerFilters.many:
-        return 'Wiele pojemników';
-    }
-  }
-}
 
 final _productsCollection = FirebaseFirestore.instance.collection('products').withConverter(
       fromFirestore: Product.fromFirestore,
@@ -72,29 +21,12 @@ Future saveExampleProductData() async {
   }));
 }
 
-class ProductsNotifier extends StateNotifier<List<Product>> {
-  ProductsNotifier() : super([]);
-
-  // todo: check for duplicates
-  void addProduct(Product product) {
-    state = [...state, product];
-  }
-
-  void addProducts(Iterable<Product> products) {
-    state = [...state, ...products];
-  }
-
-  void assignProducts(Iterable<Product> products) {
-    state = [...products];
-  }
-}
-
-final productsListProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
+final productsListProvider = StateProvider<List<Product>>((ref) => <Product>[]);
 
 final productsFutureProvider = Provider((ref) async {
   final repository = ref.read(productRepositoryProvider);
   final products = await repository.fetchMore();
-  ref.read(productsListProvider.notifier).addProducts(products);
+  ref.read(productsListProvider.notifier).state = products;
   return products;
 });
 
