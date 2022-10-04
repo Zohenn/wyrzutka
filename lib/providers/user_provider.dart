@@ -1,36 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/providers/cache_notifier.dart';
 
 final _usersCollection = FirebaseFirestore.instance.collection('users').withConverter(
       fromFirestore: AppUser.fromFirestore,
       toFirestore: AppUser.toFirestore,
     );
 
-final userRepositoryProvider = Provider((ref) => UserRepository());
+typedef UserCache = CacheNotifier<AppUser>;
 
-class UserRepository {
-  final Map<String, AppUser> cache = {};
+final _userCacheProvider =
+StateNotifierProvider<UserCache, Map<String, AppUser>>((ref) => CacheNotifier<AppUser>());
 
-  Future<AppUser?> fetchId(String id, [bool skipCache = false]) async {
-    if (!skipCache && cache[id] != null) {
-      return cache[id];
-    }
-    final snapshot = await _usersCollection.doc(id).get();
-    final user = snapshot.data();
-    _addToCache(user);
-    return user;
-  }
+final userProvider = Provider.family<AppUser?, String>((ref, id) {
+  final cache = ref.watch(_userCacheProvider);
+  return cache[id];
+});
+
+final userRepositoryProvider = Provider((ref) => UserRepository(ref));
+
+class UserRepository with CacheNotifierMixin {
+  UserRepository(this.ref);
+
+  @override
+  final Ref ref;
+
+  @override
+  UserCache get cache => ref.read(_userCacheProvider.notifier);
+
+  @override
+  CollectionReference<AppUser> get collection => _usersCollection;
 
   Future<AppUser> create(AppUser user) async {
     final doc = _usersCollection.doc(user.id.isNotEmpty ? user.id : null);
     await doc.set(user);
     return user.copyWith(id: doc.id);
-  }
-
-  void _addToCache(AppUser? user) {
-    if (user != null) {
-      cache[user.id] = user;
-    }
   }
 }
