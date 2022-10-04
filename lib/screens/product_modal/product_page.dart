@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product_symbol/product_symbol.dart';
@@ -27,21 +28,19 @@ class ProductPage extends HookConsumerWidget {
     final userRepository = ref.watch(userRepositoryProvider);
     final symbols = useState<List<ProductSymbol>>([]);
     final user = useState<AppUser?>(null);
-    final future = useState<Future?>(null);
-    useEffect(() {
-      Future.wait(
+    final future = useInitFuture(
+      () => Future.wait(
         [
           symbolRepository.fetchIds(product.symbols).then((value) => symbols.value = value),
           userRepository.fetchId(product.user).then((value) => user.value = value),
         ],
-      );
-      return null;
-    }, []);
+      ),
+    );
 
     useAutomaticKeepAlive();
 
     return FutureHandler(
-      future: future.value,
+      future: future,
       data: () => SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: GutterColumn(

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/debounce.dart';
+import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/providers/product_symbol_provider.dart';
@@ -37,19 +38,18 @@ class ProductsScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final future = useState<Future?>(null);
+    final products = useState<List<Product>>([]);
+    final future = useInitFuture<List<Product>>(
+      () => ref.read(productsFutureProvider).then((value) {
+        products.value.addAll(value);
+        return value;
+      }),
+    );
     final searchText = useState('');
     final selectedFilters = useState<Filters>({});
     final innerFuture = useState<Future?>(null);
-    final products = useState<List<Product>>([]);
     final isFetchingMore = useState(false);
     final fetchedAll = useState(false);
-    useEffect(() {
-      future.value = ref.read(productsFutureProvider).then((value) {
-        products.value.addAll(value);
-      });
-      return null;
-    }, []);
 
     useEffect(() {
       if (searchText.value.isNotEmpty) {
@@ -90,7 +90,7 @@ class ProductsScreen extends HookConsumerWidget {
         ),
         child: SafeArea(
           child: FutureHandler(
-            future: future.value,
+            future: future,
             data: () => NestedScrollView(
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, _) => [
