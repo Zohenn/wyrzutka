@@ -31,7 +31,12 @@ class ProductPage extends HookConsumerWidget {
       () => Future.wait(
         [
           symbolRepository.fetchIds(product.symbols),
-          userRepository.fetchId(product.user),
+          userRepository.fetchIds([
+            product.user,
+            if(product.sort != null)
+              product.sort!.user,
+            ...product.sortProposals.values.map((e) => e.user),
+          ]),
         ],
       ),
     );

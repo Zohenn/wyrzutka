@@ -8,7 +8,7 @@ class AvatarIcon extends StatelessWidget {
     required this.user,
   }) : super(key: key);
 
-  final AppUser user;
+  final AppUser? user;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +17,10 @@ class AvatarIcon extends StatelessWidget {
       foregroundColor: Colors.black,
       child: Center(
         child: ConditionalBuilder(
-          condition: user.name.isNotEmpty && user.surname.isNotEmpty,
+          condition: user != null,
           ifTrue: () => Text(
-            user.name[0].toUpperCase() + user.surname[0].toUpperCase(),
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            user!.name[0].toUpperCase() + user!.surname[0].toUpperCase(),
+            style: Theme.of(context).textTheme.titleSmall,
           ),
           ifFalse: () => const Icon(
             Icons.question_mark,

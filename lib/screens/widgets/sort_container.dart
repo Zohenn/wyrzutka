@@ -7,6 +7,7 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
+import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
@@ -45,10 +46,12 @@ class SortContainer extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
     final authUser = ref.watch(authUserProvider);
+    final user = ref.watch(userProvider(sort.user));
     final updateVoteState = useState(_UpdateVoteState.none);
     final disableButtons =
         updateVoteState.value != _UpdateVoteState.none || authUser == null || authUser.id == sort.user;
     final userVote = sort.votes.firstWhereOrNull((element) => element.user == authUser?.id);
+
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,15 +68,14 @@ class SortContainer extends HookConsumerWidget {
                   Row(
                     children: [
                       const Icon(Icons.done, color: AppColors.positive),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 12),
                       Text(
                         'Zweryfikowano',
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.black),
+                        style: Theme.of(context).textTheme.labelLarge,
                       )
                     ],
                   ),
-                  // TODO add user provider
-                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
+                  AvatarIcon(user: user),
                 ],
               ),
             ),
@@ -119,8 +121,7 @@ class SortContainer extends HookConsumerWidget {
                     ),
                   ),
                   const Expanded(child: SizedBox.shrink()),
-                  // TODO add user provider
-                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
+                  AvatarIcon(user: user),
                 ],
               ),
             ),
