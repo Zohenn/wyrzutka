@@ -51,7 +51,7 @@ class AuthService {
 
   UserRepository get userRepository => ref.watch(userRepositoryProvider);
 
-  Future signUp({
+  Future<AppUser> signUp({
     required String name,
     required String surname,
     required String email,
@@ -59,10 +59,10 @@ class AuthService {
   }) async {
     final userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
     await userCredential.user!.updateDisplayName('$name $surname');
-    await _createUserDoc(userCredential: userCredential, email: email, name: name, surname: surname);
+    return await _createUserDoc(userCredential: userCredential, email: email, name: name, surname: surname);
   }
 
-  Future _createUserDoc({
+  Future<AppUser> _createUserDoc({
     required UserCredential userCredential,
     required String email,
     required String name,
@@ -72,9 +72,10 @@ class AuthService {
       AppUser(id: userCredential.user!.uid, email: email, name: name, surname: surname),
     );
     ref.read(authUserProvider.notifier).state = user;
+    return user;
   }
 
-  Future _createUserDocFromGoogleCredential(UserCredential userCredential) {
+  Future<AppUser> _createUserDocFromGoogleCredential(UserCredential userCredential) {
     // todo: perhaps there's a better way, since displayName can contain anything
     final user = userCredential.user!;
     final nameParts = user.displayName!.split(' ');
@@ -83,36 +84,37 @@ class AuthService {
     return _createUserDoc(userCredential: userCredential, email: user.email!, name: name, surname: surname);
   }
 
-  Future signIn({required String email, required String password}) async {
+  Future<AppUser> signIn({required String email, required String password}) async {
     final userCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
     try {
-      await _getUserData(userCredential);
+      return await _getUserData(userCredential);
     } on UserNotFoundException catch (e) {
-      await _createUserDocFromGoogleCredential(userCredential);
+      return await _createUserDocFromGoogleCredential(userCredential);
     }
   }
 
-  Future signInWithGoogle() async {
+  Future<AppUser?> signInWithGoogle() async {
     final userCredential = await _googleSignIn();
 
     // This means that sign in was cancelled by user.
     if (userCredential == null) {
-      return;
+      return null;
     }
 
     try {
-      await _getUserData(userCredential);
+      return await _getUserData(userCredential);
     } on UserNotFoundException catch (e) {
-      await _createUserDocFromGoogleCredential(userCredential);
+      return await _createUserDocFromGoogleCredential(userCredential);
     }
   }
 
-  Future _getUserData(UserCredential userCredential) async {
+  Future<AppUser> _getUserData(UserCredential userCredential) async {
     final user = await userRepository.fetchId(userCredential.user!.uid, true);
     if (user == null) {
       throw UserNotFoundException();
     }
     ref.read(authUserProvider.notifier).state = user;
+    return user;
   }
 
   Future<UserCredential?> _googleSignIn() async {
@@ -132,7 +134,7 @@ class AuthService {
     return await ref.read(firebaseAuthProvider).signInWithCredential(credential);
   }
 
-  Future signOut() async {
+  Future<void> signOut() async {
     await auth.signOut();
     ref.read(authUserProvider.notifier).state = null;
   }

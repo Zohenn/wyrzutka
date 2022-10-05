@@ -32,9 +32,12 @@ class ProgressIndicatorButton extends StatelessWidget {
             child: child,
           ),
           if (isLoading)
-            const SpinKitThreeBounce(
-              size: 18,
-              color: Colors.black54,
+            Semantics(
+              label: 'Ładowanie',
+              child: const SpinKitThreeBounce(
+                size: 18,
+                color: Colors.black54,
+              ),
             )
           else
             const SizedBox.shrink(),
