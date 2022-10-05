@@ -73,7 +73,7 @@ class SortContainer extends HookConsumerWidget {
                     ],
                   ),
                   // TODO add user provider
-                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '', savedProducts: [])),
+                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
                 ],
               ),
             ),
