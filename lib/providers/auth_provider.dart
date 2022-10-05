@@ -59,6 +59,7 @@ class AuthService {
     required String password,
   }) async {
     final userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+    await userCredential.user!.updateDisplayName('$name $surname');
     await _createUserDoc(userCredential: userCredential, email: email, name: name, surname: surname);
   }
 
@@ -94,6 +95,12 @@ class AuthService {
 
   Future signInWithGoogle() async {
     final userCredential = await _googleSignIn();
+
+    // This means that sign in was cancelled by user.
+    if (userCredential == null) {
+      return;
+    }
+
     try {
       await _getUserData(userCredential);
     } on UserNotFoundException catch (e) {
@@ -109,15 +116,21 @@ class AuthService {
     ref.read(authUserProvider.notifier).state = user;
   }
 
-  Future<UserCredential> _googleSignIn() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  Future<UserCredential?> _googleSignIn() async {
+    final GoogleSignInAccount? googleUser = await ref.read(googleSignInProvider).signIn();
+
+    // This means that sign in was cancelled by user.
+    if (googleUser == null) {
+      return null;
+    }
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    return await ref.read(firebaseAuthProvider).signInWithCredential(credential);
   }
 
   Future signOut() async {
