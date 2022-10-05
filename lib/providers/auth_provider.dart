@@ -5,11 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/providers/firebase_provider.dart';
 import 'package:inzynierka/providers/user_provider.dart';
 
 final _initialAuthStateProvider = FutureProvider<User?>((ref) {
   final completer = Completer<User?>();
-  final auth = FirebaseAuth.instance;
+  final auth = ref.watch(firebaseAuthProvider);
   final authStateSubscription = auth.authStateChanges().listen((event) {
     // todo: handle sign out here as well?
     if (!completer.isCompleted) {
@@ -47,7 +48,7 @@ class AuthService {
 
   final Ref ref;
 
-  FirebaseAuth get auth => FirebaseAuth.instance;
+  FirebaseAuth get auth => ref.watch(firebaseAuthProvider);
 
   UserRepository get userRepository => ref.watch(userRepositoryProvider);
 
