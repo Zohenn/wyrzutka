@@ -85,7 +85,11 @@ class AuthService {
 
   Future signIn({required String email, required String password}) async {
     final userCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
-    await _getUserData(userCredential);
+    try {
+      await _getUserData(userCredential);
+    } on UserNotFoundException catch (e) {
+      await _createUserDocFromGoogleCredential(userCredential);
+    }
   }
 
   Future signInWithGoogle() async {

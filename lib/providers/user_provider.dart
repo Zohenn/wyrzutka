@@ -4,6 +4,8 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 
+const userCollectionPath = 'users';
+
 final _userCacheProvider = createCacheProvider<AppUser>();
 
 final userProvider = createCacheItemProvider(_userCacheProvider);
@@ -21,7 +23,7 @@ class UserRepository with CacheNotifierMixin {
 
   @override
   late final CollectionReference<AppUser> collection =
-      ref.read(firebaseFirestoreProvider).collection('users').withConverter(
+      ref.read(firebaseFirestoreProvider).collection(userCollectionPath).withConverter(
             fromFirestore: AppUser.fromFirestore,
             toFirestore: AppUser.toFirestore,
           );
