@@ -9,6 +9,7 @@ import 'package:inzynierka/screens/product_modal/product_sort.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
@@ -24,9 +25,8 @@ class ScannerProductModal extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
-    final isSaved = authUser?.savedProducts.indexOf(id);
 
-    final save = useState(isSaved != -1 ? true : false);
+    final isSaved = useState(authUser == null ? false : authUser.savedProducts.contains(id));
     final isSaving = useState(false);
 
     final future = useInitFuture<Product?>(() => ref.read(productRepositoryProvider).fetchId(id));
@@ -87,7 +87,7 @@ class ScannerProductModal extends HookConsumerWidget {
                           child: AnimatedTheme(
                             data: Theme.of(context).copyWith(
                               outlinedButtonTheme:
-                                  OutlinedButtonThemeData(style: save.value ? activeTabStyle : inactiveTabStyle),
+                                  OutlinedButtonThemeData(style: isSaved.value ? activeTabStyle : inactiveTabStyle),
                             ),
                             child: ProgressIndicatorButton(
                               isLoading: isSaving.value,
@@ -97,18 +97,20 @@ class ScannerProductModal extends HookConsumerWidget {
                               onPressed: () async {
                                 final userRepository = ref.watch(userRepositoryProvider);
                                 isSaving.value = true;
-                                if (!save.value) {
-                                  final user = await userRepository.saveProduct(authUser!, id);
-                                  ref.read(authUserProvider.notifier).state = user;
-                                  save.value = true;
-                                } else {
-                                  final user = await userRepository.removeProduct(authUser!, id);
-                                  ref.read(authUserProvider.notifier).state = user;
-                                  save.value = false;
-                                }
+                                asyncCall(context, () async {
+                                  if (!isSaved.value) {
+                                    final user = await userRepository.saveProduct(authUser!, id);
+                                    ref.read(authUserProvider.notifier).state = user;
+                                    isSaved.value = true;
+                                  } else {
+                                    final user = await userRepository.removeProduct(authUser!, id);
+                                    ref.read(authUserProvider.notifier).state = user;
+                                    isSaved.value = false;
+                                  }
+                                });
                                 isSaving.value = false;
                               },
-                              child: !save.value ? const Text('Zapisz na liście') : const Text("Zapisano na liście"),
+                              child: !isSaved.value ? const Text('Zapisz na liście') : const Text("Zapisano na liście"),
                             ),
                           ),
                         ),

@@ -149,7 +149,7 @@ class _$_AppUser extends _AppUser {
       required this.email,
       required this.name,
       required this.surname,
-      required final List<String> savedProducts})
+      final List<String> savedProducts = const []})
       : _savedProducts = savedProducts,
         super._();
 
@@ -167,6 +167,7 @@ class _$_AppUser extends _AppUser {
   final String surname;
   final List<String> _savedProducts;
   @override
+  @JsonKey()
   List<String> get savedProducts {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_savedProducts);
@@ -219,7 +220,7 @@ abstract class _AppUser extends AppUser {
       required final String email,
       required final String name,
       required final String surname,
-      required final List<String> savedProducts}) = _$_AppUser;
+      final List<String> savedProducts}) = _$_AppUser;
   const _AppUser._() : super._();
 
   factory _AppUser.fromJson(Map<String, dynamic> json) = _$_AppUser.fromJson;

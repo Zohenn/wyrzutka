@@ -11,9 +11,10 @@ _$_AppUser _$$_AppUserFromJson(Map<String, dynamic> json) => _$_AppUser(
       email: json['email'] as String,
       name: json['name'] as String,
       surname: json['surname'] as String,
-      savedProducts: (json['savedProducts'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
+      savedProducts: (json['savedProducts'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$_AppUserToJson(_$_AppUser instance) {

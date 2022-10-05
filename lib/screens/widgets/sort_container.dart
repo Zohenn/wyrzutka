@@ -120,7 +120,7 @@ class SortContainer extends HookConsumerWidget {
                   ),
                   const Expanded(child: SizedBox.shrink()),
                   // TODO add user provider
-                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '', savedProducts: [])),
+                  const AvatarIcon(user: AppUser(email: '', surname: '', name: '', id: '')),
                 ],
               ),
             ),
