@@ -26,7 +26,7 @@ class ScannerProductModal extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
 
-    final isSaved = useState(authUser == null ? false : authUser.savedProducts.contains(id));
+    var isSaved = authUser?.savedProducts.contains(id) ?? false;
     final isSaving = useState(false);
 
     final future = useInitFuture<Product?>(() => ref.read(productRepositoryProvider).fetchId(id));
@@ -87,7 +87,7 @@ class ScannerProductModal extends HookConsumerWidget {
                           child: AnimatedTheme(
                             data: Theme.of(context).copyWith(
                               outlinedButtonTheme:
-                                  OutlinedButtonThemeData(style: isSaved.value ? activeTabStyle : inactiveTabStyle),
+                                  OutlinedButtonThemeData(style: isSaved ? activeTabStyle : inactiveTabStyle),
                             ),
                             child: ProgressIndicatorButton(
                               isLoading: isSaving.value,
@@ -97,20 +97,20 @@ class ScannerProductModal extends HookConsumerWidget {
                               onPressed: () async {
                                 final userRepository = ref.watch(userRepositoryProvider);
                                 isSaving.value = true;
-                                asyncCall(context, () async {
-                                  if (!isSaved.value) {
+                                await asyncCall(context, () async {
+                                  if (!isSaved) {
                                     final user = await userRepository.saveProduct(authUser!, id);
                                     ref.read(authUserProvider.notifier).state = user;
-                                    isSaved.value = true;
+                                    isSaved = true;
                                   } else {
                                     final user = await userRepository.removeProduct(authUser!, id);
                                     ref.read(authUserProvider.notifier).state = user;
-                                    isSaved.value = false;
+                                    isSaved = false;
                                   }
                                 });
                                 isSaving.value = false;
                               },
-                              child: !isSaved.value ? const Text('Zapisz na liście') : const Text("Zapisano na liście"),
+                              child: isSaved ? const Text('Zapisz na liście') : const Text("Zapisano na liście"),
                             ),
                           ),
                         ),
