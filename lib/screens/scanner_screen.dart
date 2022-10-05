@@ -125,6 +125,7 @@ class ScannerScreen extends HookWidget {
                           await showProductModal(context, value?.rawValue ?? '');
                           camera.controller!.resumePreview();
                         });
+                        showProductModal(context, "1234567890128");
                       },
                       child: const Text('Skanuj'),
                     ),

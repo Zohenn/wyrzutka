@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
+import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/product_modal/product_sort.dart';
 import 'package:inzynierka/models/product/product.dart';
@@ -12,6 +14,7 @@ import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
+import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 class ScannerProductModal extends HookConsumerWidget {
   const ScannerProductModal({Key? key, required this.id}) : super(key: key);
@@ -20,7 +23,12 @@ class ScannerProductModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final save = useState(false);
+    final authUser = ref.watch(authUserProvider);
+    final isSaved = authUser?.savedProducts.indexOf(id);
+
+    final save = useState(isSaved != -1 ? true : false);
+    final isSaving = useState(false);
+
     final future = useInitFuture<Product?>(() => ref.read(productRepositoryProvider).fetchId(id));
     final product = ref.watch(productProvider(id));
 
@@ -73,18 +81,35 @@ class ScannerProductModal extends HookConsumerWidget {
                   ),
                   child: GutterRow(
                     children: [
-                      AnimatedTheme(
-                        data: Theme.of(context).copyWith(
-                          outlinedButtonTheme:
-                              OutlinedButtonThemeData(style: save.value ? activeTabStyle : inactiveTabStyle),
-                        ),
-                        child: Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Theme.of(context).primaryColor),
+                      ConditionalBuilder(
+                        condition: authUser != null,
+                        ifTrue: () => Expanded(
+                          child: AnimatedTheme(
+                            data: Theme.of(context).copyWith(
+                              outlinedButtonTheme:
+                                  OutlinedButtonThemeData(style: save.value ? activeTabStyle : inactiveTabStyle),
                             ),
-                            onPressed: () => save.value = !save.value,
-                            child: const Text('Zapisz na liście'),
+                            child: ProgressIndicatorButton(
+                              isLoading: isSaving.value,
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Theme.of(context).primaryColor),
+                              ),
+                              onPressed: () async {
+                                final userRepository = ref.watch(userRepositoryProvider);
+                                isSaving.value = true;
+                                if (!save.value) {
+                                  final user = await userRepository.saveProduct(authUser!, id);
+                                  ref.read(authUserProvider.notifier).state = user;
+                                  save.value = true;
+                                } else {
+                                  final user = await userRepository.removeProduct(authUser!, id);
+                                  ref.read(authUserProvider.notifier).state = user;
+                                  save.value = false;
+                                }
+                                isSaving.value = false;
+                              },
+                              child: !save.value ? const Text('Zapisz na liście') : const Text("Zapisano na liście"),
+                            ),
                           ),
                         ),
                       ),

@@ -25,6 +25,7 @@ mixin _$AppUser {
   String get email => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get surname => throw _privateConstructorUsedError;
+  List<String> get savedProducts => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,7 +40,8 @@ abstract class $AppUserCopyWith<$Res> {
       {@JsonKey(toJson: toNull, includeIfNull: false) String id,
       String email,
       String name,
-      String surname});
+      String surname,
+      List<String> savedProducts});
 }
 
 /// @nodoc
@@ -56,6 +58,7 @@ class _$AppUserCopyWithImpl<$Res> implements $AppUserCopyWith<$Res> {
     Object? email = freezed,
     Object? name = freezed,
     Object? surname = freezed,
+    Object? savedProducts = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -74,6 +77,10 @@ class _$AppUserCopyWithImpl<$Res> implements $AppUserCopyWith<$Res> {
           ? _value.surname
           : surname // ignore: cast_nullable_to_non_nullable
               as String,
+      savedProducts: savedProducts == freezed
+          ? _value.savedProducts
+          : savedProducts // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -88,7 +95,8 @@ abstract class _$$_AppUserCopyWith<$Res> implements $AppUserCopyWith<$Res> {
       {@JsonKey(toJson: toNull, includeIfNull: false) String id,
       String email,
       String name,
-      String surname});
+      String surname,
+      List<String> savedProducts});
 }
 
 /// @nodoc
@@ -106,6 +114,7 @@ class __$$_AppUserCopyWithImpl<$Res> extends _$AppUserCopyWithImpl<$Res>
     Object? email = freezed,
     Object? name = freezed,
     Object? surname = freezed,
+    Object? savedProducts = freezed,
   }) {
     return _then(_$_AppUser(
       id: id == freezed
@@ -124,6 +133,10 @@ class __$$_AppUserCopyWithImpl<$Res> extends _$AppUserCopyWithImpl<$Res>
           ? _value.surname
           : surname // ignore: cast_nullable_to_non_nullable
               as String,
+      savedProducts: savedProducts == freezed
+          ? _value._savedProducts
+          : savedProducts // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -135,8 +148,10 @@ class _$_AppUser extends _AppUser {
       {@JsonKey(toJson: toNull, includeIfNull: false) required this.id,
       required this.email,
       required this.name,
-      required this.surname})
-      : super._();
+      required this.surname,
+      required final List<String> savedProducts})
+      : _savedProducts = savedProducts,
+        super._();
 
   factory _$_AppUser.fromJson(Map<String, dynamic> json) =>
       _$$_AppUserFromJson(json);
@@ -150,10 +165,16 @@ class _$_AppUser extends _AppUser {
   final String name;
   @override
   final String surname;
+  final List<String> _savedProducts;
+  @override
+  List<String> get savedProducts {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_savedProducts);
+  }
 
   @override
   String toString() {
-    return 'AppUser(id: $id, email: $email, name: $name, surname: $surname)';
+    return 'AppUser(id: $id, email: $email, name: $name, surname: $surname, savedProducts: $savedProducts)';
   }
 
   @override
@@ -164,7 +185,9 @@ class _$_AppUser extends _AppUser {
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality().equals(other.email, email) &&
             const DeepCollectionEquality().equals(other.name, name) &&
-            const DeepCollectionEquality().equals(other.surname, surname));
+            const DeepCollectionEquality().equals(other.surname, surname) &&
+            const DeepCollectionEquality()
+                .equals(other._savedProducts, _savedProducts));
   }
 
   @JsonKey(ignore: true)
@@ -174,7 +197,8 @@ class _$_AppUser extends _AppUser {
       const DeepCollectionEquality().hash(id),
       const DeepCollectionEquality().hash(email),
       const DeepCollectionEquality().hash(name),
-      const DeepCollectionEquality().hash(surname));
+      const DeepCollectionEquality().hash(surname),
+      const DeepCollectionEquality().hash(_savedProducts));
 
   @JsonKey(ignore: true)
   @override
@@ -194,7 +218,8 @@ abstract class _AppUser extends AppUser {
       {@JsonKey(toJson: toNull, includeIfNull: false) required final String id,
       required final String email,
       required final String name,
-      required final String surname}) = _$_AppUser;
+      required final String surname,
+      required final List<String> savedProducts}) = _$_AppUser;
   const _AppUser._() : super._();
 
   factory _AppUser.fromJson(Map<String, dynamic> json) = _$_AppUser.fromJson;
@@ -208,6 +233,8 @@ abstract class _AppUser extends AppUser {
   String get name;
   @override
   String get surname;
+  @override
+  List<String> get savedProducts;
   @override
   @JsonKey(ignore: true)
   _$$_AppUserCopyWith<_$_AppUser> get copyWith =>
