@@ -21,6 +21,16 @@ void main() {
   late MockGoogleSignIn googleSignIn;
   late ProviderContainer container;
 
+  createContainer() {
+    container = ProviderContainer(
+      overrides: [
+        firebaseAuthProvider.overrideWithValue(mockFirebaseAuth),
+        googleSignInProvider.overrideWithValue(googleSignIn),
+        userRepositoryProvider.overrideWithValue(userRepository),
+      ],
+    );
+  }
+
   setUp(() async {
     mockUser = MockUser(
       uid: 'VJHS5rQwHxh08064vjhkMhes2lS2',
@@ -36,17 +46,31 @@ void main() {
     mockFirebaseAuth = MockFirebaseAuth(mockUser: mockUser);
     userRepository = MockUserRepository();
     googleSignIn = MockGoogleSignIn();
-    container = ProviderContainer(
-      overrides: [
-        firebaseAuthProvider.overrideWithValue(mockFirebaseAuth),
-        googleSignInProvider.overrideWithValue(googleSignIn),
-        userRepositoryProvider.overrideWithValue(userRepository),
-      ],
-    );
+    createContainer();
   });
 
   test('Auth user should be null by default', () {
     expect(container.read(authUserProvider), isNull);
+  });
+
+  group('initialAuthUserProvider', () {
+    test('Should fetch user if has logged in before', () async {
+      mockFirebaseAuth = MockFirebaseAuth(mockUser: mockUser, signedIn: true);
+      createContainer();
+      when(userRepository.fetchId(any, any)).thenAnswer((realInvocation) => Future.value(user));
+
+      await container.read(initialAuthUserProvider.future);
+
+      verify(userRepository.fetchId(mockUser.uid, any)).called(1);
+      expect(container.read(authUserProvider), equals(user));
+    });
+
+    test('Should complete if has no logged in user', () async {
+      await container.read(initialAuthUserProvider.future);
+
+      verifyNever(userRepository.fetchId(any, any));
+      expect(container.read(authUserProvider), isNull);
+    });
   });
 
   group('signUp', () {

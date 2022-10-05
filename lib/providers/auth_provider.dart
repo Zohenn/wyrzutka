@@ -26,7 +26,6 @@ final _initialAuthStateProvider = FutureProvider<User?>((ref) {
 final authUserProvider = StateProvider<AppUser?>((ref) => null);
 
 final initialAuthUserProvider = FutureProvider<AppUser?>((ref) async {
-  await Firebase.initializeApp();
   final userRepository = ref.watch(userRepositoryProvider);
   final user = await ref.watch(_initialAuthStateProvider.future);
 

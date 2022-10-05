@@ -49,4 +49,5 @@ app.*.map.json
 # Generated .dart files
 *.mocks.dart
 
+coverage/
 *.lnk
