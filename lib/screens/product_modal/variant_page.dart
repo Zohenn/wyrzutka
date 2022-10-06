@@ -6,6 +6,7 @@ import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/utils/text_overflow_ellipsis_fix.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
@@ -46,7 +47,14 @@ class VariantPage extends HookConsumerWidget {
                       children: [
                         ProductPhoto(product: variant),
                         const SizedBox(width: 16),
-                        Text(variant.name, style: Theme.of(context).textTheme.titleMedium),
+                        Expanded(
+                          child: Text(
+                            variant.name.overflowFix,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                   ),
