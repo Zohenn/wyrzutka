@@ -7,6 +7,7 @@ part 'product.g.dart';
 
 snapshotFromJson(_) => _;
 dateTimeFromJson(Timestamp? timestamp) => timestamp?.toDate();
+dateTimeToJson(DateTime? date) => date;
 toJsonNull(_) => null;
 
 @freezed
@@ -22,10 +23,11 @@ class Product with _$Product {
     @Default([]) List<String> symbols,
     Sort? sort,
     String? verifiedBy,
-    required Map<String, Sort> sortProposals,
-    required List<String> variants,
+    @Default({}) Map<String, Sort> sortProposals,
+    @Default([]) List<String> variants,
     required String user,
-    @JsonKey(fromJson: dateTimeFromJson) required DateTime addedDate,
+    // todo: this should use FieldValue.serverTimestamp somehow
+    @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson) required DateTime addedDate,
     @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
         DocumentSnapshot<Map<String, dynamic>>? snapshot,
   }) = _Product;

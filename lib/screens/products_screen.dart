@@ -51,6 +51,7 @@ class ProductsScreen extends HookConsumerWidget {
     final innerFuture = useState<Future?>(null);
     final isFetchingMore = useState(false);
     final fetchedAll = useState(false);
+    saveExampleProductData();
 
     useEffect(() {
       if (searchText.value.isNotEmpty) {

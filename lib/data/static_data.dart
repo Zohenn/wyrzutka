@@ -386,4 +386,83 @@ final productsList = [
     sortProposals: {},
     variants: [],
   ),
+
+  // real data
+  Product(
+    id: '5902078020001',
+    name: 'Cisowianka Lekko Gazowana',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5902078020001%2Foriginal.png?alt=media&token=870a7026-8eef-4a2b-86f1-4f2dfe29a27a',
+    photoSmall:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5902078020001%2Fsmall.png?alt=media&token=588623fb-dc72-419b-b18e-ea3f45527dff',
+    sort: Sort.verified(
+      user: 'qVVAflMZhcRttgVqI0hFfoHj0043',
+      elements: [
+        SortElement(container: ElementContainer.plastic, name: 'Nakrętka', description: 'Odkręć i wyrzuć oddzielnie'),
+        SortElement(container: ElementContainer.plastic, name: 'Butelka', description: 'Zgnieć przed wyrzuceniem'),
+      ],
+    ),
+    verifiedBy: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+    user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    addedDate: DateTime(2022, 10, 6, 12, 51),
+  ),
+  Product(
+    id: '5900579259227',
+    name: 'Queen Chusteczki dwuwarstwowe 150 szt.',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5900579259227%2Foriginal.png?alt=media&token=2311d5a3-862d-44da-974c-f926e8a33766',
+    photoSmall:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5900579259227%2Fsmall.png?alt=media&token=3c8ba97f-e34e-4d34-8d25-3bf01918af19',
+    sort: Sort.verified(
+      user: 'qVVAflMZhcRttgVqI0hFfoHj0043',
+      elements: [
+        SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
+        SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed),
+      ],
+    ),
+    variants: ['5900579259210'],
+    verifiedBy: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+    user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    addedDate: DateTime(2022, 10, 6, 13, 8),
+  ),
+  Product(
+    id: '5900579259210',
+    name: 'Queen Chusteczki dwuwarstwowe 150 szt.',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5900579259210%2Foriginal.png?alt=media&token=2311d5a3-862d-44da-974c-f926e8a33766',
+    photoSmall:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5900579259210%2Fsmall.png?alt=media&token=3c8ba97f-e34e-4d34-8d25-3bf01918af19',
+    sort: Sort.verified(
+      user: 'qVVAflMZhcRttgVqI0hFfoHj0043',
+      elements: [
+        SortElement(name: 'Opakowanie', container: ElementContainer.paper, description: 'Zgnieć przed wyrzuceniem'),
+        SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed),
+      ],
+    ),
+    variants: ['5900579259227'],
+    verifiedBy: 'VJHS5rQwHxh08064vjhkMhes2lS2',
+    user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    addedDate: DateTime(2022, 10, 6, 13, 30),
+  ),
+  Product(
+    id: '5901588016443',
+    name: 'Wedel Czekolada Mleczna Truskawkowa',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5901588016443%2Foriginal.png?alt=media&token=0097026f-fd6c-4490-9026-084d58859787',
+    photoSmall:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5901588016443%2Fsmall.png?alt=media&token=64a39a17-07ec-4571-8817-020817674d94',
+    sortProposals: {
+      '1': Sort(
+        id: '1',
+        user: 'qVVAflMZhcRttgVqI0hFfoHj0043',
+        elements: [
+          SortElement(container: ElementContainer.plastic, name: 'Opakowanie'),
+        ],
+        voteBalance: 0,
+        votes: [],
+      ),
+    },
+    user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    addedDate: DateTime(2022, 10, 6, 13, 40),
+  )
 ];
