@@ -62,6 +62,7 @@ class AppTheme extends StatelessWidget {
             side: BorderSide.none,
           ),
           margin: EdgeInsets.zero,
+          clipBehavior: Clip.hardEdge,
         ),
         cardColor: AppColors.gray,
         scaffoldBackgroundColor: Colors.white,

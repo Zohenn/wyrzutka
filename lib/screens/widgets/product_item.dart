@@ -26,19 +26,19 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        showDefaultBottomSheet(
-          context: context,
-          builder: (context) => DefaultBottomSheet(
-            child: ProductModal(id: product.id),
-          ),
-        );
-      },
-      child: Card(
+    return Card(
+      child: InkWell(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+          showDefaultBottomSheet(
+            context: context,
+            builder: (context) => DefaultBottomSheet(
+              child: ProductModal(id: product.id),
+            ),
+          );
+        },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: GutterRow(
             children: [
               ProductPhoto(product: product),
@@ -46,11 +46,14 @@ class ProductItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      product.name.overflowFix,
-                      style: Theme.of(context).textTheme.titleMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Tooltip(
+                      message: product.name,
+                      child: Text(
+                        product.name.overflowFix,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     ConditionalBuilder(
