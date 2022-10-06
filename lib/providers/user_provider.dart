@@ -35,7 +35,7 @@ class UserRepository with CacheNotifierMixin {
   }
 
   Future<AppUser> saveProduct(AppUser user, String product) async {
-    final userDoc = _usersCollection.doc(user.id);
+    final userDoc = collection.doc(user.id);
     await userDoc.update({
       'savedProducts': FieldValue.arrayUnion([product]),
     });
@@ -43,7 +43,7 @@ class UserRepository with CacheNotifierMixin {
   }
 
   Future<AppUser> removeProduct(AppUser user, String product) async {
-    final userDoc = _usersCollection.doc(user.id);
+    final userDoc = collection.doc(user.id);
     await userDoc.update({
       'savedProducts': FieldValue.arrayRemove([product]),
     });
