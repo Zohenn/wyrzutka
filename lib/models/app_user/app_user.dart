@@ -15,6 +15,7 @@ class AppUser with _$AppUser {
     required String email,
     required String name,
     required String surname,
+    @Default([]) List<String> savedProducts,
   }) = _AppUser;
 
   factory AppUser.fromFirestore(
