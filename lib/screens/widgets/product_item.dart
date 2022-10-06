@@ -5,8 +5,10 @@ import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/utils/pluralization.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/utils/text_overflow_ellipsis_fix.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/gutter_row.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ProductItem extends StatelessWidget {
@@ -37,30 +39,30 @@ class ProductItem extends StatelessWidget {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
-          child: Row(
+          child: GutterRow(
             children: [
+              ProductPhoto(product: product),
               Expanded(
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ProductPhoto(product: product),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(product.name, style: Theme.of(context).textTheme.titleMedium),
-                        const SizedBox(width: 8),
-                        ConditionalBuilder(
-                          condition: product.sort != null,
-                          ifTrue: () => Text(
-                            '${product.sort!.elements.length} ${pluralization('element', product.sort!.elements.length)}',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                          ifFalse: () => Text(
-                            'Nieznane',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      product.name.overflowFix,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(width: 8),
+                    ConditionalBuilder(
+                      condition: product.sort != null,
+                      ifTrue: () => Text(
+                        '${product.sort!.elements.length} ${pluralization('element', product.sort!.elements.length)}',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                      ifFalse: () => Text(
+                        'Nieznane',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
                     ),
                   ],
                 ),
