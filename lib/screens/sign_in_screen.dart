@@ -135,10 +135,10 @@ class SignInScreen extends HookConsumerWidget {
                         onPressed: () async {
                           isSigningInWithGoogle.value = true;
                           try {
-                            await ref
-                                .read(authServiceProvider)
-                                .signInWithGoogle();
-                            Navigator.of(context, rootNavigator: true).pop();
+                            final user = await ref.read(authServiceProvider).signInWithGoogle();
+                            if (user != null) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            }
                           } catch (e) {
                             final code = e is FirebaseException ? e.code : '';
                             ScaffoldMessenger.of(context).showSnackBar(

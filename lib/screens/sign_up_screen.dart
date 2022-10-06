@@ -164,7 +164,7 @@ class SignUpScreen extends HookConsumerWidget {
                           } catch (e) {
                             final code = e is FirebaseException ? e.code : '';
                             ScaffoldMessenger.of(context).showSnackBar(
-                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd logowania.'),
+                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd rejestracji.'),
                             );
                           }
                           isSigningUpWithGoogle.value = false;

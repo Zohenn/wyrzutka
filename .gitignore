@@ -46,4 +46,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Generated .dart files
+*.mocks.dart
+
+coverage/
 *.lnk
