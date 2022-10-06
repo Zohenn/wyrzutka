@@ -202,19 +202,21 @@ class _ProductName extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              product?.name ?? 'Nieznany produkt',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              product?.id.toString() ?? id,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                product?.name ?? 'Nieznany produkt',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                product?.id.toString() ?? id,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ],
+          ),
         ),
       ],
     );
