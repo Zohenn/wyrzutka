@@ -48,6 +48,10 @@ app.*.map.json
 
 # Generated .dart files
 *.mocks.dart
+*.freezed.dart
+*.g.dart
 
+# Android Studio test coverage directory
 coverage/
+
 *.lnk
