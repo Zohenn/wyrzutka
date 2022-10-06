@@ -26,7 +26,7 @@ class ScannerProductModal extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
 
-    var isSaved = authUser?.savedProducts.contains(id) ?? false;
+    final isSaved = authUser?.savedProducts.contains(id) ?? false;
     final isSaving = useState(false);
 
     final future = useInitFuture<Product?>(() => ref.read(productRepositoryProvider).fetchId(id));
@@ -101,11 +101,9 @@ class ScannerProductModal extends HookConsumerWidget {
                                   if (!isSaved) {
                                     final user = await userRepository.saveProduct(authUser!, id);
                                     ref.read(authUserProvider.notifier).state = user;
-                                    isSaved = true;
                                   } else {
                                     final user = await userRepository.removeProduct(authUser!, id);
                                     ref.read(authUserProvider.notifier).state = user;
-                                    isSaved = false;
                                   }
                                 });
                                 isSaving.value = false;
