@@ -21,10 +21,10 @@ AppUser? getUser(String? email) {
 final symbols = [
   const ProductSymbol(
     id: 'budlC2aRgOumb2c0RsQL',
-    name: 'Tektura',
+    name: 'PAP 21',
     photo:
         'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Fpap.png?alt=media&token=17495d20-605a-4c1c-acc6-ad6df3f548e8',
-    description: 'Opakowanie wykonane z tektury',
+    description: 'Materiał wykonany z włókien celulozy, zdatny do recyklingu i biodegradowalny.',
   ),
   const ProductSymbol(
     id: '6EudWBDUR1T8zgoqoYVl',
@@ -464,5 +464,23 @@ final productsList = [
     },
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
     addedDate: DateTime(2022, 10, 6, 13, 40),
+  ),
+  Product(
+    id: '4000735235506',
+    name: 'Queen Strong Ręczniki kuchenne 2szt.',
+    photo: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F4000735235506%2Foriginal.png?alt=media&token=017562d7-9cec-4385-92e2-ff15ddc501d4',
+    photoSmall: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F4000735235506%2Fsmall.png?alt=media&token=2f708b51-ee4d-4ff2-aa2d-9553c983f068',
+    symbols: ['6EudWBDUR1T8zgoqoYVl'],
+    user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    addedDate: DateTime(2022, 10, 7, 15, 49),
+  ),
+  Product(
+    id: '5906764644366',
+    name: 'ECO Ściereczki wiskozowe perforowane 5szt.',
+    photo: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5906764644366%2Foriginal.png?alt=media&token=b7d8410e-0b51-471f-803c-8e662fe6466b',
+    photoSmall: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5906764644366%2Fsmall.png?alt=media&token=2a9f280e-5f2c-4e80-a0f0-6c931b231b4b',
+    symbols: ['6EudWBDUR1T8zgoqoYVl'],
+    user: 'qVVAflMZhcRttgVqI0hFfoHj0043',
+    addedDate: DateTime(2022, 10, 7, 15, 49),
   )
 ];
