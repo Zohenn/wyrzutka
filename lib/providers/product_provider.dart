@@ -8,15 +8,11 @@ import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/vote.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
+import 'package:inzynierka/providers/firebase_provider.dart';
 
-final _productsCollection = FirebaseFirestore.instance.collection('products').withConverter(
-      fromFirestore: Product.fromFirestore,
-      toFirestore: Product.toFirestore,
-    );
-
-Future saveExampleProductData() async {
+Future saveExampleProductData(WidgetRef ref) async {
   return Future.wait(productsList.map((e) {
-    final doc = _productsCollection.doc(e.id);
+    final doc = ref.read(productRepositoryProvider).collection.doc(e.id);
     return doc.set(e);
   }));
 }
@@ -47,7 +43,11 @@ class ProductRepository with CacheNotifierMixin<Product> {
   CacheNotifier<Product> get cache => ref.read(_productCacheProvider.notifier);
 
   @override
-  CollectionReference<Product> get collection => _productsCollection;
+  late final CollectionReference<Product> collection =
+      ref.read(firebaseFirestoreProvider).collection('products').withConverter(
+            fromFirestore: Product.fromFirestore,
+            toFirestore: Product.toFirestore,
+          );
 
   static const int batchSize = 10;
 
@@ -55,7 +55,7 @@ class ProductRepository with CacheNotifierMixin<Product> {
     Map<String, dynamic> filters = const {},
     DocumentSnapshot? startAfterDocument,
   }) async {
-    Query<Product> query = _productsCollection.limit(batchSize);
+    Query<Product> query = collection.limit(batchSize);
     if (filters[ProductSortFilters.groupKey] != null) {
       final filter = filters[ProductSortFilters.groupKey] as ProductSortFilters;
       switch (filter) {
@@ -95,14 +95,14 @@ class ProductRepository with CacheNotifierMixin<Product> {
   Future<List<Product>> search(String value) async {
     value = value.toLowerCase();
     final querySnapshot =
-        await _productsCollection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
+        await collection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
     return mapDocs(querySnapshot);
   }
 
   // todo: mark as verified if voteBalance >= 50
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final vote = Vote(user: user.id, value: value);
-    final productDoc = _productsCollection.doc(product.id);
+    final productDoc = collection.doc(product.id);
 
     final transactionData = await FirebaseFirestore.instance.runTransaction<Map<String, dynamic>>((transaction) async {
       final _product = (await productDoc.get()).data()!;

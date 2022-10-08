@@ -3,11 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product_symbol/product_symbol.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
-
-final _productSymbolCollection = FirebaseFirestore.instance.collection('symbols').withConverter(
-      fromFirestore: ProductSymbol.fromFirestore,
-      toFirestore: ProductSymbol.toFirestore,
-    );
+import 'package:inzynierka/providers/firebase_provider.dart';
 
 final _productSymbolCacheProvider = createCacheProvider<ProductSymbol>();
 
@@ -16,9 +12,9 @@ final productSymbolsProvider = createCacheItemsProvider(_productSymbolCacheProvi
 
 final productSymbolRepositoryProvider = Provider((ref) => ProductSymbolRepository(ref));
 
-Future saveExampleSymbolData() async {
+Future saveExampleSymbolData(WidgetRef ref) async {
   return Future.wait(symbols.map((e) {
-    final doc = _productSymbolCollection.doc(e.id);
+    final doc = ref.read(productSymbolRepositoryProvider).collection.doc(e.id);
     return doc.set(e);
   }));
 }
@@ -33,5 +29,9 @@ class ProductSymbolRepository with CacheNotifierMixin<ProductSymbol> {
   CacheNotifier<ProductSymbol> get cache => ref.read(_productSymbolCacheProvider.notifier);
 
   @override
-  CollectionReference<ProductSymbol> get collection => _productSymbolCollection;
+  late final CollectionReference<ProductSymbol> collection =
+      ref.read(firebaseFirestoreProvider).collection('symbols').withConverter(
+            fromFirestore: ProductSymbol.fromFirestore,
+            toFirestore: ProductSymbol.toFirestore,
+          );
 }
