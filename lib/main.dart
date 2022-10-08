@@ -24,7 +24,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    RouterWrapper.init(ref);
     return MaterialApp.router(
       title: 'Flutter Demo',
       theme: Theme.of(context),
