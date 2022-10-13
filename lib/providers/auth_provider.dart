@@ -138,4 +138,8 @@ class AuthService {
     await auth.signOut();
     ref.read(authUserProvider.notifier).state = null;
   }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    await auth.sendPasswordResetEmail(email: email);
+  }
 }

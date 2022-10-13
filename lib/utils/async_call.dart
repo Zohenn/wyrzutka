@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:inzynierka/utils/error_snack_bar.dart';
+import 'package:inzynierka/utils/snackbars.dart';
+import 'package:inzynierka/utils/firebase_errors.dart';
 
 Future<void> asyncCall(
   BuildContext context,
@@ -11,8 +13,9 @@ Future<void> asyncCall(
   } catch (err, stack) {
     debugPrint(err.toString());
     debugPrintStack(stackTrace: stack);
+    final code = err is FirebaseException ? err.code : '';
     ScaffoldMessenger.of(context).showSnackBar(
-      errorSnackBar(context: context, message: message ?? 'W trakcie przetwarzania wystąpił błąd.'),
+      errorSnackBar(context: context, message: firebaseErrors[code] ?? message ?? 'W trakcie przetwarzania wystąpił błąd.'),
     );
   }
 }

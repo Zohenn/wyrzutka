@@ -6,8 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/hooks/tap_gesture_recognizer.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/screens/password_recovery_screen.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
-import 'package:inzynierka/utils/error_snack_bar.dart';
+import 'package:inzynierka/utils/snackbars.dart';
 import 'package:inzynierka/utils/firebase_errors.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/validators.dart';
@@ -22,6 +23,24 @@ class SignInModel {
 class SignInScreen extends HookConsumerWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
+  void openSignUp(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
+    showDefaultBottomSheet(
+      fullScreen: true,
+      context: context,
+      builder: (context) => SignUpScreen(),
+    );
+  }
+
+  void openPasswordRecovery(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
+    showDefaultBottomSheet(
+      fullScreen: true,
+      context: context,
+      builder: (context) => PasswordRecoveryScreen(),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useRef(GlobalKey<FormState>());
@@ -29,16 +48,7 @@ class SignInScreen extends HookConsumerWidget {
     final passwordVisible = useState(false);
     final isSigningIn = useState(false);
     final isSigningInWithGoogle = useState(false);
-    final signUpGestureRecognizer = useTapGestureRecognizer(
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).pop();
-        showDefaultBottomSheet(
-          fullScreen: true,
-          context: context,
-          builder: (context) => SignUpScreen(),
-        );
-      },
-    );
+    final signUpGestureRecognizer = useTapGestureRecognizer(onTap: () => openSignUp(context));
 
     return Scaffold(
       body: CustomScrollView(
@@ -93,7 +103,7 @@ class SignInScreen extends HookConsumerWidget {
                                 ),
                               ),
                               counter: GestureDetector(
-                                onTap: () {},
+                                onTap: () => openPasswordRecovery(context),
                                 child: Text('Zapomniałeś hasła?', style: Theme.of(context).textTheme.labelMedium),
                               ),
                             ),

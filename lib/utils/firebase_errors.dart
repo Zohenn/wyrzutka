@@ -1,5 +1,5 @@
 Map<String, String> firebaseErrors = {
-  'user-not-found': 'Nieprawidłowy email lub hasło.',
+  'user-not-found': 'Nie znaleziono użytkownika o podanym adresie email.',
   'wrong-password': 'Nieprawidłowy email lub hasło.',
   'invalid-email': 'Podany email nie jest prawidłowy.',
   'user-disabled': 'Konto zablokowane.',
