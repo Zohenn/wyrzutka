@@ -10,7 +10,7 @@ import 'package:inzynierka/providers/firebase_provider.dart';
 import 'package:inzynierka/providers/user_provider.dart';
 import 'package:mockito/mockito.dart';
 
-import 'auth_provider.mocks.dart';
+import 'auth_provider_test.mocks.dart';
 
 @GenerateMocks([UserRepository])
 void main() {

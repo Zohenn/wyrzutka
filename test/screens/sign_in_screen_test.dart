@@ -10,7 +10,7 @@ import 'package:mockito/mockito.dart';
 
 import '../mocks/mock_navigator_observer.dart';
 import '../utils.dart';
-import 'sign_in_screen.mocks.dart';
+import 'sign_in_screen_test.mocks.dart';
 
 @GenerateMocks([AuthService])
 void main() {

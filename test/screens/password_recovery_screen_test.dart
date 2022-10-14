@@ -43,7 +43,6 @@ void main() {
   });
 
   testWidgets('Should send email on tap', (tester) async {
-    const email = 'mmarciniak299@gmail.com';
     await tester.pumpWidget(buildWidget());
 
     await sendEmail(tester);
