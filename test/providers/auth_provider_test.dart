@@ -1,4 +1,5 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
@@ -11,6 +12,19 @@ import 'package:inzynierka/providers/user_provider.dart';
 import 'package:mockito/mockito.dart';
 
 import 'auth_provider_test.mocks.dart';
+
+class CustomMockFirebaseAuth extends Mock implements FirebaseAuth {
+  @override
+  Future<void> sendPasswordResetEmail({required String? email, ActionCodeSettings? actionCodeSettings}) =>
+      super.noSuchMethod(
+        Invocation.method(#sendPasswordResetEmail, null, {
+          #email: email,
+          #actionCodeSettings: actionCodeSettings,
+        }),
+        returnValue: Future.value(),
+        returnValueForMissingStub: Future.value(),
+      );
+}
 
 @GenerateMocks([UserRepository])
 void main() {
@@ -189,6 +203,18 @@ void main() {
       await container.read(authServiceProvider).signOut();
 
       expect(container.read(authUserProvider), isNull);
+    });
+  });
+
+  group('sendPasswordResetEmail', () {
+    test('Should call sendPasswordResetEmail from FirebaseAuth', () async {
+      const email = 'mmarciniak299@gmail.com';
+      final mock = CustomMockFirebaseAuth();
+      container = ProviderContainer(overrides: [firebaseAuthProvider.overrideWithValue(mock)]);
+
+      await container.read(authServiceProvider).sendPasswordResetEmail(email);
+
+      verify(mock.sendPasswordResetEmail(email: email)).called(1);
     });
   });
 
