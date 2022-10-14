@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
@@ -9,30 +8,9 @@ import 'package:inzynierka/screens/sign_up_screen.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+import '../mocks/mock_navigator_observer.dart';
 import '../utils.dart';
 import 'sign_in_screen.mocks.dart';
-
-class MockNavigatorObserver extends Mock implements NavigatorObserver {
-  @override
-  NavigatorState? get navigator => _navigator;
-
-  NavigatorState? _navigator;
-
-  @override
-  void didPush(Route? route, Route? previousRoute) => super.noSuchMethod(
-        Invocation.method(#didpush, [route, previousRoute]),
-      );
-
-  @override
-  void didPop(Route? route, Route? previousRoute) => super.noSuchMethod(
-        Invocation.method(#didPop, [route, previousRoute]),
-      );
-
-  @override
-  void didReplace({Route? newRoute, Route? oldRoute}) => super.noSuchMethod(
-        Invocation.method(#didReplace, null, {#newRoute: newRoute, #oldRoute: oldRoute}),
-      );
-}
 
 @GenerateMocks([AuthService])
 void main() {
