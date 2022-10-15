@@ -8,6 +8,7 @@ import 'package:inzynierka/hooks/tap_gesture_recognizer.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
+import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/snackbars.dart';
 import 'package:inzynierka/utils/firebase_errors.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
@@ -133,7 +134,7 @@ class SignUpScreen extends HookConsumerWidget {
                           }
 
                           isSigningUp.value = true;
-                          try {
+                          await asyncCall(message: 'Błąd rejestracji.', context, () async {
                             await ref.read(authServiceProvider).signUp(
                                   name: model.value.name,
                                   surname: model.value.surname,
@@ -141,12 +142,7 @@ class SignUpScreen extends HookConsumerWidget {
                                   password: model.value.password,
                                 );
                             Navigator.of(context, rootNavigator: true).pop();
-                          } catch (e) {
-                            final code = e is FirebaseException ? e.code : '';
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd rejestracji.'),
-                            );
-                          }
+                          });
                           isSigningUp.value = false;
                         },
                         child: Center(child: Text('Zarejestruj się')),
@@ -156,17 +152,12 @@ class SignUpScreen extends HookConsumerWidget {
                         isLoading: isSigningUpWithGoogle.value,
                         onPressed: () async {
                           isSigningUpWithGoogle.value = true;
-                          try {
+                          await asyncCall(message: 'Błąd rejestracji.', context, () async {
                             final user = await ref.read(authServiceProvider).signInWithGoogle();
                             if (user != null) {
                               Navigator.of(context, rootNavigator: true).pop();
                             }
-                          } catch (e) {
-                            final code = e is FirebaseException ? e.code : '';
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd rejestracji.'),
-                            );
-                          }
+                          });
                           isSigningUpWithGoogle.value = false;
                         },
                         style: Theme.of(context).outlinedButtonTheme.style!.copyWith(

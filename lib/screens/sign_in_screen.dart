@@ -8,6 +8,7 @@ import 'package:inzynierka/hooks/tap_gesture_recognizer.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/password_recovery_screen.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
+import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/snackbars.dart';
 import 'package:inzynierka/utils/firebase_errors.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
@@ -124,17 +125,12 @@ class SignInScreen extends HookConsumerWidget {
                             return;
                           }
                           isSigningIn.value = true;
-                          try {
+                          await asyncCall(message: 'Błąd logowania.', context, () async {
                             await ref
                                 .read(authServiceProvider)
                                 .signIn(email: model.value.email, password: model.value.password);
                             Navigator.of(context, rootNavigator: true).pop();
-                          } catch (e) {
-                            final code = e is FirebaseException ? e.code : '';
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd logowania.'),
-                            );
-                          }
+                          });
                           isSigningIn.value = false;
                         },
                         child: Center(child: Text('Zaloguj się')),
@@ -144,17 +140,12 @@ class SignInScreen extends HookConsumerWidget {
                         isLoading: isSigningInWithGoogle.value,
                         onPressed: () async {
                           isSigningInWithGoogle.value = true;
-                          try {
+                          await asyncCall(message: 'Błąd logowania.', context, () async {
                             final user = await ref.read(authServiceProvider).signInWithGoogle();
                             if (user != null) {
                               Navigator.of(context, rootNavigator: true).pop();
                             }
-                          } catch (e) {
-                            final code = e is FirebaseException ? e.code : '';
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              errorSnackBar(context: context, message: firebaseErrors[code] ?? 'Błąd logowania.'),
-                            );
-                          }
+                          });
                           isSigningInWithGoogle.value = false;
                         },
                         style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
