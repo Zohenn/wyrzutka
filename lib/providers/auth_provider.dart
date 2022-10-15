@@ -51,6 +51,7 @@ class AuthService {
 
   UserRepository get userRepository => ref.watch(userRepositoryProvider);
 
+  // todo: what if somebody tries to register with email that is already tied to some google account? will it be merged?
   Future<AppUser> signUp({
     required String name,
     required String surname,
