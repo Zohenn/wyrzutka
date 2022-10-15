@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,11 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/hooks/tap_gesture_recognizer.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/utils/snackbars.dart';
-import 'package:inzynierka/utils/firebase_errors.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';

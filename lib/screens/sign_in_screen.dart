@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,8 +8,6 @@ import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/password_recovery_screen.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
 import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/utils/snackbars.dart';
-import 'package:inzynierka/utils/firebase_errors.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
@@ -111,11 +108,6 @@ class SignInScreen extends HookConsumerWidget {
                             onChanged: (value) => model.value.password = value,
                             validator: Validators.required('Uzupełnij hasło'),
                           ),
-                          // SizedBox(height: 6.0),
-                          // Align(
-                          //   alignment: Alignment.centerRight,
-                          //   child: Text('Zapomniałeś hasła?', style: Theme.of(context).textTheme.bodyMedium),
-                          // ),
                         ],
                       ),
                       ProgressIndicatorButton(
