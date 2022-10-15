@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/screens/password_recovery_screen.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
 import 'package:mockito/annotations.dart';
@@ -187,6 +188,16 @@ void main() {
       expect(find.bySemanticsLabel('Zaloguj się przez Google'), findsOneWidget);
       expect(find.bySemanticsLabel('Ładowanie'), findsNothing);
     });
+  });
+
+  testWidgets('Should close current modal and open password recovery modal on password recovery tap', (tester) async {
+    await tester.pumpWidget(buildWidget());
+
+    await tester.tap(find.textContaining('Zapomniałeś hasła'));
+    await tester.pumpAndSettle();
+
+    verify(popObserver.didPop(any, any)).called(1);
+    expect(find.byType(PasswordRecoveryScreen), findsOneWidget);
   });
 
   testWidgets('Should close current modal and open sign up modal on sign up tap', (tester) async {
