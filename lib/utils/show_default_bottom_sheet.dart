@@ -6,12 +6,14 @@ Future<T?> showDefaultBottomSheet<T>({
   required BuildContext context,
   required WidgetBuilder builder,
   bool fullScreen = false,
+  Duration? duration,
 }) {
   return showMaterialModalBottomSheet<T>(
     context: context,
     useRootNavigator: true,
     backgroundColor: Colors.transparent,
     enableDrag: false,
+    duration: duration,
     builder: (context) => DefaultBottomSheet(
       fullscreen: fullScreen,
       child: builder(context),
