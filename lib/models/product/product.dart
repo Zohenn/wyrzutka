@@ -1,14 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inzynierka/models/product/sort.dart';
+import 'package:inzynierka/models/util.dart';
 
 part 'product.freezed.dart';
 part 'product.g.dart';
-
-snapshotFromJson(_) => _;
-dateTimeFromJson(Timestamp? timestamp) => timestamp?.toDate();
-dateTimeToJson(DateTime? date) => date;
-toJsonNull(_) => null;
 
 @freezed
 class Product with _$Product {

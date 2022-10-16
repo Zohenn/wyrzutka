@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:inzynierka/models/util.dart';
 
 part 'product_symbol.freezed.dart';
 part 'product_symbol.g.dart';
-
-toJsonNull(_) => null;
 
 // Symbol already exists within Dart.
 @freezed

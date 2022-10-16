@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:inzynierka/models/util.dart';
 
 part 'app_user.freezed.dart';
 
 part 'app_user.g.dart';
-
-toNull(_) => null;
 
 enum Role {
   user,
@@ -29,7 +28,7 @@ class AppUser with _$AppUser {
   const AppUser._();
 
   const factory AppUser({
-    @JsonKey(toJson: toNull, includeIfNull: false) required String id,
+    @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
     required String email,
     required String name,
     required String surname,
