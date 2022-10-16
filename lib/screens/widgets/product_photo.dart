@@ -8,19 +8,19 @@ enum ProductPhotoType {
   medium,
 }
 
-const _baseDecoration = BoxDecoration(color: Colors.white);
-
 class ProductPhoto extends StatelessWidget {
   const ProductPhoto({
     Key? key,
     required this.product,
     this.type = ProductPhotoType.small,
     this.expandOnTap = false,
+    this.baseDecoration = const BoxDecoration(color: Colors.white),
   }) : super(key: key);
 
   final Product? product;
   final ProductPhotoType type;
   final bool expandOnTap;
+  final BoxDecoration baseDecoration;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,14 @@ class ProductPhoto extends StatelessWidget {
     switch (type) {
       case ProductPhotoType.small:
         size = 40;
-        decoration = _baseDecoration.copyWith(shape: BoxShape.circle);
+        decoration = baseDecoration.copyWith(shape: BoxShape.circle);
         break;
       case ProductPhotoType.medium:
         size = 56;
-        decoration = _baseDecoration.copyWith(borderRadius: const BorderRadius.all(Radius.circular(12)));
+        decoration = baseDecoration.copyWith(borderRadius: const BorderRadius.all(Radius.circular(12)));
         break;
     }
+
     return Container(
       clipBehavior: Clip.hardEdge,
       height: size,
