@@ -56,6 +56,7 @@ void main() {
       email: 'mmarciniak299@gmail.com',
       name: 'Michał',
       surname: 'Marciniak',
+      role: Role.user,
     );
     mockFirebaseAuth = MockFirebaseAuth(mockUser: mockUser);
     userRepository = MockUserRepository();

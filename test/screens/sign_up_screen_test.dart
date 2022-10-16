@@ -51,6 +51,7 @@ void main() {
       email: 'mmarciniak299@gmail.com',
       name: 'Michał',
       surname: 'Marciniak',
+      role: Role.user,
     );
     when(anySignUp()).thenAnswer((realInvocation) => Future.value(user));
     when(authService.signInWithGoogle()).thenAnswer((realInvocation) => Future.value(user));

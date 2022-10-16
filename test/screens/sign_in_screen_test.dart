@@ -45,6 +45,7 @@ void main() {
       email: 'mmarciniak299@gmail.com',
       name: 'Michał',
       surname: 'Marciniak',
+      role: Role.user,
     );
     when(authService.signIn(email: anyNamed('email'), password: anyNamed('password')))
         .thenAnswer((realInvocation) => Future.value(user));

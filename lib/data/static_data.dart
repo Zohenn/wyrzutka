@@ -9,8 +9,8 @@ import 'package:inzynierka/models/product_symbol/product_symbol.dart';
 import 'package:inzynierka/models/product/vote.dart';
 
 List<AppUser> users = [
-  const AppUser(id: '1', email: '1', name: 'Wojtek', surname: 'Brandeburg'),
-  const AppUser(id: '2', email: '2', name: 'Michał', surname: 'Marciniak'),
+  const AppUser(id: '1', email: '1', name: 'Wojtek', surname: 'Brandeburg', role: Role.mod),
+  const AppUser(id: '2', email: '2', name: 'Michał', surname: 'Marciniak', role: Role.user),
 ];
 
 AppUser? getUser(String? email) {
