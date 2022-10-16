@@ -38,7 +38,13 @@ class ProductActionsSheet extends HookConsumerWidget {
               iconColor: AppColors.negative,
               leading: Icon(Icons.delete),
               title: Text('Usuń produkt'),
-              onTap: () => showDialog(context: context, builder: (context) => ProductDeleteDialog(product: product)),
+              onTap: () async {
+                final wasDeleted =
+                    await showDialog(context: context, builder: (context) => ProductDeleteDialog(product: product));
+                if (wasDeleted == true) {
+                  Navigator.of(context).pop(true);
+                }
+              },
             ),
           ],
         ],

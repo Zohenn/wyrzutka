@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/utils/async_call.dart';
+import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
-class ProductDeleteDialog extends StatelessWidget {
+class ProductDeleteDialog extends HookConsumerWidget {
   const ProductDeleteDialog({
     Key? key,
     required this.product,
@@ -12,7 +17,10 @@ class ProductDeleteDialog extends StatelessWidget {
   final Product product;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productRepository = ref.watch(productRepositoryProvider);
+    final isDeleting = useState(false);
+
     return Dialog(
       clipBehavior: Clip.hardEdge,
       child: Column(
@@ -27,11 +35,11 @@ class ProductDeleteDialog extends StatelessWidget {
                   type: ProductPhotoType.medium,
                   baseDecoration: BoxDecoration(border: Border.all(color: Theme.of(context).dividerColor)),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(product.name),
-                SizedBox(height: 24.0),
+                const SizedBox(height: 24.0),
                 Text('Usunąć ten produkt?', style: Theme.of(context).textTheme.titleMedium),
-                SizedBox(height: 4.0),
+                const SizedBox(height: 4.0),
                 Text(
                   'Informacji o tym produkcie nie będzie można przywrócić.',
                   textAlign: TextAlign.center,
@@ -47,17 +55,25 @@ class ProductDeleteDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {},
-                    child: Text('Anuluj'),
+                    onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(backgroundColor: Colors.white),
+                    child: const Text('Anuluj'),
                   ),
                 ),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    child: Text('Usuń produkt'),
+                  child: ProgressIndicatorButton(
+                    isLoading: isDeleting.value,
+                    onPressed: () async {
+                      isDeleting.value = true;
+                      await asyncCall(context, () async {
+                        await productRepository.delete(product.id);
+                        Navigator.of(context).pop(true);
+                      });
+                      isDeleting.value = false;
+                    },
                     style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: AppColors.negative),
+                    child: const Text('Usuń produkt'),
                   ),
                 ),
               ],

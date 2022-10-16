@@ -93,11 +93,16 @@ class ProductModal extends HookConsumerWidget {
                     ),
                     IconButton(
                       onPressed: authUser != null
-                          ? () => showDefaultBottomSheet(
+                          ? () async {
+                              final shouldClose = await showDefaultBottomSheet(
                                 context: context,
                                 duration: Duration(milliseconds: 300),
                                 builder: (context) => ProductActionsSheet(product: product),
-                              )
+                              );
+                              if (shouldClose == true) {
+                                Navigator.of(context).pop();
+                              }
+                            }
                           : null,
                       tooltip: authUser == null ? 'Zaloguj się, aby odblokować dodatkowe funkcje' : null,
                       icon: const Icon(Icons.more_vert),

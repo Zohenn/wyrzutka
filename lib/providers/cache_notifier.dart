@@ -32,6 +32,10 @@ class CacheNotifier<V> extends StateNotifier<Map<String, V>> {
     };
   }
 
+  void remove(String key) {
+    state.remove(key);
+  }
+
   void clear() {
     state = {};
   }
@@ -58,7 +62,7 @@ mixin CacheNotifierMixin<V> {
     if (!skipCache && cache[id] != null) {
       return cache[id];
     }
-    final snapshot = await collection.doc(id.toString()).get();
+    final snapshot = await collection.doc(id).get();
     final data = snapshot.data();
     addToCache(snapshot.id, data);
     return data;
@@ -81,6 +85,11 @@ mixin CacheNotifierMixin<V> {
         .toList();
   }
 
+  Future<void> delete(String id) async {
+    await collection.doc(id).delete();
+    removeFromCache(id);
+  }
+
   @protected
   List<V> mapDocs(QuerySnapshot<V> querySnapshot, [bool clearCache = false]) {
     if (clearCache) {
@@ -99,5 +108,9 @@ mixin CacheNotifierMixin<V> {
     if (value != null) {
       cache[key] = value;
     }
+  }
+
+  @protected void removeFromCache(String key) {
+    cache.remove(key);
   }
 }
