@@ -25,13 +25,12 @@ class ProductPage extends HookConsumerWidget {
     final userRepository = ref.watch(userRepositoryProvider);
 
     final future = useInitFuture(
-          () => Future.wait(
+      () => Future.wait(
         [
           symbolRepository.fetchIds(product.symbols),
           userRepository.fetchIds([
             product.user,
-            if(product.sort != null)
-              product.sort!.user,
+            if (product.sort != null) product.sort!.user,
             ...product.sortProposals.values.map((e) => e.user),
           ]),
         ],
@@ -45,7 +44,7 @@ class ProductPage extends HookConsumerWidget {
     return FutureHandler(
       future: future,
       data: () => SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        padding: const EdgeInsets.all(16.0),
         child: GutterColumn(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

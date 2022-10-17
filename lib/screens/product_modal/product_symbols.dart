@@ -93,20 +93,16 @@ class ProductSymbols extends StatelessWidget {
           ifFalse: () => Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Center(
-                child: Column(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/no_data.svg', // TODO: Different image
-                      width: MediaQuery.of(context).size.width / 4,
-                    ),
-                    const SizedBox(height: 12.0),
-                    Text(
-                      'Produkt nie posiada oznaczeń',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ],
-                ),
+              child: Row(
+                children: const [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    child: Icon(Icons.hide_image_outlined),
+                  ),
+                  SizedBox(width: 16.0),
+                  Text('Produkt nie posiada oznaczeń'),
+                ],
               ),
             ),
           ),
