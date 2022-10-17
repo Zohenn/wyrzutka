@@ -40,10 +40,11 @@ class ProductsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final products = useState<List<Product>>([]);
+    final productIds = useState<List<String>>([]);
+    final products = ref.watch(productsProvider(productIds.value));
     final future = useInitFuture<List<Product>>(
       () => ref.read(productsFutureProvider).then((value) {
-        products.value = value;
+        productIds.value = value.map((product) => product.id).toList();
         return value;
       }),
     );
@@ -56,11 +57,11 @@ class ProductsScreen extends HookConsumerWidget {
     useEffect(() {
       if (searchText.value.isNotEmpty) {
         innerFuture.value = productRepository.search(searchText.value).then((value) {
-          products.value = value;
+          productIds.value = value.map((product) => product.id).toList();
         });
       } else {
         innerFuture.value = ref.read(productsFutureProvider).then((value) {
-          products.value = value;
+          productIds.value = value.map((product) => product.id).toList();
           fetchedAll.value = false;
         });
       }
@@ -70,7 +71,7 @@ class ProductsScreen extends HookConsumerWidget {
 
     useEffect(() {
       innerFuture.value = productRepository.fetchMore(filters: selectedFilters.value).then((value) {
-        products.value = value;
+        productIds.value = value.map((product) => product.id).toList();
         fetchedAll.value = false;
       });
       return null;
@@ -98,7 +99,7 @@ class ProductsScreen extends HookConsumerWidget {
             data: () => NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification.metrics.extentAfter < 50.0 &&
-                    products.value.length >= 10 &&
+                    productIds.value.length >= 10 &&
                     !fetchedAll.value &&
                     !isFetchingMore.value) {
                   (() async {
@@ -106,9 +107,9 @@ class ProductsScreen extends HookConsumerWidget {
                     await asyncCall(
                       context,
                       () => productRepository
-                          .fetchMore(filters: selectedFilters.value, startAfterDocument: products.value.last.snapshot!)
+                          .fetchMore(filters: selectedFilters.value, startAfterDocument: products.last.snapshot!)
                           .then((value) {
-                        products.value = [...products.value, ...value];
+                        productIds.value = [...productIds.value, ...value.map((product) => product.id)];
                         fetchedAll.value = value.length < ProductRepository.batchSize;
                       }),
                     );
@@ -119,16 +120,16 @@ class ProductsScreen extends HookConsumerWidget {
                 return false;
               },
               child: ConditionalBuilder(
-                condition: products.value.isNotEmpty,
+                condition: products.isNotEmpty,
                 ifTrue: () => ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                   itemCount: isFetchingMore.value || searchText.value.isNotEmpty
-                      ? products.value.length + 1
-                      : products.value.length,
+                      ? products.length + 1
+                      : products.length,
                   separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
                   itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                    condition: index < products.value.length,
-                    ifTrue: () => ProductItem(product: products.value[index]),
+                    condition: index < products.length,
+                    ifTrue: () => ProductItem(product: products[index]),
                     ifFalse: () => ConditionalBuilder(
                       condition: searchText.value.isEmpty,
                       ifTrue: () => const Center(child: CircularProgressIndicator()),

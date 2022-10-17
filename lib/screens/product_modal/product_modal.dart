@@ -45,6 +45,7 @@ class ProductModal extends HookConsumerWidget {
       data: () => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // todo: this throws when product is deleted
           _ProductName(product: product!),
           Flexible(
             child: TabBarView(

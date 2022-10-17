@@ -17,6 +17,7 @@ ProviderFamily<V?, String> createCacheItemProvider<V>(CacheProvider<V> cacheProv
 
 ProviderFamily<List<V>, List<String>> createCacheItemsProvider<V>(CacheProvider<V> cacheProvider) {
   return Provider.family<List<V>, List<String>>((ref, ids) {
+    print('update items provider');
     final cache = ref.watch(cacheProvider);
     return ids.map((id) => cache[id]).where((element) => element != null).cast<V>().toList();
   });
@@ -33,7 +34,9 @@ class CacheNotifier<V> extends StateNotifier<Map<String, V>> {
   }
 
   void remove(String key) {
-    state.remove(key);
+    final stateCopy = {...state}..remove(key);
+    state = stateCopy;
+    print(state[key]);
   }
 
   void clear() {
@@ -86,7 +89,8 @@ mixin CacheNotifierMixin<V> {
   }
 
   Future<void> delete(String id) async {
-    await collection.doc(id).delete();
+    await Future.delayed(Duration(milliseconds: 200));
+    // await collection.doc(id).delete();
     removeFromCache(id);
   }
 
@@ -110,7 +114,8 @@ mixin CacheNotifierMixin<V> {
     }
   }
 
-  @protected void removeFromCache(String key) {
+  @protected
+  void removeFromCache(String key) {
     cache.remove(key);
   }
 }
