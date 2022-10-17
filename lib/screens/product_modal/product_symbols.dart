@@ -5,6 +5,7 @@ import 'package:inzynierka/models/product_symbol/product_symbol.dart';
 import 'package:inzynierka/utils/image_error_builder.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProductSymbols extends StatelessWidget {
   const ProductSymbols({
@@ -24,64 +25,87 @@ class ProductSymbols extends StatelessWidget {
       children: [
         Text('Oznaczenia', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8.0),
-        GutterColumn(
-          children: [
-            for (var symbol in symbols) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Image.network(
-                          symbol.photo,
-                          errorBuilder: imageErrorBuilder,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            symbol.name,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          ConditionalBuilder(
-                            condition: symbol.description != null,
-                            ifTrue: () => Column(
+        ConditionalBuilder(
+          condition: symbols.isNotEmpty,
+          ifTrue: () => Column(
+            children: [
+              GutterColumn(
+                children: [
+                  for (var symbol in symbols) ...[
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: Image.network(
+                                symbol.photo,
+                                errorBuilder: imageErrorBuilder,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  symbol.description!,
-                                  style: Theme.of(context).textTheme.labelSmall,
+                                  symbol.name,
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                                ConditionalBuilder(
+                                  condition: symbol.description != null,
+                                  ifTrue: () => Column(
+                                    children: [
+                                      Text(
+                                        symbol.description!,
+                                        style: Theme.of(context).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  ],
+                  if (symbols.length < product.symbols.length)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: const [
+                            CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: Icon(Icons.warning_amber, color: AppColors.warning),
+                            ),
+                            SizedBox(width: 16.0),
+                            Flexible(child: Text('Nie udało się załadować części oznaczeń.')),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ],
-            if (symbols.length < product.symbols.length)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: const [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.warning_amber, color: AppColors.warning),
-                      ),
-                      SizedBox(width: 16.0),
-                      Flexible(child: Text('Nie udało się załadować części oznaczeń.')),
-                    ],
+          ),
+          ifFalse: () => Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: const [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    child: Icon(Icons.hide_image_outlined),
                   ),
-                ),
+                  SizedBox(width: 16.0),
+                  Text('Produkt nie posiada oznaczeń'),
+                ],
               ),
-          ],
+            ),
+          ),
         ),
       ],
     );

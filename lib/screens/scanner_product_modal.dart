@@ -108,7 +108,7 @@ class ScannerProductModal extends HookConsumerWidget {
                                 });
                                 isSaving.value = false;
                               },
-                              child: isSaved ? const Text('Zapisz na liście') : const Text("Zapisano na liście"),
+                              child: !isSaved ? const Text('Zapisz na liście') : const Text('Zapisano na liście'),
                             ),
                           ),
                         ),
