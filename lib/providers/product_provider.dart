@@ -17,12 +17,9 @@ Future saveExampleProductData(WidgetRef ref) async {
   }));
 }
 
-final productsListProvider = StateProvider<List<Product>>((ref) => <Product>[]);
-
 final productsFutureProvider = Provider((ref) async {
   final repository = ref.read(productRepositoryProvider);
   final products = await repository.fetchMore();
-  ref.read(productsListProvider.notifier).state = products;
   return products;
 });
 
