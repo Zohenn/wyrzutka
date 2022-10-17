@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
@@ -22,9 +23,12 @@ class AvatarIcon extends StatelessWidget {
             user!.name[0].toUpperCase() + user!.surname[0].toUpperCase(),
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          ifFalse: () => const Icon(
-            Icons.question_mark,
-            color: Colors.black54,
+          ifFalse: () => const Tooltip(
+            message: "Nie udało się załadować użytkownika",
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.warning_amber, color: AppColors.warning),
+            ),
           ),
         ),
       ),
