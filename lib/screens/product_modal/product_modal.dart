@@ -100,7 +100,7 @@ class ProductModal extends HookConsumerWidget {
                             ? () async {
                                 final shouldClose = await showDefaultBottomSheet(
                                   context: context,
-                                  duration: Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 300),
                                   builder: (context) => ProductActionsSheet(product: product),
                                 );
                                 if (shouldClose == true) {
@@ -123,8 +123,8 @@ class ProductModal extends HookConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DefaultSvg(assetName: 'assets/images/empty_cart.svg'),
-              SizedBox(height: 24.0),
+              const DefaultSvg(assetName: 'assets/images/empty_cart.svg'),
+              const SizedBox(height: 24.0),
               Text('Produkt niedostępny', style: Theme.of(context).textTheme.bodyLarge),
             ],
           ),

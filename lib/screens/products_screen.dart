@@ -41,11 +41,12 @@ class ProductsScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
     final productIds = useState<List<String>>([]);
-    // todo: invalidate cache on dispose
+    final initialProductIds = useRef<List<String>>([]);
     final products = ref.watch(productsProvider(productIds.value));
     final future = useInitFuture<List<Product>>(
       () => ref.read(productsFutureProvider).then((value) {
         productIds.value = value.map((product) => product.id).toList();
+        initialProductIds.value = productIds.value;
         return value;
       }),
     );
@@ -77,6 +78,14 @@ class ProductsScreen extends HookConsumerWidget {
       });
       return null;
     }, [selectedFilters.value]);
+
+    useEffect(() {
+      return () {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          productRepository.invalidateCache(productIds.value.toSet().difference(initialProductIds.value.toSet()).toList());
+        });
+      };
+    }, []);
 
     return SafeArea(
       child: FutureHandler(
@@ -124,9 +133,8 @@ class ProductsScreen extends HookConsumerWidget {
                 condition: products.isNotEmpty,
                 ifTrue: () => ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  itemCount: isFetchingMore.value || searchText.value.isNotEmpty
-                      ? products.length + 1
-                      : products.length,
+                  itemCount:
+                      isFetchingMore.value || searchText.value.isNotEmpty ? products.length + 1 : products.length,
                   separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
                   itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
                     condition: index < products.length,
