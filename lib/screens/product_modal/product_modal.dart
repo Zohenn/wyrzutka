@@ -10,6 +10,8 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:inzynierka/widgets/default_svg.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 
@@ -42,78 +44,91 @@ class ProductModal extends HookConsumerWidget {
 
     return FutureHandler(
       future: future,
-      data: () => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // todo: this throws when product is deleted
-          _ProductName(product: product!),
-          Flexible(
-            child: TabBarView(
-              controller: tabController,
-              children: [
-                ProductPage(product: product),
-                VariantPage(product: product),
-              ],
+      data: () => ConditionalBuilder(
+        condition: product != null,
+        ifTrue: () => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _ProductName(product: product!),
+            Flexible(
+              child: TabBarView(
+                controller: tabController,
+                children: [
+                  ProductPage(product: product),
+                  VariantPage(product: product),
+                ],
+              ),
             ),
-          ),
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  border: Border(
-                    top: BorderSide(color: Theme.of(context).primaryColorLight),
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    border: Border(
+                      top: BorderSide(color: Theme.of(context).primaryColorLight),
+                    ),
+                  ),
+                  child: GutterRow(
+                    children: [
+                      AnimatedTheme(
+                        data: Theme.of(context).copyWith(
+                          outlinedButtonTheme:
+                              OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
+                        ),
+                        child: Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => tabController.animateTo(0),
+                            child: const Text('Segregacja'),
+                          ),
+                        ),
+                      ),
+                      AnimatedTheme(
+                        data: Theme.of(context).copyWith(
+                          outlinedButtonTheme:
+                              OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
+                        ),
+                        child: Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => tabController.animateTo(1),
+                            child: const Text('Warianty'),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: authUser != null
+                            ? () async {
+                                final shouldClose = await showDefaultBottomSheet(
+                                  context: context,
+                                  duration: Duration(milliseconds: 300),
+                                  builder: (context) => ProductActionsSheet(product: product),
+                                );
+                                if (shouldClose == true) {
+                                  Navigator.of(context).pop();
+                                }
+                              }
+                            : null,
+                        tooltip: authUser == null ? 'Zaloguj się, aby odblokować dodatkowe funkcje' : null,
+                        icon: const Icon(Icons.more_vert),
+                      ),
+                    ],
                   ),
                 ),
-                child: GutterRow(
-                  children: [
-                    AnimatedTheme(
-                      data: Theme.of(context).copyWith(
-                        outlinedButtonTheme:
-                            OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
-                      ),
-                      child: Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => tabController.animateTo(0),
-                          child: const Text('Segregacja'),
-                        ),
-                      ),
-                    ),
-                    AnimatedTheme(
-                      data: Theme.of(context).copyWith(
-                        outlinedButtonTheme:
-                            OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
-                      ),
-                      child: Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => tabController.animateTo(1),
-                          child: const Text('Warianty'),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: authUser != null
-                          ? () async {
-                              final shouldClose = await showDefaultBottomSheet(
-                                context: context,
-                                duration: Duration(milliseconds: 300),
-                                builder: (context) => ProductActionsSheet(product: product),
-                              );
-                              if (shouldClose == true) {
-                                Navigator.of(context).pop();
-                              }
-                            }
-                          : null,
-                      tooltip: authUser == null ? 'Zaloguj się, aby odblokować dodatkowe funkcje' : null,
-                      icon: const Icon(Icons.more_vert),
-                    ),
-                  ],
-                ),
-              ),
+              ],
+            ),
+          ],
+        ),
+        ifFalse: () => Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DefaultSvg(assetName: 'assets/images/empty_cart.svg'),
+              SizedBox(height: 24.0),
+              Text('Produkt niedostępny', style: Theme.of(context).textTheme.bodyLarge),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

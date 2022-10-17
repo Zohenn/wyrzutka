@@ -41,6 +41,7 @@ class ProductsScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
     final productIds = useState<List<String>>([]);
+    // todo: invalidate cache on dispose
     final products = ref.watch(productsProvider(productIds.value));
     final future = useInitFuture<List<Product>>(
       () => ref.read(productsFutureProvider).then((value) {

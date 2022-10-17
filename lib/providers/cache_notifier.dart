@@ -36,7 +36,6 @@ class CacheNotifier<V> extends StateNotifier<Map<String, V>> {
   void remove(String key) {
     final stateCopy = {...state}..remove(key);
     state = stateCopy;
-    print(state[key]);
   }
 
   void clear() {
@@ -89,8 +88,7 @@ mixin CacheNotifierMixin<V> {
   }
 
   Future<void> delete(String id) async {
-    await Future.delayed(Duration(milliseconds: 200));
-    // await collection.doc(id).delete();
+    await collection.doc(id).delete();
     removeFromCache(id);
   }
 
