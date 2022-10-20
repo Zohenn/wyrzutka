@@ -1,10 +1,29 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/screens/product_form/information_step.dart';
+import 'package:inzynierka/screens/product_form/sort_step.dart';
+import 'package:inzynierka/screens/product_form/symbols_step.dart';
 import 'package:inzynierka/widgets/custom_stepper.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 
-class ProductForm extends StatelessWidget {
+part 'product_form.freezed.dart';
+
+@freezed
+class ProductFormModel with _$ProductFormModel {
+  const factory ProductFormModel({
+    required String id,
+    @Default('') String name,
+    @Default('') String keywords,
+    XFile? photo,
+  }) = _ProductFormModel;
+}
+
+class ProductForm extends HookWidget {
   const ProductForm({
     Key? key,
     required this.id,
@@ -14,124 +33,73 @@ class ProductForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Nowy produkt', style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 16.0),
-                CustomStepper(steps: const ['Informacje', 'Oznaczenia', 'Segregacja'], step: 0),
-              ],
-            ),
+    final model = useState(ProductFormModel(id: id));
+    final step = useState(0);
+    final previousStep = usePrevious(step.value);
+
+    return Scaffold(
+      body: WillPopScope(
+        onWillPop: () async {
+          if(step.value > 0){
+            step.value--;
+            return false;
+          }
+
+          return true;
+        },
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
           ),
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Nowy produkt', style: Theme.of(context).textTheme.titleLarge),
+                    const SizedBox(height: 16.0),
+                    CustomStepper(steps: const ['Informacje', 'Oznaczenia', 'Segregacja'], step: step.value),
+                  ],
+                ),
               ),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 8.0),
-                            Text(
-                              'Podstawowe informacje',
-                              style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              'Przed rozpoczęciem zweryfikuj, czy kod kreskowy jest zgodny z kodem z opakowania.',
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.primaryDarker),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 36.0),
-                      Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Theme.of(context).dividerColor),
-                              borderRadius: (Theme.of(context).cardTheme.shape as RoundedRectangleBorder).borderRadius,
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: InkWell(
-                                onTap: () {},
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        const Icon(Icons.add_a_photo_outlined, size: 48),
-                                        const SizedBox(height: 4.0),
-                                        Text('Dodaj zdjęcie produktu', style: Theme.of(context).textTheme.titleMedium),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            'Zadbaj, aby zdjęcie było wyraźne i przedstawiało cały produkt.',
-                            style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 36.0),
-                      GutterColumn(
-                        children: [
-                          TextFormField(
-                            initialValue: id,
-                            readOnly: true,
-                            decoration: const InputDecoration(
-                              labelText: 'Kod kreskowy',
-                              // fillColor: Color(0xfffafafa),
-                            ),
-                            style: const TextStyle(color: AppColors.primaryDarker),
-                          ),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Nazwa produktu',
-                            ),
-                          ),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Słowa kluczowe',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16.0),
-                      OutlinedButton(
-                        onPressed: () {},
-                        child: const Text('Następny krok'),
-                      ),
-                    ],
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: PageTransitionSwitcher(
+                    transitionBuilder: (child, primaryAnimation, secondaryAnimation) => SharedAxisTransition(
+                      animation: primaryAnimation,
+                      secondaryAnimation: secondaryAnimation,
+                      transitionType: SharedAxisTransitionType.horizontal,
+                      fillColor: Colors.white,
+                      child: child,
+                    ),
+                    reverse: previousStep != null && previousStep > step.value,
+                    child: (() {
+                      if (step.value == 0) {
+                        return InformationStep(
+                          model: model.value,
+                          onNameChanged: (name) => model.value = model.value.copyWith(name: name),
+                          onKeywordsChanged: (keywords) => model.value = model.value.copyWith(keywords: keywords),
+                          onPhotoChanged: (photo) => model.value = model.value.copyWith(photo: photo),
+                          onNextPressed: () => step.value = 1,
+                        );
+                      } else if (step.value == 1) {
+                        return SymbolsStep();
+                      }
+                      return SortStep();
+                    })(),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
