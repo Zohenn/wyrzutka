@@ -55,6 +55,8 @@ class CacheNotifier<V> extends StateNotifier<Map<String, V>> {
   }
 
   int get length => state.length;
+
+  Iterable<V> get values => state.values;
 }
 
 mixin CacheNotifierMixin<V> {

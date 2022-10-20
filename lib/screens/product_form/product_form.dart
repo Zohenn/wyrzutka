@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/screens/product_form/information_step.dart';
 import 'package:inzynierka/screens/product_form/sort_step.dart';
 import 'package:inzynierka/screens/product_form/symbols_step.dart';
@@ -17,6 +18,8 @@ class ProductFormModel with _$ProductFormModel {
     @Default('') String name,
     @Default('') String keywords,
     XFile? photo,
+    @Default([]) List<String> symbols,
+    Sort? sort,
   }) = _ProductFormModel;
 }
 
@@ -76,6 +79,10 @@ class ProductForm extends HookWidget {
                       fillColor: Colors.white,
                       child: child,
                     ),
+                    layoutBuilder: (entries) => Stack(
+                      alignment: Alignment.topCenter,
+                      children: entries,
+                    ),
                     reverse: previousStep != null && previousStep > step.value,
                     child: [
                       InformationStep(
@@ -85,7 +92,11 @@ class ProductForm extends HookWidget {
                         onPhotoChanged: (photo) => model.value = model.value.copyWith(photo: photo),
                         onNextPressed: () => step.value = 1,
                       ),
-                      SymbolsStep(),
+                      SymbolsStep(
+                        model: model.value,
+                        onSymbolsChanged: (symbols) => model.value = model.value.copyWith(symbols: symbols),
+                        onNextPressed: () => step.value = 2,
+                      ),
                       SortStep(),
                     ][step.value],
                   ),

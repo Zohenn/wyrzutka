@@ -78,6 +78,11 @@ class AppTheme extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
           ),
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          ),
+        ),
         popupMenuTheme: PopupMenuThemeData(
           color: Colors.white,
           shape: RoundedRectangleBorder(
