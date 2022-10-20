@@ -69,7 +69,9 @@ class AppTheme extends StatelessWidget {
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.black,
+            disabledForegroundColor: Colors.black45,
             backgroundColor: AppColors.primary,
+            disabledBackgroundColor: AppColors.gray,
             //createMaterialColor(AppColors.primary).shade50,
             elevation: 0,
             side: BorderSide.none,

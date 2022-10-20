@@ -3,13 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/screens/product_form/information_step.dart';
 import 'package:inzynierka/screens/product_form/sort_step.dart';
 import 'package:inzynierka/screens/product_form/symbols_step.dart';
 import 'package:inzynierka/widgets/custom_stepper.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
-import 'package:inzynierka/widgets/gutter_row.dart';
 
 part 'product_form.freezed.dart';
 
@@ -40,7 +37,7 @@ class ProductForm extends HookWidget {
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
-          if(step.value > 0){
+          if (step.value > 0) {
             step.value--;
             return false;
           }
@@ -80,20 +77,17 @@ class ProductForm extends HookWidget {
                       child: child,
                     ),
                     reverse: previousStep != null && previousStep > step.value,
-                    child: (() {
-                      if (step.value == 0) {
-                        return InformationStep(
-                          model: model.value,
-                          onNameChanged: (name) => model.value = model.value.copyWith(name: name),
-                          onKeywordsChanged: (keywords) => model.value = model.value.copyWith(keywords: keywords),
-                          onPhotoChanged: (photo) => model.value = model.value.copyWith(photo: photo),
-                          onNextPressed: () => step.value = 1,
-                        );
-                      } else if (step.value == 1) {
-                        return SymbolsStep();
-                      }
-                      return SortStep();
-                    })(),
+                    child: [
+                      InformationStep(
+                        model: model.value,
+                        onNameChanged: (name) => model.value = model.value.copyWith(name: name),
+                        onKeywordsChanged: (keywords) => model.value = model.value.copyWith(keywords: keywords),
+                        onPhotoChanged: (photo) => model.value = model.value.copyWith(photo: photo),
+                        onNextPressed: () => step.value = 1,
+                      ),
+                      SymbolsStep(),
+                      SortStep(),
+                    ][step.value],
                   ),
                 ),
               ),
