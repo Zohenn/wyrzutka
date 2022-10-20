@@ -4,6 +4,7 @@ import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/util.dart';
 
 part 'product.freezed.dart';
+
 part 'product.g.dart';
 
 @freezed
@@ -51,6 +52,9 @@ class Product with _$Product {
   }
 
   static Map<String, Object?> toFirestore(Product product, SetOptions? options) {
-    return product.toJson();
+    return {
+      ...product.toJson(),
+      'containers': product.containers,
+    };
   }
 }
