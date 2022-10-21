@@ -9,6 +9,7 @@ import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/symbol_item.dart';
 import 'package:inzynierka/utils/image_error_builder.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
@@ -49,20 +50,52 @@ class SymbolsStep extends HookConsumerWidget {
                 ],
               ),
             ),
-            SizedBox(height: 24.0),
-            GutterColumn(
-              children: [
-                for (var symbol in model.symbols)
-                  SymbolItem(symbol: symbols.firstWhere((s) => s.id == symbol)),
-              ],
+            const SizedBox(height: 24.0),
+            ConditionalBuilder(
+              condition: model.symbols.isNotEmpty,
+              ifTrue: () => GutterColumn(
+                children: [
+                  for (var symbol in model.symbols)
+                    SymbolItem(
+                      key: Key(symbol),
+                      symbol: symbols.firstWhere((s) => s.id == symbol),
+                      addDeleteButton: true,
+                      onDeletePressed: () => onSymbolsChanged([...model.symbols]..remove(symbol)),
+                    ),
+                ],
+              ),
+              ifFalse: () => Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const CircleAvatar(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          radius: 30,
+                          child: Icon(Icons.hide_image_outlined, size: 30),
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text('Nie wybrano oznaczeń', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Przejdź dalej, jeżeli opakowanie ich nie zawiera.',
+                          style: Theme.of(context).textTheme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 16.0),
             OutlinedButton(
               onPressed: () async {
                 final newSymbols = await showDefaultBottomSheet(
                   context: context,
                   builder: (context) => ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 300),
+                    constraints: const BoxConstraints(maxHeight: 300),
                     child: ProductSymbolsSheet(symbols: model.symbols),
                   ),
                 );
@@ -72,14 +105,15 @@ class SymbolsStep extends HookConsumerWidget {
                 }
               },
               style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
-                    backgroundColor: MaterialStatePropertyAll(Colors.white),
+                    backgroundColor: const MaterialStatePropertyAll(Colors.white),
                     side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
                   ),
-              child: Text('Lista symboli'),
+              child: const Text('Lista symboli'),
             ),
+            const SizedBox(height: 8.0),
             OutlinedButton(
               onPressed: onNextPressed,
-              child: Text('Następny krok'),
+              child: const Text('Następny krok'),
             ),
           ],
         ),
@@ -115,7 +149,7 @@ class ProductSymbolsSheet extends HookConsumerWidget {
               'Lista oznaczeń',
               style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Flexible(
               child: GridView.count(
                 crossAxisCount: 5,
@@ -138,7 +172,7 @@ class ProductSymbolsSheet extends HookConsumerWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -147,14 +181,14 @@ class ProductSymbolsSheet extends HookConsumerWidget {
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.black,
                   ),
-                  child: Text('Zamknij'),
+                  child: const Text('Zamknij'),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(selectedSymbols.value),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primaryDarker,
                   ),
-                  child: Text('Zatwierdź'),
+                  child: const Text('Zatwierdź'),
                 ),
               ],
             ),
@@ -181,6 +215,7 @@ class _SymbolItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
+      fit: StackFit.expand,
       children: [
         Material(
           color: Colors.white,
@@ -215,7 +250,7 @@ class _SymbolItem extends StatelessWidget {
                 border: Border.all(color: Theme.of(context).primaryColor),
               ),
               padding: const EdgeInsets.all(2.0),
-              child: Icon(Icons.check, size: 12, color: AppColors.primaryDarker),
+              child: const Icon(Icons.check, size: 12, color: AppColors.primaryDarker),
             ),
           ),
         ),

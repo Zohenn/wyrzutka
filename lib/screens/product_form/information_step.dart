@@ -128,6 +128,7 @@ class InformationStep extends StatelessWidget {
                   ),
                   onChanged: onNameChanged,
                   validator: Validators.required('Uzupełnij nazwę produktu'),
+                  textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
                   initialValue: model.keywords,
