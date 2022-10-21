@@ -7,13 +7,16 @@ class AvatarIcon extends StatelessWidget {
   const AvatarIcon({
     Key? key,
     required this.user,
+    this.radius = 20.0,
   }) : super(key: key);
 
   final AppUser? user;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
+      radius: radius,
       backgroundColor: Theme.of(context).primaryColor,
       foregroundColor: Colors.black,
       child: Center(

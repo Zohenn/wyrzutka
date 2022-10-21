@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/util.dart';
 
 part 'app_user.freezed.dart';
@@ -21,6 +23,17 @@ enum Role {
         return 'Administrator';
     }
   }
+
+  Color get descColor {
+    switch (this) {
+      case Role.user:
+        return Colors.black54;
+      case Role.mod:
+        return AppColors.primaryDarker;
+      case Role.admin:
+        return Colors.redAccent;
+    }
+  }
 }
 
 @freezed
@@ -34,6 +47,7 @@ class AppUser with _$AppUser {
     required String surname,
     required Role role,
     @Default([]) List<String> savedProducts,
+    @Default([]) List<String> verifiedSortProposals,
   }) = _AppUser;
 
   factory AppUser.fromFirestore(
