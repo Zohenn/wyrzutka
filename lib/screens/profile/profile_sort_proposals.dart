@@ -18,17 +18,11 @@ class ProfileSortProposals extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final sortProposals = useState<List<Product>>([]);
-    final visibleSortProposals = useState<List<Product>>([]);
-
+    final products = user.verifiedSortProposals.take(2).toList();
     final future = useInitFuture<List<Product>>(
-          () =>
-          productRepository.fetchIds(user.verifiedSortProposals).then((value) {
-            sortProposals.value = value;
-            visibleSortProposals.value = sortProposals.value.take(2).toList();
-            return value;
-          }),
+      () => productRepository.fetchIds(products),
     );
+    final sortProposals = ref.watch(productsProvider(products));
 
     return GutterColumn(
       children: [
@@ -53,9 +47,9 @@ class ProfileSortProposals extends HookConsumerWidget {
                 color: Theme.of(context).primaryColorLight,
                 borderRadius: const BorderRadius.all(Radius.circular(16.0)),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
               child: Text(
-                sortProposals.value.length.toString(),
+                sortProposals.length.toString(),
                 style: TextStyle(color: Theme.of(context).primaryColorDark),
               ),
             ),
@@ -64,21 +58,21 @@ class ProfileSortProposals extends HookConsumerWidget {
         FutureHandler(
           future: future,
           data: () => ConditionalBuilder(
-            condition: visibleSortProposals.value.isNotEmpty,
+            condition: sortProposals.isNotEmpty,
             ifTrue: () => Column(
               children: [
                 ListView.separated(
                   primary: false,
                   shrinkWrap: true,
-                  itemCount: visibleSortProposals.value.length,
+                  itemCount: sortProposals.length,
                   separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
                   itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                    condition: index < visibleSortProposals.value.length,
-                    ifTrue: () => ProductItem(product: visibleSortProposals.value[index]),
+                    condition: index < sortProposals.length,
+                    ifTrue: () => ProductItem(product: sortProposals[index]),
                   ),
                 ),
                 ConditionalBuilder(
-                  condition: sortProposals.value.length != visibleSortProposals.value.length,
+                  condition: sortProposals.length != user.verifiedSortProposals.length,
                   ifTrue: () => Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -86,9 +80,7 @@ class ProfileSortProposals extends HookConsumerWidget {
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark),
                         ),
-                        onPressed: () => {
-                          visibleSortProposals.value = [...sortProposals.value],
-                        },
+                        onPressed: () {},
                         child: const Text('Pokaż wszystko'),
                       ),
                     ],

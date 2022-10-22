@@ -17,17 +17,14 @@ class ProfileUser extends HookConsumerWidget {
       children: [
         Card(
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12.0),
-              topRight: Radius.circular(12.0),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
           ),
           color: Theme.of(context).primaryColorLight,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             child: Row(
               children: [
-                AvatarIcon(user: user, radius: 25),
+                AvatarIcon(user: user, radius: 24),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -57,12 +54,10 @@ class ProfileUser extends HookConsumerWidget {
         ),
         Card(
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(12.0),
-                bottomRight: Radius.circular(12.0),
-              )),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0)),
+          ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             child: Row(
               children: [
                 const CircleAvatar(

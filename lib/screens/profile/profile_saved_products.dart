@@ -20,16 +20,11 @@ class ProfileSavedProducts extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final savedProducts = useState<List<Product>>([]);
-    final visibleSavedProducts = useState<List<Product>>([]);
-
+    final products = user.savedProducts.take(2).toList();
     final future = useInitFuture<List<Product>>(
-      () => productRepository.fetchIds(user.savedProducts).then((value) {
-        savedProducts.value = value;
-        visibleSavedProducts.value = savedProducts.value.take(2).toList();
-        return value;
-      }),
+      () => productRepository.fetchIds(products),
     );
+    final savedProducts = ref.watch(productsProvider(products));
 
     return GutterColumn(
       children: [
@@ -46,9 +41,9 @@ class ProfileSavedProducts extends HookConsumerWidget {
                 color: Theme.of(context).primaryColorLight,
                 borderRadius: const BorderRadius.all(Radius.circular(16.0)),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
               child: Text(
-                savedProducts.value.length.toString(),
+                savedProducts.length.toString(),
                 style: TextStyle(color: Theme.of(context).primaryColorDark),
               ),
             ),
@@ -57,21 +52,21 @@ class ProfileSavedProducts extends HookConsumerWidget {
         FutureHandler(
           future: future,
           data: () => ConditionalBuilder(
-            condition: visibleSavedProducts.value.isNotEmpty,
+            condition: savedProducts.isNotEmpty,
             ifTrue: () => Column(
               children: [
                 ListView.separated(
                   primary: false,
                   shrinkWrap: true,
-                  itemCount: visibleSavedProducts.value.length,
+                  itemCount: savedProducts.length,
                   separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
                   itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                    condition: index < visibleSavedProducts.value.length,
-                    ifTrue: () => ProductItem(product: visibleSavedProducts.value[index]),
+                    condition: index < savedProducts.length,
+                    ifTrue: () => ProductItem(product: savedProducts[index]),
                   ),
                 ),
                 ConditionalBuilder(
-                  condition: savedProducts.value.length != visibleSavedProducts.value.length,
+                  condition: savedProducts.length != user.savedProducts.length,
                   ifTrue: () => Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -79,9 +74,7 @@ class ProfileSavedProducts extends HookConsumerWidget {
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark),
                         ),
-                        onPressed: () => {
-                          visibleSavedProducts.value = [...savedProducts.value],
-                        },
+                        onPressed: () {},
                         child: const Text('Pokaż wszystko'),
                       ),
                     ],

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 
 class ProfileActionsSheet extends HookConsumerWidget {
   const ProfileActionsSheet({Key? key, required this.user}) : super(key: key);
@@ -11,17 +12,19 @@ class ProfileActionsSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authUser = ref.watch(authUserProvider);
+
     return ListTileTheme(
       data: Theme.of(context).listTileTheme.copyWith(minLeadingWidth: 0, iconColor: Colors.black),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             decoration: BoxDecoration(color: Theme.of(context).primaryColorLight),
             child: Row(
               children: [
-                AvatarIcon(user: user, radius: 25),
+                AvatarIcon(user: user, radius: 24),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -44,30 +47,32 @@ class ProfileActionsSheet extends HookConsumerWidget {
             title: const Text('Edytuj dane konta'),
             onTap: () {},
           ),
+          ListTile(
+            leading: const Icon(Icons.lock_outlined),
+            title: const Text('Zmień hasło'),
+            onTap: () {},
+          ),
           if (user.role == Role.mod || user.role == Role.admin) ...[
-            ListTile(
-              leading: const Icon(Icons.lock_outlined),
-              title: const Text('Zmień hasło'),
-              onTap: () {},
-            ),
             ListTile(
               leading: const Icon(Icons.verified_outlined),
               title: const Text('Zmień rolę'),
               onTap: () {},
             ),
           ],
-          ListTile(
-            title: TextButton(
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark),
+          ConditionalBuilder(
+            condition: authUser != null,
+            ifTrue: () => ListTile(
+              title: Center(
+                child: Text(
+                  'Wyloguj się',
+                  style: TextStyle(color: Theme.of(context).primaryColorDark),
+                ),
               ),
-              onPressed: () => {
-                ref.read(authServiceProvider).signOut(),
-                Navigator.of(context).pop(),
+              onTap: () {
+                ref.read(authServiceProvider).signOut();
+                Navigator.of(context).pop();
               },
-              child: const Text('Wyloguj się'),
             ),
-            onTap: () {},
           ),
         ],
       ),

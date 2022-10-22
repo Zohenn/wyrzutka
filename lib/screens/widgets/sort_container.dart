@@ -75,7 +75,10 @@ class SortContainer extends HookConsumerWidget {
                       )
                     ],
                   ),
-                  AvatarIcon(user: user),
+                  AvatarIcon(
+                    user: user,
+                    profileLoading: true,
+                  ),
                 ],
               ),
             ),
@@ -111,7 +114,8 @@ class SortContainer extends HookConsumerWidget {
                         ? null
                         : () async {
                             updateVoteState.value = _UpdateVoteState.down;
-                            await asyncCall(context, () => productRepository.updateVote(product, sort, authUser, false));
+                            await asyncCall(
+                                context, () => productRepository.updateVote(product, sort, authUser, false));
                             updateVoteState.value = _UpdateVoteState.none;
                           },
                     color: userVote?.value == false ? AppColors.negative : null,
