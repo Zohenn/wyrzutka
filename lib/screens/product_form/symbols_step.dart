@@ -55,12 +55,12 @@ class SymbolsStep extends HookConsumerWidget {
               condition: model.symbols.isNotEmpty,
               ifTrue: () => GutterColumn(
                 children: [
-                  for (var symbol in model.symbols)
+                  for (var symbol in symbols)
                     SymbolItem(
-                      key: Key(symbol),
-                      symbol: symbols.firstWhere((s) => s.id == symbol),
+                      key: Key(symbol.id),
+                      symbol: symbol,
                       addDeleteButton: true,
-                      onDeletePressed: () => onSymbolsChanged([...model.symbols]..remove(symbol)),
+                      onDeletePressed: () => onSymbolsChanged([...model.symbols]..remove(symbol.id)),
                     ),
                 ],
               ),
@@ -141,6 +141,7 @@ class ProductSymbolsSheet extends HookConsumerWidget {
       padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
       child: FutureHandler(
         future: initFuture,
+        loading: () => const Center(heightFactor: 1.0, child: CircularProgressIndicator()),
         data: () => Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
