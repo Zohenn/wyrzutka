@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/profile/profile_actions_sheet.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProfileUser extends HookConsumerWidget {
@@ -12,13 +14,16 @@ class ProfileUser extends HookConsumerWidget {
     Key? key,
     required this.user,
     required this.onNextPressed,
+    this.isMainUser = false,
   }) : super(key: key);
 
   final VoidCallback onNextPressed;
   final AppUser user;
+  final bool isMainUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authUser = ref.watch(authUserProvider);
     return GutterColumn(
       children: [
         Column(
@@ -47,14 +52,17 @@ class ProfileUser extends HookConsumerWidget {
                         ],
                       ),
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        final result = await showDefaultBottomSheet(
-                          context: context,
-                          builder: (context) => ProfileActionsSheet(user: user),
-                        );
-                      },
-                      icon: const Icon(Icons.settings_outlined),
+                    ConditionalBuilder(
+                      condition: authUser != null,
+                      ifTrue: () => IconButton(
+                        onPressed: () async {
+                          final result = await showDefaultBottomSheet(
+                            context: context,
+                            builder: (context) => ProfileActionsSheet(user: user, isMainUser: isMainUser),
+                          );
+                        },
+                        icon: const Icon(Icons.settings_outlined),
+                      ),
                     ),
                   ],
                 ),

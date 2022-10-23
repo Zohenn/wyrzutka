@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
@@ -9,9 +10,11 @@ class ProfileActionsSheet extends HookConsumerWidget {
   const ProfileActionsSheet({
     Key? key,
     required this.user,
+    this.isMainUser = false,
   }) : super(key: key);
 
   final AppUser user;
+  final bool isMainUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,7 +51,8 @@ class ProfileActionsSheet extends HookConsumerWidget {
           ListTile(
             leading: const Icon(Icons.edit),
             title: const Text('Edytuj dane konta'),
-            onTap: () {},
+            onTap: () {
+            },
           ),
           ListTile(
             leading: const Icon(Icons.lock_outlined),
@@ -63,7 +67,7 @@ class ProfileActionsSheet extends HookConsumerWidget {
             ),
           ],
           ConditionalBuilder(
-            condition: authUser != null,
+            condition: authUser != null && isMainUser,
             ifTrue: () => ListTile(
               title: Center(
                 child: Text(

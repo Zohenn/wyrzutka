@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/profile/profile_features_screen.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products.dart';
 import 'package:inzynierka/screens/profile/profile_sort_proposals.dart';
@@ -16,9 +17,11 @@ class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({
     Key? key,
     this.user,
+    this.isMainUser = false,
   }) : super(key: key);
 
   final AppUser? user;
+  final bool isMainUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +31,7 @@ class ProfileScreen extends HookConsumerWidget {
       ifTrue: () => ConditionalBuilder(
         condition: user != null,
         ifTrue: () => ProfileScreenContent(user: user!),
-        ifFalse: () => ProfileScreenContent(user: authUser!),
+        ifFalse: () => ProfileScreenContent(user: authUser!, isMainUser: isMainUser),
       ),
       ifFalse: () => const ProfileFeaturesScreen(),
     );
@@ -36,9 +39,14 @@ class ProfileScreen extends HookConsumerWidget {
 }
 
 class ProfileScreenContent extends HookConsumerWidget {
-  const ProfileScreenContent({Key? key, required this.user}) : super(key: key);
+  const ProfileScreenContent({
+    Key? key,
+    required this.user,
+    this.isMainUser = false,
+  }) : super(key: key);
 
   final AppUser user;
+  final bool isMainUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,6 +57,7 @@ class ProfileScreenContent extends HookConsumerWidget {
       ProfileUser(
         user: user,
         onNextPressed: () => step.value = 1,
+        isMainUser: isMainUser,
       ),
       ProfileSavedProducts(
         user: user,
