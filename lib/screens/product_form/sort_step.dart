@@ -2,19 +2,68 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
+import 'package:inzynierka/screens/product_form/product_form.dart';
+import 'package:inzynierka/utils/deep_copy.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:inzynierka/widgets/gutter_row.dart';
+
+typedef _Elements = Map<ElementContainer, List<SortElement>>;
 
 class SortStep extends HookWidget {
-  const SortStep({Key? key}) : super(key: key);
+  const SortStep({
+    Key? key,
+    required this.model,
+    required this.onElementsChanged,
+    required this.onSubmitPressed,
+  }) : super(key: key);
+
+  final ProductFormModel model;
+  final void Function(_Elements) onElementsChanged;
+  final VoidCallback onSubmitPressed;
+
+  _Elements get elements => model.elements;
+
+  Iterable<ElementContainer> get selectedContainers => elements.keys;
+
+  void toggleContainer(ElementContainer container) {
+    final elementsCopy = deepCopy(elements);
+    if (!selectedContainers.contains(container)) {
+      elementsCopy[container] = [];
+    } else {
+      elementsCopy.remove(container);
+    }
+    onElementsChanged(elementsCopy);
+  }
+
+  void addElement(ElementContainer container, _ElementModel element) {
+    final elementsCopy = deepCopy(elements);
+    elementsCopy[container] ??= [];
+    elementsCopy[container]!.add(
+      SortElement(
+        container: container,
+        name: element.name,
+        description: element.desc.isEmpty ? null : element.desc,
+      ),
+    );
+    onElementsChanged(elementsCopy);
+  }
+
+  void deleteElement(ElementContainer container, SortElement element) {
+    final elementsCopy = deepCopy(elements);
+    elementsCopy[container]!.remove(element);
+    onElementsChanged(elementsCopy);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final containers = ElementContainer.values.where((element) => element != ElementContainer.empty);
-    final selectedContainers = useState(<ElementContainer>{});
-    final elements = useState(<ElementContainer, List<SortElement>>{});
+    final containerGroups = [
+      [ElementContainer.plastic],
+      [ElementContainer.paper, ElementContainer.bio],
+      [ElementContainer.mixed, ElementContainer.glass]
+    ];
 
     return SingleChildScrollView(
       child: Padding(
@@ -33,51 +82,33 @@ class SortStep extends HookWidget {
             ),
             SizedBox(height: 24.0),
             Text(
-              'Wybierz pojemniki, do których powinien trafić produkt.',
-              style: Theme.of(context).textTheme.bodySmall,
+              'Wybierz pojemniki',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Wrap(
-                spacing: 8.0,
-                runSpacing: 8.0,
-                children: [
-                  for (var container in containers)
-                    Material(
-                      color:
-                          selectedContainers.value.contains(container) ? Theme.of(context).primaryColor : Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: selectedContainers.value.contains(container) ? AppColors.primaryDarker : Colors.black,
-                          width: 1.2, // yep, 1.2
+            SizedBox(height: 8.0),
+            GutterColumn(
+              gutterSize: 8.0,
+              children: [
+                for (var containers in containerGroups)
+                  GutterRow(
+                    gutterSize: 8.0,
+                    children: [
+                      for (var container in containers)
+                        Expanded(
+                          child: _ContainerChip(
+                            container: container,
+                            selected: selectedContainers.contains(container),
+                            onPressed: () => toggleContainer(container),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      clipBehavior: Clip.hardEdge,
-                      child: InkWell(
-                        onTap: () {
-                          if (!selectedContainers.value.contains(container)) {
-                            selectedContainers.value.add(container);
-                            elements.value[container] = [];
-                          } else {
-                            selectedContainers.value.remove(container);
-                            elements.value.remove(container);
-                          }
-                          selectedContainers.value = Set.from(selectedContainers.value);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-                          child: Text(container.containerName, style: Theme.of(context).textTheme.labelLarge),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+                    ],
+                  ),
+              ],
             ),
             SizedBox(height: 24.0),
             GutterColumn(
               children: [
-                for (var container in selectedContainers.value)
+                for (var container in selectedContainers)
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -97,46 +128,22 @@ class SortStep extends HookWidget {
                               ),
                             ],
                           ),
-                          for (var element in elements.value[container]!) ...[
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            element.name,
-                                            style: Theme.of(context).textTheme.bodyMedium,
-                                          ),
-                                          ConditionalBuilder(
-                                            condition: element.description != null,
-                                            ifTrue: () => Text(
-                                              element.description!,
-                                              style: Theme.of(context).textTheme.bodySmall,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 16.0),
-                                    IconButton(
-                                      onPressed: () {},
-                                      style: IconButton.styleFrom(foregroundColor: AppColors.negative).copyWith(
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      icon: Icon(Icons.close),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                          ConditionalBuilder(
+                            condition: elements[container]!.isNotEmpty,
+                            ifTrue: () => Column(
+                              children: [
+                                for (var element in elements[container]!) ...[
+                                  _ElementItem(
+                                    element: element,
+                                    onDeletePressed: () => deleteElement(container, element),
+                                  ),
+                                  if (element != elements[container]!.last)
+                                    const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
+                                ],
+                              ],
                             ),
-                            if (element != elements.value[container]!.last)
-                              const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
-                          ],
+                            ifFalse: () => SizedBox(height: 16.0),
+                          ),
                           OutlinedButton(
                             onPressed: () async {
                               final element = await showDefaultBottomSheet<_ElementModel>(
@@ -145,15 +152,7 @@ class SortStep extends HookWidget {
                               );
 
                               if (element != null) {
-                                elements.value[container] ??= [];
-                                elements.value[container]!.add(
-                                  SortElement(
-                                    container: container,
-                                    name: element.name,
-                                    description: element.desc.isEmpty ? null : element.desc,
-                                  ),
-                                );
-                                elements.value = {...elements.value};
+                                addElement(container, element);
                               }
                             },
                             style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
@@ -167,6 +166,103 @@ class SortStep extends HookWidget {
                     ),
                   ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContainerChip extends StatelessWidget {
+  const _ContainerChip({
+    Key? key,
+    required this.container,
+    required this.selected,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final ElementContainer container;
+  final bool selected;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? Theme.of(context).primaryColor.withOpacity(0.2) : Colors.white,
+      shape: StadiumBorder(
+        side: BorderSide(
+          color: selected ? AppColors.primaryDarker : Colors.black,
+          width: 1.2, // yep, 1.2
+        ),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: InkWell(
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedSwitcher(
+                duration: kThemeChangeDuration,
+                child: !selected
+                    ? Icon(container.icon, key: ValueKey(container), size: 20)
+                    : Icon(Icons.check, key: Key('selected'), size: 20, color: AppColors.primaryDarker),
+              ),
+              SizedBox(width: 12.0),
+              Text(container.containerName, style: Theme.of(context).textTheme.labelLarge),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ElementItem extends StatelessWidget {
+  const _ElementItem({
+    Key? key,
+    required this.element,
+    required this.onDeletePressed,
+  }) : super(key: key);
+
+  final SortElement element;
+  final VoidCallback onDeletePressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    element.name,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  ConditionalBuilder(
+                    condition: element.description != null,
+                    ifTrue: () => Text(
+                      element.description!,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16.0),
+            IconButton(
+              onPressed: onDeletePressed,
+              style: IconButton.styleFrom(foregroundColor: AppColors.negative).copyWith(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              icon: Icon(Icons.close),
             ),
           ],
         ),
@@ -213,7 +309,6 @@ class _ElementSheet extends HookWidget {
                 decoration: InputDecoration(
                   labelText: 'Dodatkowe informacje',
                 ),
-                textInputAction: TextInputAction.next,
                 onChanged: (value) => element.value.desc = value,
               ),
               Center(
