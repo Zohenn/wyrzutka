@@ -24,34 +24,10 @@ class ProfileActionsSheet extends HookConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            decoration: BoxDecoration(color: Theme.of(context).primaryColorLight),
-            child: Row(
-              children: [
-                AvatarIcon(user: user, radius: 24),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.displayName,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(user.role.desc,
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: user.role.descColor)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
           ListTile(
             leading: const Icon(Icons.edit),
             title: const Text('Edytuj dane konta'),
-            onTap: () {
-            },
+            onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.lock_outlined),

@@ -13,13 +13,13 @@ class ProfileSavedProducts extends HookConsumerWidget {
   const ProfileSavedProducts({
     Key? key,
     required this.user,
-    required this.onNextPressed,
     this.count,
+    required this.onNextPressed,
   }) : super(key: key);
 
-  final VoidCallback onNextPressed;
   final AppUser user;
   final int? count;
+  final VoidCallback onNextPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
