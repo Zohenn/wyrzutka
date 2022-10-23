@@ -6,7 +6,10 @@ import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
 class ProfileActionsSheet extends HookConsumerWidget {
-  const ProfileActionsSheet({Key? key, required this.user}) : super(key: key);
+  const ProfileActionsSheet({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   final AppUser user;
 

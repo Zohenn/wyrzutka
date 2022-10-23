@@ -13,7 +13,10 @@ import 'package:inzynierka/widgets/custom_stepper.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProfileScreen extends HookConsumerWidget {
-  const ProfileScreen({Key? key, this.user}) : super(key: key);
+  const ProfileScreen({
+    Key? key,
+    this.user,
+  }) : super(key: key);
 
   final AppUser? user;
 
@@ -21,13 +24,13 @@ class ProfileScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
     return ConditionalBuilder(
-      condition: user != null,
-      ifTrue: () => ProfileScreenContent(user: user!),
-      ifFalse: () => ConditionalBuilder(
-        condition: authUser != null,
-        ifTrue: () => ProfileScreenContent(user: authUser!),
-        ifFalse: () => const ProfileFeaturesScreen(),
+      condition: user != null || authUser != null,
+      ifTrue: () => ConditionalBuilder(
+        condition: user != null,
+        ifTrue: () => ProfileScreenContent(user: user!),
+        ifFalse: () => ProfileScreenContent(user: authUser!),
       ),
+      ifFalse: () => const ProfileFeaturesScreen(),
     );
   }
 }
