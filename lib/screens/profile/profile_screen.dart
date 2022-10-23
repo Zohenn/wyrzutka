@@ -4,13 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/profile/profile_features_screen.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products.dart';
 import 'package:inzynierka/screens/profile/profile_sort_proposals.dart';
 import 'package:inzynierka/screens/profile/profile_user.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/custom_stepper.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProfileScreen extends HookConsumerWidget {
@@ -48,51 +46,79 @@ class ProfileScreenContent extends HookConsumerWidget {
   final AppUser user;
   final bool isMainUser;
 
+  Widget wrapPage(Widget child, ValueKey<int> key) {
+    return SingleChildScrollView(
+      key: key,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: child,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final step = useState(0);
 
-    final List<String> steps = ['Profil', 'Produkty', 'Segregacja'];
-    final List<Widget> pages = [
-      ProfileUser(
-        user: user,
-        onNextPressed: () => step.value = 1,
-        isMainUser: isMainUser,
+    List<Widget> pages = [
+      GutterColumn(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ProfileUser(
+            user: user,
+            isMainUser: isMainUser,
+          ),
+          ProfileSavedProducts(
+            user: user,
+            count: 2,
+            onNextPressed: () => step.value = 1,
+          ),
+          ProfileSortProposals(
+            user: user,
+            count: 2,
+            onNextPressed: () => step.value = 2,
+          ),
+        ],
       ),
       ProfileSavedProducts(
         user: user,
-        onNextPressed: () => step.value = 2,
+        onNextPressed: () => step.value = 1,
       ),
       ProfileSortProposals(
         user: user,
-        onNextPressed: () => step.value = 0,
+        onNextPressed: () => step.value = 2,
       ),
     ];
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GutterColumn(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomStepper(steps: steps, step: step.value),
-            PageTransitionSwitcher(
-              transitionBuilder: (child, primaryAnimation, secondaryAnimation) => SharedAxisTransition(
-                animation: primaryAnimation,
-                secondaryAnimation: secondaryAnimation,
-                transitionType: SharedAxisTransitionType.horizontal,
-                fillColor: Colors.white,
-                child: child,
-              ),
-              layoutBuilder: (entries) => Stack(
-                alignment: Alignment.topCenter,
-                children: entries,
-              ),
-              child: pages[step.value],
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (step.value > 0) {
+          step.value--;
+          return false;
+        }
+        return true;
+      },
+      child: PageTransitionSwitcher(
+        transitionBuilder: (child, primaryAnimation, secondaryAnimation) => SharedAxisTransition(
+          animation: primaryAnimation,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.horizontal,
+          fillColor: Colors.white,
+          child: child,
         ),
+        layoutBuilder: (entries) => Stack(
+          alignment: Alignment.topCenter,
+          children: entries,
+        ),
+        child: [
+          for (int i=0; i<pages.length; i++) ...[
+            wrapPage(
+              pages[i],
+              ValueKey<int>(i),
+            ),
+          ]
+        ][step.value],
       ),
     );
   }

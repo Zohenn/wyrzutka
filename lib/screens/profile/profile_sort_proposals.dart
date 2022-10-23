@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
@@ -13,17 +12,19 @@ import 'package:inzynierka/widgets/gutter_column.dart';
 class ProfileSortProposals extends HookConsumerWidget {
   const ProfileSortProposals({
     Key? key,
-    required this.user,
     required this.onNextPressed,
+    required this.user,
+    this.count,
   }) : super(key: key);
 
   final VoidCallback onNextPressed;
   final AppUser user;
+  final int? count;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final products = user.verifiedSortProposals.take(2).toList();
+    final products = user.verifiedSortProposals.take(count != null ? count! : user.verifiedSortProposals.length).toList();
     final future = useInitFuture<List<Product>>(
       () => productRepository.fetchIds(products),
     );
@@ -85,7 +86,7 @@ class ProfileSortProposals extends HookConsumerWidget {
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark),
                         ),
-                        onPressed: () {},
+                        onPressed: onNextPressed,
                         child: const Text('Pokaż wszystko'),
                       ),
                     ],
@@ -112,10 +113,6 @@ class ProfileSortProposals extends HookConsumerWidget {
               ),
             ),
           ),
-        ),
-        OutlinedButton(
-          onPressed: onNextPressed,
-          child: const Text('Wróć do profilu'),
         ),
       ],
     );

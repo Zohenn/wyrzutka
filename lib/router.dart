@@ -36,7 +36,7 @@ class RouterWrapper {
   static final bottomNavigationRoutes = {
     '/scan': (context, state, data) => wrapPage(const ScannerScreen(), const ValueKey('/scan')),
     '/products': (context, state, data) => wrapPage(const ProductsScreen(), const ValueKey('/products')),
-    '/profile': (context, state, data) => wrapPage(const ProfileScreen(isMainUser: true), const ValueKey('/profile')),
+    '/profile': (context, state, data) => wrapPage(const SafeArea(child: ProfileScreen(isMainUser: true)), const ValueKey('/profile')),
     '/menu': (context, state, data) => wrapPage(const Center(child: Text('Menu')), const ValueKey('/menu')),
   };
 

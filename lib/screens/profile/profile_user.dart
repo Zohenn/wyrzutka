@@ -13,11 +13,9 @@ class ProfileUser extends HookConsumerWidget {
   const ProfileUser({
     Key? key,
     required this.user,
-    required this.onNextPressed,
     this.isMainUser = false,
   }) : super(key: key);
 
-  final VoidCallback onNextPressed;
   final AppUser user;
   final bool isMainUser;
 
@@ -99,10 +97,6 @@ class ProfileUser extends HookConsumerWidget {
               ),
             ),
           ],
-        ),
-        OutlinedButton(
-          onPressed: onNextPressed,
-          child: const Text('Przejdź dalej'),
         ),
       ],
     );

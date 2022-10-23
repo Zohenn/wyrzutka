@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
-import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
@@ -17,15 +14,17 @@ class ProfileSavedProducts extends HookConsumerWidget {
     Key? key,
     required this.user,
     required this.onNextPressed,
+    this.count,
   }) : super(key: key);
 
   final VoidCallback onNextPressed;
   final AppUser user;
+  final int? count;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
-    final products = user.savedProducts.take(2).toList();
+    final products = user.savedProducts.take(count != null ? count! : user.savedProducts.length).toList();
     final future = useInitFuture<List<Product>>(
       () => productRepository.fetchIds(products),
     );
@@ -79,7 +78,7 @@ class ProfileSavedProducts extends HookConsumerWidget {
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark),
                         ),
-                        onPressed: () {},
+                        onPressed: onNextPressed,
                         child: const Text('Pokaż wszystko'),
                       ),
                     ],
@@ -106,10 +105,6 @@ class ProfileSavedProducts extends HookConsumerWidget {
               ),
             ),
           ),
-        ),
-        OutlinedButton(
-          onPressed: onNextPressed,
-          child: const Text('Przejdź dalej'),
         ),
       ],
     );
