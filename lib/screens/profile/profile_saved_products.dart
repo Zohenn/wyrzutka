@@ -13,8 +13,9 @@ import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProfileSavedProducts extends HookConsumerWidget {
-  const ProfileSavedProducts({Key? key, required this.user}) : super(key: key);
+  const ProfileSavedProducts({Key? key, required this.user, required this.onNextPressed,}) : super(key: key);
 
+  final VoidCallback onNextPressed;
   final AppUser user;
 
   @override
@@ -74,7 +75,9 @@ class ProfileSavedProducts extends HookConsumerWidget {
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+
+                        },
                         child: const Text('Pokaż wszystko'),
                       ),
                     ],
@@ -101,6 +104,10 @@ class ProfileSavedProducts extends HookConsumerWidget {
               ),
             ),
           ),
+        ),
+        OutlinedButton(
+          onPressed: onNextPressed,
+          child: const Text('Przejdź dalej'),
         ),
       ],
     );

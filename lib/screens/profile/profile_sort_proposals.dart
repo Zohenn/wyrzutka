@@ -11,8 +11,9 @@ import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProfileSortProposals extends HookConsumerWidget {
-  const ProfileSortProposals({Key? key, required this.user}) : super(key: key);
+  const ProfileSortProposals({Key? key, required this.user, required this.onNextPressed,}) : super(key: key);
 
+  final VoidCallback onNextPressed;
   final AppUser user;
 
   @override
@@ -107,6 +108,10 @@ class ProfileSortProposals extends HookConsumerWidget {
               ),
             ),
           ),
+        ),
+        OutlinedButton(
+          onPressed: onNextPressed,
+          child: const Text('Wróć do profilu'),
         ),
       ],
     );
