@@ -35,17 +35,4 @@ class ProductSymbolRepository with CacheNotifierMixin<ProductSymbol> {
             fromFirestore: ProductSymbol.fromFirestore,
             toFirestore: ProductSymbol.toFirestore,
           );
-
-  bool _fetchedAll = false;
-
-  Future<List<ProductSymbol>> fetchAll() async {
-    if(_fetchedAll){
-      return cache.values.toList();
-    }
-
-    final snapshot = await collection.get();
-    mapDocs(snapshot);
-    _fetchedAll = true;
-    return snapshot.docs.map((e) => e.data()).toList();
-  }
 }

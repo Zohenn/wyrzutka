@@ -68,6 +68,19 @@ mixin CacheNotifierMixin<V> {
   @protected
   CollectionReference<V> get collection;
 
+  bool _fetchedAll = false;
+
+  Future<List<V>> fetchAll() async {
+    if(_fetchedAll){
+      return cache.values.toList();
+    }
+
+    final snapshot = await collection.get();
+    mapDocs(snapshot);
+    _fetchedAll = true;
+    return snapshot.docs.map((e) => e.data()).toList();
+  }
+
   Future<V?> fetchId(String id, [bool skipCache = false]) async {
     if (!skipCache && cache[id] != null) {
       return cache[id];
