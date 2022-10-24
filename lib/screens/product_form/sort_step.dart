@@ -3,12 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
-import 'package:inzynierka/utils/deep_copy.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
+import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 typedef _Elements = Map<ElementContainer, List<SortElement>>;
 
@@ -28,8 +28,12 @@ class SortStep extends HookWidget {
 
   Iterable<ElementContainer> get selectedContainers => elements.keys;
 
+  bool get isValid => elements.isEmpty || elements.values.every((element) => element.isNotEmpty);
+
+  _Elements copyElements(_Elements elements) => elements.map((key, value) => MapEntry(key, [...value]));
+
   void toggleContainer(ElementContainer container) {
-    final elementsCopy = deepCopy(elements);
+    final elementsCopy = copyElements(elements);
     if (!selectedContainers.contains(container)) {
       elementsCopy[container] = [];
     } else {
@@ -39,7 +43,7 @@ class SortStep extends HookWidget {
   }
 
   void addElement(ElementContainer container, _ElementModel element) {
-    final elementsCopy = deepCopy(elements);
+    final elementsCopy = copyElements(elements);
     elementsCopy[container] ??= [];
     elementsCopy[container]!.add(
       SortElement(
@@ -52,7 +56,7 @@ class SortStep extends HookWidget {
   }
 
   void deleteElement(ElementContainer container, SortElement element) {
-    final elementsCopy = deepCopy(elements);
+    final elementsCopy = copyElements(elements);
     elementsCopy[container]!.remove(element);
     onElementsChanged(elementsCopy);
   }
@@ -106,66 +110,100 @@ class SortStep extends HookWidget {
               ],
             ),
             SizedBox(height: 24.0),
-            GutterColumn(
-              children: [
-                for (var container in selectedContainers)
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                foregroundColor: container.iconColor,
-                                backgroundColor: container.containerColor,
-                                child: Icon(container.icon),
-                              ),
-                              const SizedBox(width: 16),
-                              Text(
-                                container.containerName,
-                                style: Theme.of(context).textTheme.titleMedium!,
-                              ),
-                            ],
-                          ),
-                          ConditionalBuilder(
-                            condition: elements[container]!.isNotEmpty,
-                            ifTrue: () => Column(
+            ConditionalBuilder(
+              condition: selectedContainers.isNotEmpty,
+              ifTrue: () => GutterColumn(
+                children: [
+                  for (var container in selectedContainers)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                for (var element in elements[container]!) ...[
-                                  _ElementItem(
-                                    element: element,
-                                    onDeletePressed: () => deleteElement(container, element),
-                                  ),
-                                  if (element != elements[container]!.last)
-                                    const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
-                                ],
+                                CircleAvatar(
+                                  foregroundColor: container.iconColor,
+                                  backgroundColor: container.containerColor,
+                                  child: Icon(container.icon),
+                                ),
+                                const SizedBox(width: 16),
+                                Text(
+                                  container.containerName,
+                                  style: Theme.of(context).textTheme.titleMedium!,
+                                ),
                               ],
                             ),
-                            ifFalse: () => SizedBox(height: 16.0),
-                          ),
-                          OutlinedButton(
-                            onPressed: () async {
-                              final element = await showDefaultBottomSheet<_ElementModel>(
-                                context: context,
-                                builder: (context) => _ElementSheet(),
-                              );
+                            ConditionalBuilder(
+                              condition: elements[container]!.isNotEmpty,
+                              ifTrue: () => Column(
+                                children: [
+                                  for (var element in elements[container]!) ...[
+                                    _ElementItem(
+                                      element: element,
+                                      onDeletePressed: () => deleteElement(container, element),
+                                    ),
+                                    if (element != elements[container]!.last)
+                                      const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
+                                  ],
+                                ],
+                              ),
+                              ifFalse: () => SizedBox(height: 16.0),
+                            ),
+                            OutlinedButton(
+                              onPressed: () async {
+                                final element = await showDefaultBottomSheet<_ElementModel>(
+                                  context: context,
+                                  builder: (context) => _ElementSheet(),
+                                );
 
-                              if (element != null) {
-                                addElement(container, element);
-                              }
-                            },
-                            style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
-                                  backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                                  side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
-                                ),
-                            child: Text('Dodaj element'),
-                          ),
-                        ],
+                                if (element != null) {
+                                  addElement(container, element);
+                                }
+                              },
+                              style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+                                    backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                                    side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
+                                  ),
+                              child: Text('Dodaj element'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                ],
+              ),
+              ifFalse: () => Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          radius: 30,
+                          child: Icon(Icons.delete_forever, size: 30),
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text('Pusta propozycja segregacji', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Zakończ dodawanie produktu, a propozycje uzupełnią inni.',
+                          style: Theme.of(context).textTheme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-              ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24.0),
+            ProgressIndicatorButton(
+              onPressed: isValid ? onSubmitPressed : null,
+              child: Center(
+                child: Text('Zapisz produkt'),
+              ),
             ),
           ],
         ),
@@ -191,10 +229,7 @@ class _ContainerChip extends StatelessWidget {
     return Material(
       color: selected ? Theme.of(context).primaryColor.withOpacity(0.2) : Colors.white,
       shape: StadiumBorder(
-        side: BorderSide(
-          color: selected ? AppColors.primaryDarker : Colors.black,
-          width: 1.2, // yep, 1.2
-        ),
+        side: BorderSide(color: selected ? AppColors.primaryDarker : Colors.black),
       ),
       clipBehavior: Clip.hardEdge,
       child: InkWell(

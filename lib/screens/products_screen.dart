@@ -59,6 +59,7 @@ class ProductsScreen extends HookConsumerWidget {
     useEffect(() {
       if (searchText.value.isNotEmpty) {
         innerFuture.value = productRepository.search(searchText.value).then((value) {
+          // todo: these throw if disposed
           productIds.value = value.map((product) => product.id).toList();
         });
       } else {

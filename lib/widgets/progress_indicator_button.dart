@@ -10,7 +10,7 @@ class ProgressIndicatorButton extends StatelessWidget {
     this.isLoading = false,
   }) : super(key: key);
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
   final ButtonStyle? style;
   final bool isLoading;
@@ -18,11 +18,11 @@ class ProgressIndicatorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: () {
+      onPressed: onPressed != null ? () {
         if (!isLoading) {
-          onPressed();
+          onPressed?.call();
         }
-      },
+      } : null,
       style: style,
       child: Stack(
         alignment: Alignment.center,
