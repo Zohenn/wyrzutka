@@ -2,22 +2,40 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/providers/product_service_provider.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/widgets/size_animation_helper.dart';
 
 enum SavingState { saving, done, error }
 
-class ProductFormSave extends HookWidget {
+class ProductFormSave extends HookConsumerWidget {
   const ProductFormSave({Key? key, required this.model}) : super(key: key);
 
   final ProductFormModel model;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productService = ref.watch(productServiceProvider);
     final state = useState(SavingState.saving);
     final animationController = useAnimationController(duration: const Duration(milliseconds: 400));
     final animation = useRef(CurvedAnimation(parent: animationController, curve: Curves.easeInOut));
+    final retryTrigger = useState(0);
+
+    useEffect(() {
+      productService.create(model).then((value) {
+        animationController.forward();
+        return state.value = SavingState.done;
+      }).onError((error, stackTrace) {
+        debugPrint(error.toString());
+        debugPrintStack(stackTrace: stackTrace);
+        state.value = SavingState.error;
+        return state.value;
+      });
+
+      return null;
+    }, [retryTrigger.value]);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
@@ -55,20 +73,10 @@ class ProductFormSave extends HookWidget {
                     ),
                   ),
                 ),
-                if (state.value == SavingState.saving)
-                  const Positioned.fill(
-                    child: CircularProgressIndicator(color: AppColors.primaryDarker),
-                  ),
-                Positioned(
-                  bottom: 16,
-                  child: FadeTransition(
-                    opacity: animation.value,
-                    child: Icon(
-                      Icons.check,
-                      size: 48,
-                      color: Theme.of(context).primaryColor,
-                      shadows: const [Shadow(color: Colors.black45, blurRadius: 12.0, offset: Offset(0, 2.0))],
-                    ),
+                Positioned.fill(
+                  child: CircularProgressIndicator(
+                    color: state.value == SavingState.error ? AppColors.negative : AppColors.primaryDarker,
+                    value: state.value == SavingState.saving ? null : 1,
                   ),
                 ),
                 Positioned.fill(

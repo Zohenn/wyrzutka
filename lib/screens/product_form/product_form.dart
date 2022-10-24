@@ -26,6 +26,7 @@ class ProductFormModel with _$ProductFormModel {
   const factory ProductFormModel({
     required String id,
     @Default('') String name,
+    // todo: this should be an actual list of keywords
     @Default('') String keywords,
     XFile? photo,
     @Default([]) List<String> symbols,
