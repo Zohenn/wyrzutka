@@ -4,41 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:inzynierka/widgets/size_animation_helper.dart';
 
 enum SavingState { saving, done, error }
-
-class SizeAnimationHelper extends StatelessWidget {
-  const SizeAnimationHelper({
-    Key? key,
-    required this.value,
-    required this.child,
-    this.alignment = Alignment.center,
-    this.clip = true,
-    this.animateHeight = true,
-  }) : super(key: key);
-
-  final double value;
-  final Widget child;
-  final AlignmentGeometry alignment;
-  final bool clip;
-  final bool animateHeight;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget _child = Opacity(
-      opacity: value,
-      child: Align(
-        alignment: alignment,
-        heightFactor: animateHeight ? value : null,
-        widthFactor: !animateHeight ? value : null,
-        child: child,
-      ),
-    );
-
-    return clip ? ClipRect(child: _child) : _child;
-  }
-}
 
 class ProductFormSave extends HookWidget {
   const ProductFormSave({Key? key, required this.model}) : super(key: key);

@@ -5,10 +5,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/screens/product_form/information_step.dart';
+import 'package:inzynierka/screens/product_form/product_form_information.dart';
 import 'package:inzynierka/screens/product_form/product_form_save.dart';
-import 'package:inzynierka/screens/product_form/sort_step.dart';
-import 'package:inzynierka/screens/product_form/symbols_step.dart';
+import 'package:inzynierka/screens/product_form/product_form_sort.dart';
+import 'package:inzynierka/screens/product_form/product_form_symbols.dart';
 import 'package:inzynierka/widgets/custom_stepper.dart';
 
 part 'product_form.freezed.dart';
@@ -96,19 +96,19 @@ class ProductForm extends HookWidget {
                       ),
                       reverse: previousStep != null && previousStep > step.value,
                       child: [
-                        InformationStep(
+                        ProductFormInformation(
                           model: model.value,
                           onNameChanged: (name) => model.value = model.value.copyWith(name: name),
                           onKeywordsChanged: (keywords) => model.value = model.value.copyWith(keywords: keywords),
                           onPhotoChanged: (photo) => model.value = model.value.copyWith(photo: photo),
                           onNextPressed: () => step.value = 1,
                         ),
-                        SymbolsStep(
+                        ProductFormSymbols(
                           model: model.value,
                           onSymbolsChanged: (symbols) => model.value = model.value.copyWith(symbols: symbols),
                           onNextPressed: () => step.value = 2,
                         ),
-                        SortStep(
+                        ProductFormSort(
                           model: model.value,
                           onElementsChanged: (elements) => model.value = model.value.copyWith(elements: elements),
                           onSubmitPressed: () => isSaving.value = true,

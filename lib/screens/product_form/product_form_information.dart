@@ -8,8 +8,8 @@ import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
-class InformationStep extends StatelessWidget {
-  const InformationStep({
+class ProductFormInformation extends StatelessWidget {
+  const ProductFormInformation({
     Key? key,
     required this.model,
     required this.onNameChanged,

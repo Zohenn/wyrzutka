@@ -12,8 +12,8 @@ import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 typedef _Elements = Map<ElementContainer, List<SortElement>>;
 
-class SortStep extends HookWidget {
-  const SortStep({
+class ProductFormSort extends HookWidget {
+  const ProductFormSort({
     Key? key,
     required this.model,
     required this.onElementsChanged,
@@ -75,21 +75,16 @@ class SortStep extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Segregacja',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
-                ),
-              ],
+            Text(
+              'Segregacja',
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             Text(
               'Wybierz pojemniki',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             GutterColumn(
               gutterSize: 8.0,
               children: [
@@ -109,7 +104,7 @@ class SortStep extends HookWidget {
                   ),
               ],
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             ConditionalBuilder(
               condition: selectedContainers.isNotEmpty,
               ifTrue: () => GutterColumn(
@@ -148,13 +143,13 @@ class SortStep extends HookWidget {
                                   ],
                                 ],
                               ),
-                              ifFalse: () => SizedBox(height: 16.0),
+                              ifFalse: () => const SizedBox(height: 16.0),
                             ),
                             OutlinedButton(
                               onPressed: () async {
                                 final element = await showDefaultBottomSheet<_ElementModel>(
                                   context: context,
-                                  builder: (context) => _ElementSheet(),
+                                  builder: (context) => const _ElementSheet(),
                                 );
 
                                 if (element != null) {
@@ -165,7 +160,7 @@ class SortStep extends HookWidget {
                                     backgroundColor: const MaterialStatePropertyAll(Colors.white),
                                     side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
                                   ),
-                              child: Text('Dodaj element'),
+                              child: const Text('Dodaj element'),
                             ),
                           ],
                         ),
@@ -179,7 +174,7 @@ class SortStep extends HookWidget {
                   child: Center(
                     child: Column(
                       children: [
-                        CircleAvatar(
+                        const CircleAvatar(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
                           radius: 30,
@@ -201,7 +196,7 @@ class SortStep extends HookWidget {
             const SizedBox(height: 24.0),
             ProgressIndicatorButton(
               onPressed: isValid ? onSubmitPressed : null,
-              child: Center(
+              child: const Center(
                 child: Text('Zapisz produkt'),
               ),
             ),
@@ -243,9 +238,9 @@ class _ContainerChip extends StatelessWidget {
                 duration: kThemeChangeDuration,
                 child: !selected
                     ? Icon(container.icon, key: ValueKey(container), size: 20)
-                    : Icon(Icons.check, key: Key('selected'), size: 20, color: AppColors.primaryDarker),
+                    : const Icon(Icons.check, key: Key('selected'), size: 20, color: AppColors.primaryDarker),
               ),
-              SizedBox(width: 12.0),
+              const SizedBox(width: 12.0),
               Text(container.containerName, style: Theme.of(context).textTheme.labelLarge),
             ],
           ),
@@ -291,13 +286,13 @@ class _ElementItem extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             IconButton(
               onPressed: onDeletePressed,
               style: IconButton.styleFrom(foregroundColor: AppColors.negative).copyWith(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
             ),
           ],
         ),
@@ -333,7 +328,7 @@ class _ElementSheet extends HookWidget {
           GutterColumn(
             children: [
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Nazwa',
                 ),
                 textInputAction: TextInputAction.next,
@@ -341,7 +336,7 @@ class _ElementSheet extends HookWidget {
                 onChanged: (value) => element.value.name = value,
               ),
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Dodatkowe informacje',
                 ),
                 onChanged: (value) => element.value.desc = value,
@@ -353,7 +348,7 @@ class _ElementSheet extends HookWidget {
                 ),
               ),
               DropdownButtonFormField<dynamic>(
-                hint: Text('Wybierz z listy'),
+                hint: const Text('Wybierz z listy'),
                 items: [],
                 onChanged: (v) {},
               ),
@@ -365,14 +360,14 @@ class _ElementSheet extends HookWidget {
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
                     ),
-                    child: Text('Cofnij'),
+                    child: const Text('Cofnij'),
                   ),
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(element.value),
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.primaryDarker,
                     ),
-                    child: Text('Zapisz'),
+                    child: const Text('Zapisz'),
                   ),
                 ],
               ),

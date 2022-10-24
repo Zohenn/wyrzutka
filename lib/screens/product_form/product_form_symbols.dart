@@ -13,8 +13,8 @@ import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
-class SymbolsStep extends HookConsumerWidget {
-  const SymbolsStep({
+class ProductFormSymbols extends HookConsumerWidget {
+  const ProductFormSymbols({
     Key? key,
     required this.model,
     required this.onSymbolsChanged,
