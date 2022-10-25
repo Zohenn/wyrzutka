@@ -16,7 +16,8 @@ class ProductService {
 
   final Ref ref;
 
-  Future<Product> create(ProductFormModel model) async {
+  Future<Product> createFromModel(ProductFormModel model) async {
+    final productRepository = ref.read(productRepositoryProvider);
     final imageUploadService = ref.read(imageUploadServiceProvider);
     final photoFile = File(model.photo!.path);
     final photosPath = 'products/${model.id}';
@@ -27,22 +28,35 @@ class ProductService {
       ],
     );
     final user = ref.watch(authUserProvider)!.id;
+    final sortProposalId = productRepository.collection.doc().id;
     final product = Product(
       id: model.id,
       name: model.name,
-      // todo
-      keywords: [model.keywords],
+      keywords: [...model.keywords],
       photo: photoUrls[0],
       photoSmall: photoUrls[1],
       symbols: [...model.symbols],
       sortProposals: {
         if (model.elements.isNotEmpty)
-          user: Sort(id: user, user: user, elements: model.elements.values.flattened.toList(), voteBalance: 0, votes: []),
+          sortProposalId: Sort(
+            id: sortProposalId,
+            user: user,
+            elements: model.elements.values.flattened.toList(),
+            voteBalance: 0,
+            votes: [],
+          ),
       },
       user: user,
       // todo
       addedDate: DateTime.now(),
     );
-    return await ref.read(productRepositoryProvider).create(product);
+    return productRepository.create(product);
+  }
+
+  Future<Product?> findVariant(List<String> keywords) async {
+    final productRepository = ref.read(productRepositoryProvider);
+    final query = productRepository.collection.where('keywords', arrayContainsAny: keywords).limit(1);
+    final snapshot = await query.get();
+    return snapshot.docs.firstOrNull?.data();
   }
 }

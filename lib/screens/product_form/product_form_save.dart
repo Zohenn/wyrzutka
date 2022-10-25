@@ -24,7 +24,7 @@ class ProductFormSave extends HookConsumerWidget {
     final retryTrigger = useState(0);
 
     useEffect(() {
-      productService.create(model).then((value) {
+      productService.createFromModel(model).then((value) {
         animationController.forward();
         return state.value = SavingState.done;
       }).onError((error, stackTrace) {
