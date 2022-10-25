@@ -82,45 +82,59 @@ class SortContainer extends HookConsumerWidget {
             ifFalse: () => Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     sort.voteBalance.toString(),
                     style: TextStyle(color: balanceColor(sort.voteBalance)),
                   ),
                   const SizedBox(width: 8.0),
-                  ProgressIndicatorIconButton(
-                    isLoading: updateVoteState.value == _UpdateVoteState.up,
-                    spinnerColor: AppColors.positive,
-                    onPressed: disableButtons
-                        ? null
-                        : () async {
-                            updateVoteState.value = _UpdateVoteState.up;
-                            await asyncCall(context, () => productRepository.updateVote(product, sort, authUser, true));
-                            updateVoteState.value = _UpdateVoteState.none;
-                          },
-                    color: userVote?.value == true ? AppColors.positive : null,
-                    icon: const Icon(Icons.expand_less),
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  if (sort.user == authUser?.id) ...[
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: Text(
+                        'Twoja propozycja',
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.primaryDarker),
+                      ),
                     ),
-                  ),
-                  ProgressIndicatorIconButton(
-                    isLoading: updateVoteState.value == _UpdateVoteState.down,
-                    spinnerColor: AppColors.negative,
-                    onPressed: disableButtons
-                        ? null
-                        : () async {
-                            updateVoteState.value = _UpdateVoteState.down;
-                            await asyncCall(context, () => productRepository.updateVote(product, sort, authUser, false));
-                            updateVoteState.value = _UpdateVoteState.none;
-                          },
-                    color: userVote?.value == false ? AppColors.negative : null,
-                    icon: const Icon(Icons.expand_more),
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ],
+                  if (sort.user != authUser?.id) ...[
+                    ProgressIndicatorIconButton(
+                      isLoading: updateVoteState.value == _UpdateVoteState.up,
+                      spinnerColor: AppColors.positive,
+                      onPressed: disableButtons
+                          ? null
+                          : () async {
+                              updateVoteState.value = _UpdateVoteState.up;
+                              await asyncCall(
+                                  context, () => productRepository.updateVote(product, sort, authUser, true));
+                              updateVoteState.value = _UpdateVoteState.none;
+                            },
+                      color: userVote?.value == true ? AppColors.positive : null,
+                      icon: const Icon(Icons.expand_less),
+                      style: const ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                     ),
-                  ),
-                  const Expanded(child: SizedBox.shrink()),
+                    ProgressIndicatorIconButton(
+                      isLoading: updateVoteState.value == _UpdateVoteState.down,
+                      spinnerColor: AppColors.negative,
+                      onPressed: disableButtons
+                          ? null
+                          : () async {
+                              updateVoteState.value = _UpdateVoteState.down;
+                              await asyncCall(
+                                  context, () => productRepository.updateVote(product, sort, authUser, false));
+                              updateVoteState.value = _UpdateVoteState.none;
+                            },
+                      color: userVote?.value == false ? AppColors.negative : null,
+                      icon: const Icon(Icons.expand_more),
+                      style: const ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                    const Expanded(child: SizedBox.shrink()),
+                  ],
                   AvatarIcon(user: user),
                 ],
               ),
