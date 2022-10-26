@@ -33,12 +33,11 @@ class ScannerProductModal extends HookConsumerWidget {
     final future = useInitFuture<Product?>(() => ref.read(productRepositoryProvider).fetchId(id));
     final product = ref.watch(productProvider(id));
 
-    final activeTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
-        );
+    final activeTabStyle = Theme.of(context).elevatedButtonTheme.style!;
     final inactiveTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          backgroundColor: const MaterialStatePropertyAll(Colors.white),
-        );
+      backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
+      side: const MaterialStatePropertyAll(BorderSide.none),
+    );
 
     return FutureHandler(
       future: future,
@@ -95,12 +94,12 @@ class ScannerProductModal extends HookConsumerWidget {
                         ifTrue: () => Expanded(
                           child: AnimatedTheme(
                             data: Theme.of(context).copyWith(
-                              outlinedButtonTheme:
-                                  OutlinedButtonThemeData(style: isSaved ? activeTabStyle : inactiveTabStyle),
+                              elevatedButtonTheme:
+                                  ElevatedButtonThemeData(style: isSaved ? activeTabStyle : inactiveTabStyle),
                             ),
                             child: ProgressIndicatorButton(
                               isLoading: isSaving.value,
-                              style: OutlinedButton.styleFrom(
+                              style: ElevatedButton.styleFrom(
                                 side: BorderSide(color: Theme.of(context).primaryColor),
                               ),
                               onPressed: () async {
@@ -124,7 +123,7 @@ class ScannerProductModal extends HookConsumerWidget {
                         ),
                       ),
                       Expanded(
-                        child: OutlinedButton(
+                        child: ElevatedButton(
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: Theme.of(context).primaryColor),
                           ),
@@ -177,7 +176,7 @@ class _UnknownProductInfo extends StatelessWidget {
           ),
         ),
         Center(
-          child: OutlinedButton(
+          child: ElevatedButton(
             onPressed: onFillTap,
             child: const Text('Uzupełnij informacje'),
           ),

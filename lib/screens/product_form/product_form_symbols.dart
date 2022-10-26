@@ -90,7 +90,7 @@ class ProductFormSymbols extends HookConsumerWidget {
               ),
             ),
             const SizedBox(height: 16.0),
-            OutlinedButton(
+            ElevatedButton(
               onPressed: () async {
                 final newSymbols = await showDefaultBottomSheet(
                   context: context,
@@ -111,7 +111,7 @@ class ProductFormSymbols extends HookConsumerWidget {
               child: const Text('Lista symboli'),
             ),
             const SizedBox(height: 8.0),
-            OutlinedButton(
+            ElevatedButton(
               onPressed: onNextPressed,
               child: const Text('Następny krok'),
             ),

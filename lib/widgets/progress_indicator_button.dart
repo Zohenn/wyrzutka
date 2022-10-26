@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+enum ButtonType {
+  elevated,
+  outlined,
+}
+
 class ProgressIndicatorButton extends StatelessWidget {
   const ProgressIndicatorButton({
     Key? key,
@@ -8,41 +13,49 @@ class ProgressIndicatorButton extends StatelessWidget {
     required this.child,
     this.style,
     this.isLoading = false,
+    this.type = ButtonType.elevated,
   }) : super(key: key);
 
   final VoidCallback? onPressed;
   final Widget child;
   final ButtonStyle? style;
   final bool isLoading;
+  final ButtonType type;
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onPressed != null ? () {
-        if (!isLoading) {
-          onPressed?.call();
-        }
-      } : null,
-      style: style,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Opacity(
-            opacity: isLoading ? 0 : 1,
-            child: child,
-          ),
-          if (isLoading)
-            Semantics(
-              label: 'Ładowanie',
-              child: const SpinKitThreeBounce(
-                size: 18,
-                color: Colors.black54,
-              ),
-            )
-          else
-            const SizedBox.shrink(),
-        ],
-      ),
+    final _onPressed = onPressed != null
+        ? () {
+            if (!isLoading) {
+              onPressed?.call();
+            }
+          }
+        : null;
+    final _child = Stack(
+      alignment: Alignment.center,
+      children: [
+        Opacity(
+          opacity: isLoading ? 0 : 1,
+          child: child,
+        ),
+        if (isLoading)
+          Semantics(
+            label: 'Ładowanie',
+            child: const SpinKitThreeBounce(
+              size: 18,
+              color: Colors.black54,
+            ),
+          )
+        else
+          const SizedBox.shrink(),
+      ],
     );
+
+    switch (type) {
+      case ButtonType.elevated:
+        return ElevatedButton(onPressed: _onPressed, style: style, child: _child);
+      case ButtonType.outlined:
+        return OutlinedButton(onPressed: _onPressed, style: style, child: _child);
+    }
   }
 }

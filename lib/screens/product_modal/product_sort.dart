@@ -58,7 +58,7 @@ class ProductSort extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Center(
-            child: OutlinedButton(
+            child: ElevatedButton(
               onPressed: addSortProposal,
               child: const Text('Dodaj swoją propozycję'),
             ),

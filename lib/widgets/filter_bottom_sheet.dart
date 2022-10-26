@@ -111,16 +111,10 @@ class FilterBottomSheet extends HookWidget {
             children: [
               OutlinedButton(
                 onPressed: () => Navigator.of(context).pop(<String, dynamic>{}),
-                style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                      backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                      side: MaterialStatePropertyAll(
-                        BorderSide(color: Theme.of(context).primaryColor),
-                      ),
-                    ),
                 child: const Text('Wyczyść'),
               ),
               const SizedBox(width: 8.0),
-              OutlinedButton(
+              ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(localFilters.value),
                 child: const Text('Zastosuj'),
               ),

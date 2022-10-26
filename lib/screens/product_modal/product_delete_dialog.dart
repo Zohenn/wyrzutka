@@ -54,7 +54,7 @@ class ProductDeleteDialog extends HookConsumerWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(backgroundColor: Colors.white),
                     child: const Text('Anuluj'),

@@ -173,7 +173,7 @@ class ProductFormInformation extends HookWidget {
               ),
             ),
             const SizedBox(height: 16.0),
-            OutlinedButton(
+            ElevatedButton(
               onPressed: isStepValid ? onNextPressed : null,
               child: const Text('Następny krok'),
             ),
@@ -233,23 +233,15 @@ class _VariantItem extends StatelessWidget {
                   OutlinedButton(
                     key: Key('variant_cancel'),
                     onPressed: onVariantCanceled,
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: BorderSide(color: Theme.of(context).primaryColor),
-                    ),
                     child: Text('Cofnij'),
                   ),
                 if (!confirmed) ...[
                   OutlinedButton(
                     key: Key('variant_dismiss'),
                     onPressed: onVariantDismissed,
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: BorderSide(color: Theme.of(context).primaryColor),
-                    ),
                     child: Text('Nie'),
                   ),
-                  OutlinedButton(
+                  ElevatedButton(
                     key: Key('variant_confirm'),
                     onPressed: onVariantConfirmed,
                     child: Text('Tak'),

@@ -143,7 +143,7 @@ class ScannerScreen extends HookWidget {
               children: [
                 Text(errorText(error), textAlign: TextAlign.center),
                 const SizedBox(height: 16.0),
-                OutlinedButton(
+                ElevatedButton(
                   onPressed: () {
                     camera.dispose();
                     camera.initFuture;

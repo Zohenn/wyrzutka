@@ -150,7 +150,7 @@ class ProductFormSort extends HookWidget {
                               ),
                               ifFalse: () => const SizedBox(height: 16.0),
                             ),
-                            OutlinedButton(
+                            ElevatedButton(
                               onPressed: () async {
                                 final element = await showDefaultBottomSheet<_ElementModel>(
                                   context: context,

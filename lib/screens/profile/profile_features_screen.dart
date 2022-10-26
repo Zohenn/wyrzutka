@@ -64,7 +64,7 @@ class ProfileFeaturesScreen extends HookWidget {
             GutterColumn(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                OutlinedButton(
+                ElevatedButton(
                   onPressed: () => showDefaultBottomSheet(
                     context: context,
                     fullScreen: true,

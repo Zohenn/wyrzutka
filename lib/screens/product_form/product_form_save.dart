@@ -111,7 +111,7 @@ class ProductFormSave extends HookConsumerWidget {
                     style: TextStyle(color: Theme.of(context).hintColor),
                   ),
                   const SizedBox(height: 16.0),
-                  OutlinedButton(
+                  ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Center(child: Text('Super!')),
                   ),

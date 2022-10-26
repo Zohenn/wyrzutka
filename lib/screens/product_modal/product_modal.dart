@@ -35,12 +35,11 @@ class ProductModal extends HookConsumerWidget {
       index.value = tabController.index;
     });
 
-    final activeTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor),
-        );
+    final activeTabStyle = Theme.of(context).elevatedButtonTheme.style!;
     final inactiveTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
-        );
+      backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
+      side: const MaterialStatePropertyAll(BorderSide.none),
+    );
 
     return FutureHandler(
       future: future,
@@ -74,11 +73,11 @@ class ProductModal extends HookConsumerWidget {
                     children: [
                       AnimatedTheme(
                         data: Theme.of(context).copyWith(
-                          outlinedButtonTheme:
-                              OutlinedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
+                          elevatedButtonTheme:
+                              ElevatedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
                         ),
                         child: Expanded(
-                          child: OutlinedButton(
+                          child: ElevatedButton(
                             onPressed: () => tabController.animateTo(0),
                             child: const Text('Segregacja'),
                           ),
@@ -86,11 +85,11 @@ class ProductModal extends HookConsumerWidget {
                       ),
                       AnimatedTheme(
                         data: Theme.of(context).copyWith(
-                          outlinedButtonTheme:
-                              OutlinedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
+                          elevatedButtonTheme:
+                              ElevatedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
                         ),
                         child: Expanded(
-                          child: OutlinedButton(
+                          child: ElevatedButton(
                             onPressed: () => tabController.animateTo(1),
                             child: const Text('Warianty'),
                           ),
