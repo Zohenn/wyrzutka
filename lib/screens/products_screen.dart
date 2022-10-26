@@ -82,9 +82,10 @@ class ProductsScreen extends HookConsumerWidget {
 
     useEffect(() {
       return () {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          productRepository.invalidateCache(productIds.value.toSet().difference(initialProductIds.value.toSet()).toList());
-        });
+        // todo:
+        // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        //   productRepository.invalidateCache(productIds.value.toSet().difference(initialProductIds.value.toSet()).toList());
+        // });
       };
     }, []);
 

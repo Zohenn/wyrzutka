@@ -104,6 +104,7 @@ class ScannerProductModal extends HookConsumerWidget {
                                 side: BorderSide(color: Theme.of(context).primaryColor),
                               ),
                               onPressed: () async {
+                                // todo: extract to some service
                                 final userRepository = ref.watch(userRepositoryProvider);
                                 isSaving.value = true;
                                 await asyncCall(context, () async {
