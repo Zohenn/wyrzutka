@@ -53,6 +53,7 @@ class ProductModal extends HookConsumerWidget {
             Flexible(
               child: TabBarView(
                 controller: tabController,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ProductPage(product: product),
                   VariantPage(product: product),
