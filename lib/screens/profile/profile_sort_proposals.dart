@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
@@ -31,6 +32,7 @@ class ProfileSortProposals extends HookConsumerWidget {
     final sortProposals = ref.watch(productsProvider(products));
 
     return GutterColumn(
+      gutterSize: 4,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,7 +58,7 @@ class ProfileSortProposals extends HookConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
               child: Text(
                 sortProposals.length.toString(),
-                style: TextStyle(color: Theme.of(context).primaryColorDark),
+                style: const TextStyle(color: AppColors.primaryDarker),
               ),
             ),
           ],

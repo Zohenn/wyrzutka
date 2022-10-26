@@ -19,6 +19,7 @@ class ProfileActionsSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
 
+    // todo: perhaps show info if logged with google or email
     return ListTileTheme(
       data: Theme.of(context).listTileTheme.copyWith(minLeadingWidth: 0, iconColor: Colors.black),
       child: Column(

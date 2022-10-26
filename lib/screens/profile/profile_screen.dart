@@ -64,6 +64,7 @@ class ProfileScreenContent extends HookConsumerWidget {
       GutterColumn(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        gutterSize: 24.0,
         children: [
           ProfileUser(
             user: user,
