@@ -75,7 +75,10 @@ class SortContainer extends HookConsumerWidget {
                       )
                     ],
                   ),
-                  AvatarIcon(user: user),
+                  AvatarIcon(
+                    user: user,
+                    profileLoading: true,
+                  ),
                 ],
               ),
             ),

@@ -21,7 +21,10 @@ class ProductUser extends StatelessWidget {
           condition: user != null,
           ifTrue: () => Row(
             children: [
-              AvatarIcon(user: user!),
+              AvatarIcon(
+                user: user!,
+                profileLoading: true,
+              ),
               const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
