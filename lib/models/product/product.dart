@@ -55,6 +55,7 @@ class Product with _$Product {
     return {
       ...product.toJson(),
       'containers': product.containers,
+      'searchName': product.name.toLowerCase(),
     };
   }
 }

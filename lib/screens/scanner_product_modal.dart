@@ -4,6 +4,7 @@ import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/product_modal/product_sort.dart';
 import 'package:inzynierka/models/product/product.dart';
@@ -60,7 +61,15 @@ class ScannerProductModal extends HookConsumerWidget {
                   _ProductName(product: product, id: id),
                   ConditionalBuilder(
                     condition: product == null,
-                    ifTrue: () => const _UnknownProductInfo(),
+                    ifTrue: () => _UnknownProductInfo(
+                      onFillTap: () {
+                        Navigator.of(context).pop();
+                        showDefaultBottomSheet(
+                          context: context,
+                          builder: (context) => ProductForm(id: id),
+                        );
+                      },
+                    ),
                     ifFalse: () => ProductSort(product: product!),
                   ),
                 ],
@@ -143,7 +152,10 @@ class ScannerProductModal extends HookConsumerWidget {
 class _UnknownProductInfo extends StatelessWidget {
   const _UnknownProductInfo({
     Key? key,
+    required this.onFillTap,
   }) : super(key: key);
+
+  final VoidCallback onFillTap;
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +177,7 @@ class _UnknownProductInfo extends StatelessWidget {
         ),
         Center(
           child: OutlinedButton(
-            onPressed: () {},
+            onPressed: onFillTap,
             child: const Text('Uzupełnij informacje'),
           ),
         ),

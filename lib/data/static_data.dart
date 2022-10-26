@@ -5,6 +5,7 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
+import 'package:inzynierka/models/product/sort_element_template.dart';
 import 'package:inzynierka/models/product_symbol/product_symbol.dart';
 import 'package:inzynierka/models/product/vote.dart';
 
@@ -32,6 +33,33 @@ final symbols = [
     photo:
         'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Fclean.png?alt=media&token=6b0d3093-4545-458e-9842-75491c53e4fa',
     description: 'Opakowanie wyrzuć do kosza',
+  ),
+];
+
+final sortElementTemplates = [
+  SortElementTemplate(
+    id: 'FYonJ12qORTDYwI2Ybme',
+    container: ElementContainer.plastic,
+    name: 'Puszka',
+    description: 'Zgnieć przed wyrzuceniem',
+  ),
+  SortElementTemplate(
+    id: 'My7qDCiIAwnyh3yoacm4',
+    container: ElementContainer.plastic,
+    name: 'Nakrętka',
+    description: 'Odkręć i wyrzuć oddzielnie',
+  ),
+  SortElementTemplate(
+    id: 'HlTnEW9ZyG2aNIfMhZeJ',
+    container: ElementContainer.plastic,
+    name: 'Butelka',
+    description: 'Zgnieć przed wyrzuceniem',
+  ),
+  SortElementTemplate(
+    id: 'LE7CrnurQijsFTdiS7gx',
+    container: ElementContainer.paper,
+    name: 'Opakowanie',
+    description: 'Zgnieć przed wyrzuceniem',
   ),
 ];
 
@@ -468,8 +496,10 @@ final productsList = [
   Product(
     id: '4000735235506',
     name: 'Queen Strong Ręczniki kuchenne 2szt.',
-    photo: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F4000735235506%2Foriginal.png?alt=media&token=017562d7-9cec-4385-92e2-ff15ddc501d4',
-    photoSmall: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F4000735235506%2Fsmall.png?alt=media&token=2f708b51-ee4d-4ff2-aa2d-9553c983f068',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F4000735235506%2Foriginal.png?alt=media&token=017562d7-9cec-4385-92e2-ff15ddc501d4',
+    photoSmall:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F4000735235506%2Fsmall.png?alt=media&token=2f708b51-ee4d-4ff2-aa2d-9553c983f068',
     symbols: ['6EudWBDUR1T8zgoqoYVl'],
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
     addedDate: DateTime(2022, 10, 7, 15, 49),
@@ -477,8 +507,10 @@ final productsList = [
   Product(
     id: '5906764644366',
     name: 'ECO Ściereczki wiskozowe perforowane 5szt.',
-    photo: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5906764644366%2Foriginal.png?alt=media&token=b7d8410e-0b51-471f-803c-8e662fe6466b',
-    photoSmall: 'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5906764644366%2Fsmall.png?alt=media&token=2a9f280e-5f2c-4e80-a0f0-6c931b231b4b',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5906764644366%2Foriginal.png?alt=media&token=b7d8410e-0b51-471f-803c-8e662fe6466b',
+    photoSmall:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5906764644366%2Fsmall.png?alt=media&token=2a9f280e-5f2c-4e80-a0f0-6c931b231b4b',
     symbols: ['6EudWBDUR1T8zgoqoYVl'],
     user: 'qVVAflMZhcRttgVqI0hFfoHj0043',
     addedDate: DateTime(2022, 10, 7, 15, 49),

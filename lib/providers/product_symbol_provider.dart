@@ -9,6 +9,7 @@ final _productSymbolCacheProvider = createCacheProvider<ProductSymbol>();
 
 final productSymbolProvider = createCacheItemProvider(_productSymbolCacheProvider);
 final productSymbolsProvider = createCacheItemsProvider(_productSymbolCacheProvider);
+final allProductSymbolsProvider = Provider((ref) => ref.watch(_productSymbolCacheProvider).values);
 
 final productSymbolRepositoryProvider = Provider((ref) => ProductSymbolRepository(ref));
 

@@ -48,6 +48,12 @@ class ProductRepository with CacheNotifierMixin<Product> {
 
   static const int batchSize = 10;
 
+  Future<Product> create(Product product) async {
+    final doc = collection.doc(product.id);
+    await doc.set(product);
+    return product;
+  }
+
   Future<List<Product>> fetchMore({
     Map<String, dynamic> filters = const {},
     DocumentSnapshot? startAfterDocument,

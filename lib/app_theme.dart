@@ -69,11 +69,18 @@ class AppTheme extends StatelessWidget {
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.black,
+            disabledForegroundColor: Colors.black45,
             backgroundColor: AppColors.primary,
+            disabledBackgroundColor: AppColors.gray,
             //createMaterialColor(AppColors.primary).shade50,
             elevation: 0,
             side: BorderSide.none,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
           ),
         ),
         popupMenuTheme: PopupMenuThemeData(
