@@ -26,16 +26,16 @@ class ProfileScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
-    // useEffect(() {
-    //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //     showDefaultBottomSheet(
-    //       context: context,
-    //       fullScreen: true,
-    //       builder: (context) => ProductForm(id: '5901501001181'),
-    //     );
-    //   });
-    //   return null;
-    // }, []);
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        showDefaultBottomSheet(
+          context: context,
+          fullScreen: true,
+          builder: (context) => ProductForm(id: '5901501001181'),
+        );
+      });
+      return null;
+    }, []);
     return ConditionalBuilder(
       condition: user != null || authUser != null,
       ifTrue: () => ConditionalBuilder(
