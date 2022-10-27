@@ -19,6 +19,7 @@ class ProductService {
   Future<Product> createFromModel(ProductFormModel model) async {
     final productRepository = ref.read(productRepositoryProvider);
     final imageUploadService = ref.read(imageUploadServiceProvider);
+    // todo: unnecessary cast to File
     final photoFile = File(model.photo!.path);
     final photosPath = 'products/${model.id}';
     final photoUrls = await Future.wait<String>(

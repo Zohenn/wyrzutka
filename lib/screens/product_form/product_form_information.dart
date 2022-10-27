@@ -5,8 +5,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/screens/image_crop_modal.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/text_overflow_ellipsis_fix.dart';
 import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
@@ -33,7 +35,7 @@ class ProductFormInformation extends HookWidget {
   final Product? confirmedVariant;
   final void Function(String) onNameChanged;
   final void Function(List<String>) onKeywordsChanged;
-  final void Function(XFile) onPhotoChanged;
+  final void Function(File) onPhotoChanged;
   final VoidCallback onVariantDismissed;
   final VoidCallback onVariantConfirmed;
   final VoidCallback onVariantCanceled;
@@ -105,7 +107,15 @@ class ProductFormInformation extends HookWidget {
                                   final XFile? image = await picker.pickImage(source: ImageSource.camera);
                                   if (image != null) {
                                     // todo: crop image to square
-                                    onPhotoChanged(image);
+                                    final croppedImage = await showDefaultBottomSheet<File>(
+                                      context: context,
+                                      fullScreen: true,
+                                      builder: (context) => ImageCropModal(image: File(image.path)),
+                                    );
+                                    print(croppedImage);
+                                    if (croppedImage != null) {
+                                      onPhotoChanged(croppedImage);
+                                    }
                                   }
                                 },
                               ),

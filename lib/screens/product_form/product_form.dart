@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -33,7 +35,7 @@ class ProductFormModel with _$ProductFormModel {
     required String id,
     @Default('') String name,
     @Default([]) List<String> keywords,
-    XFile? photo,
+    File? photo,
     @Default([]) List<String> symbols,
     @Default({}) Map<ElementContainer, List<SortElement>> elements,
   }) = _ProductFormModel;
