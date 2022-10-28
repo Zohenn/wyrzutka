@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirebaseDateTime extends DateTime {
-  FirebaseDateTime(
+class FirestoreDateTime extends DateTime {
+  FirestoreDateTime(
     super.year, [
     super.month,
     super.day,
@@ -12,23 +12,23 @@ class FirebaseDateTime extends DateTime {
     super.microsecond,
   ]) : serverTimestamp = false;
 
-  FirebaseDateTime.serverTimestamp()
+  FirestoreDateTime.serverTimestamp()
       : serverTimestamp = true,
         super.now();
 
-  FirebaseDateTime.fromDateTime(DateTime dateTime)
+  FirestoreDateTime.fromDateTime(DateTime dateTime)
       : serverTimestamp = false,
         super.fromMicrosecondsSinceEpoch(dateTime.microsecondsSinceEpoch);
 
-  FirebaseDateTime.fromTimestamp(Timestamp timestamp)
+  FirestoreDateTime.fromTimestamp(Timestamp timestamp)
       : serverTimestamp = false,
         super.fromMicrosecondsSinceEpoch(timestamp.microsecondsSinceEpoch);
 
   final bool serverTimestamp;
 
-  static FirebaseDateTime fromJson(Timestamp timestamp) => FirebaseDateTime.fromTimestamp(timestamp);
+  static FirestoreDateTime fromFirestore(Timestamp timestamp) => FirestoreDateTime.fromTimestamp(timestamp);
 
-  static Object toJson(FirebaseDateTime firebaseDateTime) {
+  static Object toFirestore(FirestoreDateTime firebaseDateTime) {
     return firebaseDateTime.serverTimestamp ? FieldValue.serverTimestamp() : Timestamp.fromDate(firebaseDateTime);
   }
 }

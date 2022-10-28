@@ -2,27 +2,27 @@
 
 import 'package:collection/collection.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
-import 'package:inzynierka/models/firebase_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
@@ -107,7 +107,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -125,7 +125,7 @@ final productsList = [
     verifiedBy: '2',
     sortProposals: {},
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 2),
+    addedDate: FirestoreDateTime(2022, 9, 2),
     variants: [],
   ),
   Product(
@@ -142,7 +142,7 @@ final productsList = [
     ),
     verifiedBy: '2',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 3),
+    addedDate: FirestoreDateTime(2022, 9, 3),
     sortProposals: {},
     variants: [
       'Chusteczki 90 szt.',
@@ -166,7 +166,7 @@ final productsList = [
     ),
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
-    addedDate: FirebaseDateTime(2022, 9, 3),
+    addedDate: FirestoreDateTime(2022, 9, 3),
     sortProposals: {},
     variants: [
       '547146',
@@ -190,7 +190,7 @@ final productsList = [
     ),
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
-    addedDate: FirebaseDateTime(2022, 9, 3),
+    addedDate: FirestoreDateTime(2022, 9, 3),
     sortProposals: {},
     variants: [
       '547145',
@@ -214,7 +214,7 @@ final productsList = [
     ),
     verifiedBy: '2',
     user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
-    addedDate: FirebaseDateTime(2022, 9, 3),
+    addedDate: FirestoreDateTime(2022, 9, 3),
     sortProposals: {},
     variants: [
       '547145',
@@ -227,7 +227,7 @@ final productsList = [
     symbols: [],
     sortProposals: {},
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 4),
+    addedDate: FirestoreDateTime(2022, 9, 4),
     variants: [],
   ),
   Product(
@@ -242,7 +242,7 @@ final productsList = [
       ],
     ),
     user: '2',
-    addedDate: FirebaseDateTime(2022, 9, 5),
+    addedDate: FirestoreDateTime(2022, 9, 5),
     sortProposals: {},
     variants: [],
   ),
@@ -264,7 +264,7 @@ final productsList = [
       ),
     },
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 6),
+    addedDate: FirestoreDateTime(2022, 9, 6),
     variants: [],
   ),
   Product(
@@ -288,7 +288,7 @@ final productsList = [
       ),
     },
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 7),
+    addedDate: FirestoreDateTime(2022, 9, 7),
     variants: [],
   ),
   Product(
@@ -305,7 +305,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -323,7 +323,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -341,7 +341,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -359,7 +359,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -377,7 +377,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -395,7 +395,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -413,7 +413,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -431,7 +431,7 @@ final productsList = [
     ),
     verifiedBy: 'xxx',
     user: '1',
-    addedDate: FirebaseDateTime(2022, 9, 1),
+    addedDate: FirestoreDateTime(2022, 9, 1),
     sortProposals: {},
     variants: [],
   ),
@@ -453,7 +453,7 @@ final productsList = [
     ),
     verifiedBy: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
-    addedDate: FirebaseDateTime(2022, 10, 6, 12, 51),
+    addedDate: FirestoreDateTime(2022, 10, 6, 12, 51),
   ),
   Product(
     id: '5900579259227',
@@ -472,7 +472,7 @@ final productsList = [
     variants: ['5900579259210'],
     verifiedBy: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
-    addedDate: FirebaseDateTime(2022, 10, 6, 13, 8),
+    addedDate: FirestoreDateTime(2022, 10, 6, 13, 8),
   ),
   Product(
     id: '5900579259210',
@@ -491,7 +491,7 @@ final productsList = [
     variants: ['5900579259227'],
     verifiedBy: 'VJHS5rQwHxh08064vjhkMhes2lS2',
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
-    addedDate: FirebaseDateTime(2022, 10, 6, 13, 30),
+    addedDate: FirestoreDateTime(2022, 10, 6, 13, 30),
   ),
   Product(
     id: '5901588016443',
@@ -512,7 +512,7 @@ final productsList = [
       ),
     },
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
-    addedDate: FirebaseDateTime(2022, 10, 6, 13, 40),
+    addedDate: FirestoreDateTime(2022, 10, 6, 13, 40),
   ),
   Product(
     id: '4000735235506',
@@ -523,7 +523,7 @@ final productsList = [
         'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F4000735235506%2Fsmall.png?alt=media&token=2f708b51-ee4d-4ff2-aa2d-9553c983f068',
     symbols: ['6EudWBDUR1T8zgoqoYVl'],
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
-    addedDate: FirebaseDateTime(2022, 10, 7, 15, 49),
+    addedDate: FirestoreDateTime(2022, 10, 7, 15, 49),
   ),
   Product(
     id: '5906764644366',
@@ -534,6 +534,6 @@ final productsList = [
         'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/products%2F5906764644366%2Fsmall.png?alt=media&token=2a9f280e-5f2c-4e80-a0f0-6c931b231b4b',
     symbols: ['6EudWBDUR1T8zgoqoYVl'],
     user: 'qVVAflMZhcRttgVqI0hFfoHj0043',
-    addedDate: FirebaseDateTime(2022, 10, 7, 15, 49),
+    addedDate: FirestoreDateTime(2022, 10, 7, 15, 49),
   )
 ];
