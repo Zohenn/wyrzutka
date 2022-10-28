@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:inzynierka/models/firebase_date_time.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/util.dart';
 
@@ -23,8 +24,7 @@ class Product with _$Product {
     @Default({}) Map<String, Sort> sortProposals,
     @Default([]) List<String> variants,
     required String user,
-    // todo: this should use FieldValue.serverTimestamp somehow
-    @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson) required DateTime addedDate,
+    @JsonKey(fromJson: FirebaseDateTime.fromJson, toJson: FirebaseDateTime.toJson) required FirebaseDateTime addedDate,
     @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
         DocumentSnapshot<Map<String, dynamic>>? snapshot,
   }) = _Product;

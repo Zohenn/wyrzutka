@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/models/firebase_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
@@ -50,8 +51,7 @@ class ProductService {
                 ),
             },
       user: user,
-      // todo
-      addedDate: DateTime.now(),
+      addedDate: FirebaseDateTime.serverTimestamp(),
       verifiedBy: variant?.verifiedBy,
       sort: variant?.sort,
       variants: variant != null ? [...(variant.variants), variant.id] : [],
