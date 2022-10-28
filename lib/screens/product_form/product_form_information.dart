@@ -28,6 +28,7 @@ class ProductFormInformation extends HookWidget {
     required this.onVariantConfirmed,
     required this.onVariantCanceled,
     required this.onNextPressed,
+    required this.onSubmitPressed,
   }) : super(key: key);
 
   final ProductFormModel model;
@@ -40,6 +41,7 @@ class ProductFormInformation extends HookWidget {
   final VoidCallback onVariantConfirmed;
   final VoidCallback onVariantCanceled;
   final VoidCallback onNextPressed;
+  final VoidCallback onSubmitPressed;
 
   bool get isStepValid => model.name.isNotEmpty && model.keywords.isNotEmpty && model.photo != null;
 
@@ -183,9 +185,28 @@ class ProductFormInformation extends HookWidget {
               ),
             ),
             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: isStepValid ? onNextPressed : null,
-              child: const Text('Następny krok'),
+            ConditionalBuilder(
+              condition: confirmedVariant == null,
+              ifTrue: () => ElevatedButton(
+                onPressed: isStepValid ? onNextPressed : null,
+                child: const Text('Następny krok'),
+              ),
+              ifFalse: () => Column(
+                children: [
+                  Text(
+                    'Ponieważ oznaczono produkt jako wariant, to pozostałe dane zostaną uzupełnione na podstawie bazowego produktu.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 8.0),
+                  ElevatedButton(
+                    onPressed: isStepValid ? onSubmitPressed : null,
+                    child: const Center(
+                      child: Text('Zapisz produkt'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -127,6 +127,7 @@ class ProductForm extends HookConsumerWidget {
                                 onVariantConfirmed: () => confirmedVariant.value = variant.value,
                                 onVariantCanceled: () => confirmedVariant.value = null,
                                 onNextPressed: () => step.value = 1,
+                                onSubmitPressed: () => isSaving.value = true,
                               ),
                               ProductFormSymbols(
                                 model: model.value,
@@ -146,7 +147,10 @@ class ProductForm extends HookConsumerWidget {
                   ),
                 ),
               )
-            : ProductFormSave(model: model.value),
+            : ProductFormSave(
+                model: model.value,
+                variant: confirmedVariant.value,
+              ),
       ),
     );
   }

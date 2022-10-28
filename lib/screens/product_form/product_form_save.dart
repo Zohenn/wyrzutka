@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/product_service_provider.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
@@ -12,9 +13,14 @@ import 'package:inzynierka/widgets/size_animation_helper.dart';
 enum SavingState { saving, done, error }
 
 class ProductFormSave extends HookConsumerWidget {
-  const ProductFormSave({Key? key, required this.model}) : super(key: key);
+  const ProductFormSave({
+    Key? key,
+    required this.model,
+    required this.variant,
+  }) : super(key: key);
 
   final ProductFormModel model;
+  final Product? variant;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +34,7 @@ class ProductFormSave extends HookConsumerWidget {
     useEffect(() {
       state.value = SavingState.saving;
       animationController.reverse();
-      productService.createFromModel(model).then((value) {
+      productService.createFromModel(model, variant).then((value) {
         return state.value = SavingState.done;
       }).onError((error, stackTrace) {
         debugPrint(error.toString());
@@ -109,7 +115,8 @@ class ProductFormSave extends HookConsumerWidget {
                 child: child!,
               ),
               child: ConditionalBuilder(
-                condition: state.value == SavingState.error || (state.value == SavingState.saving && previousState == SavingState.error),
+                condition: state.value == SavingState.error ||
+                    (state.value == SavingState.saving && previousState == SavingState.error),
                 ifTrue: () => Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
