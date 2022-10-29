@@ -7,7 +7,7 @@ typedef DebounceOnChanged<T> = void Function(T value);
 typedef DebounceEmit<T> = void Function(T value);
 
 Debounce<T> useDebounceHook<T>({
-  required DebounceEmit onEmit,
+  required DebounceEmit<T> onEmit,
   Duration duration = const Duration(milliseconds: 500),
   List<Object?>? keys,
 }) {
@@ -30,7 +30,7 @@ class _DebounceHook<T> extends Hook<Debounce<T>> {
     List<Object?>? keys,
   }) : super(keys: keys);
 
-  final DebounceEmit onEmit;
+  final DebounceEmit<T> onEmit;
   final Duration duration;
 
   @override

@@ -6,8 +6,10 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/product_modal/product_delete_dialog.dart';
 import 'package:inzynierka/utils/async_call.dart';
+import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 
 class ProductActionsSheet extends HookConsumerWidget {
   const ProductActionsSheet({
@@ -52,7 +54,13 @@ class ProductActionsSheet extends HookConsumerWidget {
             ListTile(
               leading: Icon(Icons.edit),
               title: Text('Edytuj informacje'),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pop();
+                showDefaultBottomSheet(
+                  context: context,
+                  builder: (context) => ProductForm.edit(product: product),
+                );
+              },
             ),
             ListTile(
               iconColor: AppColors.negative,

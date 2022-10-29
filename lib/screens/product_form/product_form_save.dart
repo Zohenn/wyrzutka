@@ -34,7 +34,10 @@ class ProductFormSave extends HookConsumerWidget {
     useEffect(() {
       state.value = SavingState.saving;
       animationController.reverse();
-      productService.createFromModel(model, variant).then((value) {
+      final future = model.product == null
+          ? productService.createFromModel(model, variant)
+          : productService.updateFromModel(model);
+      future.then((value) {
         return state.value = SavingState.done;
       }).onError((error, stackTrace) {
         debugPrint(error.toString());
@@ -77,7 +80,11 @@ class ProductFormSave extends HookConsumerWidget {
                         shape: BoxShape.circle,
                       ),
                       clipBehavior: Clip.hardEdge,
-                      child: Image.file(File(model.photo!.path)),
+                      child: ConditionalBuilder(
+                        condition: model.product == null,
+                        ifTrue: () => Image.file(File(model.photo!.path)),
+                        ifFalse: () => Image.network(model.product!.photo!),
+                      ),
                     ),
                   ),
                 ),
@@ -138,10 +145,13 @@ class ProductFormSave extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text('Zapisano produkt!', style: Theme.of(context).textTheme.titleLarge),
-                    Text(
-                      'Listę dodanych przez Ciebie produktów znajdziesz w swoim profilu.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Theme.of(context).hintColor),
+                    ConditionalBuilder(
+                      condition: model.product == null,
+                      ifTrue: () => Text(
+                        'Listę dodanych przez Ciebie produktów znajdziesz w swoim profilu.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).hintColor),
+                      ),
                     ),
                     const SizedBox(height: 16.0),
                     ElevatedButton(

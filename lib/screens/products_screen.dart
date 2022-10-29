@@ -192,7 +192,7 @@ class _FilterSection extends HookWidget {
   Widget build(BuildContext context) {
     final searchController = useTextEditingController();
     final searchText = useState('');
-    final debounce = useDebounceHook(onEmit: (value) => onSearch(value));
+    final debounce = useDebounceHook<String>(onEmit: (value) => onSearch(value));
 
     return Theme(
       data: Theme.of(context).copyWith(

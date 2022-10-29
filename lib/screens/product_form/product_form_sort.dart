@@ -85,118 +85,104 @@ class ProductFormSort extends HookWidget {
               style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 24.0),
-            Text(
-              'Wybierz pojemniki',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 8.0),
-            GutterColumn(
-              gutterSize: 8.0,
-              children: [
-                for (var containers in containerGroups)
-                  GutterRow(
+            ConditionalBuilder(
+              condition: model.product == null || model.product!.sort != null,
+              ifTrue: () => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Wybierz pojemniki',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 8.0),
+                  GutterColumn(
                     gutterSize: 8.0,
                     children: [
-                      for (var container in containers)
-                        Expanded(
-                          child: _ContainerChip(
-                            container: container,
-                            selected: selectedContainers.contains(container),
-                            onPressed: () => toggleContainer(container),
-                          ),
+                      for (var containers in containerGroups)
+                        GutterRow(
+                          gutterSize: 8.0,
+                          children: [
+                            for (var container in containers)
+                              Expanded(
+                                child: _ContainerChip(
+                                  container: container,
+                                  selected: selectedContainers.contains(container),
+                                  onPressed: () => toggleContainer(container),
+                                ),
+                              ),
+                          ],
                         ),
                     ],
                   ),
-              ],
-            ),
-            const SizedBox(height: 24.0),
-            ConditionalBuilder(
-              condition: selectedContainers.isNotEmpty,
-              ifTrue: () => GutterColumn(
-                children: [
-                  for (var container in selectedContainers)
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  foregroundColor: container.iconColor,
-                                  backgroundColor: container.containerColor,
-                                  child: Icon(container.icon),
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  container.containerName,
-                                  style: Theme.of(context).textTheme.titleMedium!,
-                                ),
-                              ],
-                            ),
-                            ConditionalBuilder(
-                              condition: elements[container]!.isNotEmpty,
-                              ifTrue: () => Column(
+                  const SizedBox(height: 24.0),
+                  ConditionalBuilder(
+                    condition: selectedContainers.isNotEmpty,
+                    ifTrue: () => GutterColumn(
+                      children: [
+                        for (var container in selectedContainers)
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
                                 children: [
-                                  for (var element in elements[container]!) ...[
-                                    _ElementItem(
-                                      element: element,
-                                      onDeletePressed: () => deleteElement(container, element),
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        foregroundColor: container.iconColor,
+                                        backgroundColor: container.containerColor,
+                                        child: Icon(container.icon),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Text(
+                                        container.containerName,
+                                        style: Theme.of(context).textTheme.titleMedium!,
+                                      ),
+                                    ],
+                                  ),
+                                  ConditionalBuilder(
+                                    condition: elements[container]!.isNotEmpty,
+                                    ifTrue: () => Column(
+                                      children: [
+                                        for (var element in elements[container]!) ...[
+                                          _ElementItem(
+                                            element: element,
+                                            onDeletePressed: () => deleteElement(container, element),
+                                          ),
+                                          if (element != elements[container]!.last)
+                                            const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
+                                        ],
+                                      ],
                                     ),
-                                    if (element != elements[container]!.last)
-                                      const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
-                                  ],
+                                    ifFalse: () => const SizedBox(height: 16.0),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      final element = await showDefaultBottomSheet<_ElementModel>(
+                                        context: context,
+                                        builder: (context) => const _ElementSheet(),
+                                      );
+
+                                      if (element != null) {
+                                        addElement(container, element);
+                                      }
+                                    },
+                                    style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+                                          backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                                          side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
+                                        ),
+                                    child: const Text('Dodaj element'),
+                                  ),
                                 ],
                               ),
-                              ifFalse: () => const SizedBox(height: 16.0),
                             ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                final element = await showDefaultBottomSheet<_ElementModel>(
-                                  context: context,
-                                  builder: (context) => const _ElementSheet(),
-                                );
-
-                                if (element != null) {
-                                  addElement(container, element);
-                                }
-                              },
-                              style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
-                                    backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                                    side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
-                                  ),
-                              child: const Text('Dodaj element'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              ifFalse: () => Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        const CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          radius: 30,
-                          child: Icon(Icons.delete_forever, size: 30),
-                        ),
-                        const SizedBox(height: 16.0),
-                        Text('Pusta propozycja segregacji', style: Theme.of(context).textTheme.titleMedium),
-                        Text(
-                          'Zakończ dodawanie produktu, a propozycje uzupełnią inni.',
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
+                          ),
                       ],
                     ),
+                    ifFalse: () => const _EmptySortCard(),
                   ),
-                ),
+                ],
               ),
+              ifFalse: () => const _SortEditUnavailableCard(),
             ),
             const SizedBox(height: 24.0),
             ProgressIndicatorButton(
@@ -396,3 +382,68 @@ class _ElementSheet extends HookConsumerWidget {
     );
   }
 }
+
+class _EmptySortCard extends StatelessWidget {
+  const _EmptySortCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            children: [
+              const CircleAvatar(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                radius: 30,
+                child: Icon(Icons.delete_forever, size: 30),
+              ),
+              const SizedBox(height: 16.0),
+              Text('Pusta propozycja segregacji', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Zakończ dodawanie produktu, a propozycje uzupełnią inni.',
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SortEditUnavailableCard extends StatelessWidget {
+  const _SortEditUnavailableCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            children: [
+              const CircleAvatar(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                radius: 30,
+                child: Icon(Icons.block, size: 30),
+              ),
+              const SizedBox(height: 16.0),
+              Text('Brak zatwierdzonej propozycji segregacji', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Edycja wskazówek dotyczących segregacji będzie dostępna po ich zatwierdzeniu.',
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+

@@ -38,27 +38,49 @@ class ProductFormModel with _$ProductFormModel {
     File? photo,
     @Default([]) List<String> symbols,
     @Default({}) Map<ElementContainer, List<SortElement>> elements,
+    Product? product,
   }) = _ProductFormModel;
+
+  factory ProductFormModel.fromProduct(Product product) => ProductFormModel(
+        id: product.id,
+        name: product.name,
+        keywords: [...product.keywords],
+        symbols: [...product.symbols],
+        product: product,
+      );
 }
 
 class ProductForm extends HookConsumerWidget {
   const ProductForm({
     Key? key,
-    required this.id,
-  }) : super(key: key);
+    required String this.id,
+  })  : editedProduct = null,
+        super(key: key);
 
-  final String id;
+  const ProductForm.edit({
+    Key? key,
+    required Product product,
+  })  : id = null,
+        editedProduct = product,
+        super(key: key);
+
+  final String? id;
+  final Product? editedProduct;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productService = ref.watch(productServiceProvider);
     final variant = useState<Product?>(null);
     final confirmedVariant = useState<Product?>(null);
-    final model = useState(ProductFormModel(id: id));
+    final model = useState(id != null ? ProductFormModel(id: id!) : ProductFormModel.fromProduct(editedProduct!));
     final step = useState(0);
     final previousStep = usePrevious(step.value);
-    final debounce = useDebounceHook(
-      onEmit: (keywords) => productService.findVariant(keywords).then((value) => variant.value = value),
+    final debounce = useDebounceHook<List<String>>(
+      onEmit: (keywords) {
+        if (editedProduct == null) {
+          productService.findVariant(keywords).then((value) => variant.value = value);
+        }
+      },
     );
     final isSaving = useState(false);
 
@@ -90,7 +112,10 @@ class ProductForm extends HookConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Nowy produkt', style: Theme.of(context).textTheme.titleLarge),
+                            Text(
+                              editedProduct == null ? 'Nowy produkt' : 'Edycja produktu',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
                             const SizedBox(height: 16.0),
                             CustomStepper(steps: const ['Informacje', 'Oznaczenia', 'Segregacja'], step: step.value),
                           ],

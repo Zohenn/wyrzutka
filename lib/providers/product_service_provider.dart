@@ -21,14 +21,7 @@ class ProductService {
 
   Future<Product> createFromModel(ProductFormModel model, [Product? variant]) async {
     final productRepository = ref.read(productRepositoryProvider);
-    final imageUploadService = ref.read(imageUploadServiceProvider);
-    final photosPath = 'products/${model.id}';
-    final photoUrls = await Future.wait<String>(
-      [
-        imageUploadService.uploadWithFile(model.photo!, '$photosPath/original.png', width: 500, height: 500),
-        imageUploadService.uploadWithFile(model.photo!, '$photosPath/small.png', width: 80, height: 80),
-      ],
-    );
+    final photoUrls = await _uploadPhotos(model);
     final user = ref.watch(authUserProvider)!.id;
     final sortProposalId = productRepository.collection.doc().id;
     final product = Product(
@@ -70,6 +63,41 @@ class ProductService {
     }
     await batch.commit();
     return product;
+  }
+
+  Future<List<String>> _uploadPhotos(ProductFormModel model) async {
+    final imageUploadService = ref.read(imageUploadServiceProvider);
+    final photosPath = 'products/${model.id}';
+    final photoUrls = await Future.wait<String>(
+      [
+        imageUploadService.uploadWithFile(model.photo!, '$photosPath/original.png', width: 500, height: 500),
+        imageUploadService.uploadWithFile(model.photo!, '$photosPath/small.png', width: 80, height: 80),
+      ],
+    );
+    return photoUrls;
+  }
+
+  Future<Product> updateFromModel(ProductFormModel model) async {
+    final productRepository = ref.read(productRepositoryProvider);
+    final photoUrls = model.photo != null ? await _uploadPhotos(model) : null;
+    final updateData = {
+      'name': model.name,
+      'keywords': [...model.keywords],
+      if (photoUrls != null) ...{
+        'photo': photoUrls[0],
+        'photoSmall': photoUrls[1],
+      },
+      'symbols': [...model.symbols],
+    };
+    // todo: pass this down to repository
+    await productRepository.collection.doc(model.id).update(updateData);
+    return model.product!.copyWith(
+      name: model.name,
+      keywords: [...model.keywords],
+      photo: photoUrls?[0] ?? model.product!.photo,
+      photoSmall: photoUrls?[1] ?? model.product!.photoSmall,
+      symbols: [...model.symbols],
+    );
   }
 
   Future<Product?> findVariant(List<String> keywords) async {

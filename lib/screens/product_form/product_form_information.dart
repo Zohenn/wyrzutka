@@ -43,7 +43,8 @@ class ProductFormInformation extends HookWidget {
   final VoidCallback onNextPressed;
   final VoidCallback onSubmitPressed;
 
-  bool get isStepValid => model.name.isNotEmpty && model.keywords.isNotEmpty && model.photo != null;
+  bool get isStepValid =>
+      model.name.isNotEmpty && model.keywords.isNotEmpty && (model.photo != null || model.product != null);
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +87,7 @@ class ProductFormInformation extends HookWidget {
                         alignment: Alignment.center,
                         children: [
                           ConditionalBuilder(
-                            condition: model.photo == null,
+                            condition: model.photo == null && model.product == null,
                             ifTrue: () => Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Column(
@@ -98,7 +99,11 @@ class ProductFormInformation extends HookWidget {
                                 ],
                               ),
                             ),
-                            ifFalse: () => Image.file(File(model.photo!.path)),
+                            ifFalse: () => ConditionalBuilder(
+                              condition: model.photo != null,
+                              ifTrue: () => Image.file(File(model.photo!.path)),
+                              ifFalse: () => Image.network(model.product!.photo!),
+                            ),
                           ),
                           Positioned.fill(
                             child: Material(
