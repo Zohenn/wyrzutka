@@ -5,6 +5,7 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/product_service_provider.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 import 'package:inzynierka/utils/async_call.dart';
+import 'package:inzynierka/utils/snackbars.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 class SortProposalForm extends HookConsumerWidget {
@@ -49,6 +50,9 @@ class SortProposalForm extends HookConsumerWidget {
                     await asyncCall(context, () => productService.addSortProposal(product, elements.value));
                     isSaving.value = false;
                     Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      successSnackBar(context: context, message: 'Twoja propozycja segregacji została zapisana.'),
+                    );
                   }
                 : null,
             child: const Center(
