@@ -40,7 +40,6 @@ class VariantPage extends HookConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
           child: GutterColumn(
             children: [
-              // todo: make these clickable, I suppose?
               for (var variant in variants) ...[
                 Card(
                   child: InkWell(

@@ -31,6 +31,13 @@ final productsProvider = createCacheItemsProvider(_productCacheProvider);
 
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
+class UpdateVoteDto {
+  UpdateVoteDto(this.votes, this.balance);
+
+  List<Vote> votes;
+  int balance;
+}
+
 class ProductRepository extends BaseRepository<Product> {
   ProductRepository(this.ref);
 
@@ -101,12 +108,11 @@ class ProductRepository extends BaseRepository<Product> {
   }
 
   // todo: mark as verified if voteBalance >= 50
-  // todo: use some dto to return data from transaction
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final vote = Vote(user: user.id, value: value);
     final productDoc = collection.doc(product.id);
 
-    final transactionData = await FirebaseFirestore.instance.runTransaction<Map<String, dynamic>>((transaction) async {
+    final transactionData = await FirebaseFirestore.instance.runTransaction<UpdateVoteDto>((transaction) async {
       final _product = (await productDoc.get()).data()!;
       final _sort = _product.sortProposals[sort.id]!;
       final previousVote = _sort.votes.firstWhereOrNull((vote) => vote.user == user.id);
@@ -126,16 +132,13 @@ class ProductRepository extends BaseRepository<Product> {
           'sortProposals.${sort.id}.voteBalance': newBalance,
         },
       );
-      return {
-        'votes': newVotes,
-        'balance': newBalance,
-      };
+      return UpdateVoteDto(newVotes, newBalance);
     });
 
     final newProduct = product.copyWith(
       sortProposals: {
         ...product.sortProposals,
-        sort.id: sort.copyWith(voteBalance: transactionData['balance'], votes: transactionData['votes']),
+        sort.id: sort.copyWith(voteBalance: transactionData.balance, votes: transactionData.votes),
       },
     );
     addToCache(newProduct.id, newProduct);
