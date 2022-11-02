@@ -40,6 +40,7 @@ class ProductsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRepository = ref.watch(productRepositoryProvider);
+    final isMounted = useIsMounted();
     final productIds = useState<List<String>>([]);
     final initialProductIds = useRef<List<String>>([]);
     final products = ref.watch(productsProvider(productIds.value));
@@ -58,14 +59,15 @@ class ProductsScreen extends HookConsumerWidget {
 
     useEffect(() {
       if (searchText.value.isNotEmpty) {
-        innerFuture.value = productRepository.search(searchText.value).then((value) {
-          // todo: these throw if disposed
+        innerFuture.value = productRepository.search(searchText.value).then((value) async {
           productIds.value = value.map((product) => product.id).toList();
         });
       } else {
-        innerFuture.value = ref.read(productsFutureProvider).then((value) {
-          productIds.value = value.map((product) => product.id).toList();
-          fetchedAll.value = false;
+        innerFuture.value = ref.read(productsFutureProvider).then((value) async {
+          if (isMounted()) {
+            productIds.value = value.map((product) => product.id).toList();
+            fetchedAll.value = false;
+          }
         });
       }
 
@@ -121,8 +123,10 @@ class ProductsScreen extends HookConsumerWidget {
                       () => productRepository
                           .fetchMore(filters: selectedFilters.value, startAfterDocument: products.last.snapshot!)
                           .then((value) {
-                        productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-                        fetchedAll.value = value.length < ProductRepository.batchSize;
+                        if (isMounted()) {
+                          productIds.value = [...productIds.value, ...value.map((product) => product.id)];
+                          fetchedAll.value = value.length < ProductRepository.batchSize;
+                        }
                       }),
                     );
                     isFetchingMore.value = false;
