@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product_symbol/product_symbol.dart';
+import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 
@@ -20,7 +21,7 @@ Future saveExampleSymbolData(WidgetRef ref) async {
   }));
 }
 
-class ProductSymbolRepository with CacheNotifierMixin<ProductSymbol> {
+class ProductSymbolRepository extends BaseRepository<ProductSymbol> {
   ProductSymbolRepository(this.ref);
 
   @override
@@ -35,4 +36,7 @@ class ProductSymbolRepository with CacheNotifierMixin<ProductSymbol> {
             fromFirestore: ProductSymbol.fromFirestore,
             toFirestore: ProductSymbol.toFirestore,
           );
+
+  @override
+  String? getId(ProductSymbol item) => item.id;
 }

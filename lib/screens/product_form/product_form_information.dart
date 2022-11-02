@@ -113,13 +113,11 @@ class ProductFormInformation extends HookWidget {
                                   final picker = ImagePicker();
                                   final XFile? image = await picker.pickImage(source: ImageSource.camera);
                                   if (image != null) {
-                                    // todo: crop image to square
                                     final croppedImage = await showDefaultBottomSheet<File>(
                                       context: context,
                                       fullScreen: true,
                                       builder: (context) => ImageCropModal(image: File(image.path)),
                                     );
-                                    print(croppedImage);
                                     if (croppedImage != null) {
                                       onPhotoChanged(croppedImage);
                                     }

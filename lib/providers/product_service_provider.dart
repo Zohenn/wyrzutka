@@ -89,8 +89,7 @@ class ProductService {
       },
       'symbols': [...model.symbols],
     };
-    // todo: pass this down to repository
-    await productRepository.collection.doc(model.id).update(updateData);
+    await productRepository.update(model.id, updateData);
     return model.product!.copyWith(
       name: model.name,
       keywords: [...model.keywords],

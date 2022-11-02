@@ -7,6 +7,7 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/vote.dart';
+import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 
@@ -30,7 +31,7 @@ final productsProvider = createCacheItemsProvider(_productCacheProvider);
 
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
-class ProductRepository with CacheNotifierMixin<Product> {
+class ProductRepository extends BaseRepository<Product> {
   ProductRepository(this.ref);
 
   @override
@@ -48,11 +49,8 @@ class ProductRepository with CacheNotifierMixin<Product> {
 
   static const int batchSize = 10;
 
-  Future<Product> create(Product product) async {
-    final doc = collection.doc(product.id);
-    await doc.set(product);
-    return product;
-  }
+  @override
+  String? getId(Product item) => item.id;
 
   Future<List<Product>> fetchMore({
     Map<String, dynamic> filters = const {},
@@ -103,6 +101,7 @@ class ProductRepository with CacheNotifierMixin<Product> {
   }
 
   // todo: mark as verified if voteBalance >= 50
+  // todo: use some dto to return data from transaction
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final vote = Vote(user: user.id, value: value);
     final productDoc = collection.doc(product.id);

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product/sort_element_template.dart';
+import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 
@@ -18,7 +19,7 @@ Future saveExampleSortElementTemplateData(WidgetRef ref) async {
   }));
 }
 
-class SortElementTemplateRepository with CacheNotifierMixin<SortElementTemplate> {
+class SortElementTemplateRepository extends BaseRepository<SortElementTemplate> {
   SortElementTemplateRepository(this.ref);
 
   @override
@@ -33,4 +34,7 @@ class SortElementTemplateRepository with CacheNotifierMixin<SortElementTemplate>
             fromFirestore: SortElementTemplate.fromFirestore,
             toFirestore: SortElementTemplate.toFirestore,
           );
+
+  @override
+  String? getId(SortElementTemplate item) => item.id;
 }

@@ -69,7 +69,7 @@ class AuthService {
     required String name,
     required String surname,
   }) async {
-    final user = await userRepository.create(
+    final user = await userRepository.createAndGet(
       AppUser(id: userCredential.user!.uid, email: email, name: name, surname: surname, role: Role.user),
     );
     ref.read(authUserProvider.notifier).state = user;

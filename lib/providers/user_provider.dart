@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 
@@ -12,7 +13,7 @@ final userProvider = createCacheItemProvider(_userCacheProvider);
 
 final userRepositoryProvider = Provider((ref) => UserRepository(ref));
 
-class UserRepository with CacheNotifierMixin {
+class UserRepository extends BaseRepository<AppUser> {
   UserRepository(this.ref);
 
   @override
@@ -28,10 +29,11 @@ class UserRepository with CacheNotifierMixin {
             toFirestore: AppUser.toFirestore,
           );
 
-  Future<AppUser> create(AppUser user) async {
-    final doc = collection.doc(user.id.isNotEmpty ? user.id : null);
-    await doc.set(user);
-    return user.copyWith(id: doc.id);
+  String? getId(AppUser item) => item.id.isNotEmpty ? item.id : null;
+
+  Future<AppUser> createAndGet(AppUser user) async {
+    final docId = await create(user);
+    return user.copyWith(id: docId);
   }
 
   Future<AppUser> saveProduct(AppUser user, String product) async {
