@@ -11,6 +11,7 @@ import 'package:inzynierka/providers/firebase_provider.dart';
 import 'package:inzynierka/providers/image_upload_service_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
+import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 
 final productServiceProvider = Provider(ProductService.new);
 
@@ -22,7 +23,7 @@ class ProductService {
   Future<Product> createFromModel(ProductFormModel model, [Product? variant]) async {
     final productRepository = ref.read(productRepositoryProvider);
     final photoUrls = await _uploadPhotos(model);
-    final user = ref.watch(authUserProvider)!.id;
+    final user = ref.read(authUserProvider)!.id;
     final sortProposalId = productRepository.collection.doc().id;
     final product = Product(
       id: model.id,
@@ -77,7 +78,7 @@ class ProductService {
     return photoUrls;
   }
 
-  Future<Product> updateFromModel(ProductFormModel model) async {
+  Future<void> updateFromModel(ProductFormModel model) async {
     final productRepository = ref.read(productRepositoryProvider);
     final photoUrls = model.photo != null ? await _uploadPhotos(model) : null;
     final updateData = {
@@ -89,14 +90,14 @@ class ProductService {
       },
       'symbols': [...model.symbols],
     };
-    await productRepository.update(model.id, updateData);
-    return model.product!.copyWith(
+    final newProduct = model.product!.copyWith(
       name: model.name,
       keywords: [...model.keywords],
       photo: photoUrls?[0] ?? model.product!.photo,
       photoSmall: photoUrls?[1] ?? model.product!.photoSmall,
       symbols: [...model.symbols],
     );
+    await productRepository.update(model.id, updateData, newProduct);
   }
 
   Future<Product?> findVariant(List<String> keywords) async {
@@ -104,5 +105,21 @@ class ProductService {
     final query = productRepository.collection.where('keywords', arrayContainsAny: keywords).limit(1);
     final snapshot = await query.get();
     return snapshot.docs.firstOrNull?.data();
+  }
+
+  Future<void> addSortProposal(Product product, SortElements elements) async {
+    final productRepository = ref.read(productRepositoryProvider);
+    final user = ref.read(authUserProvider)!.id;
+    final sortProposalId = productRepository.collection.doc().id;
+    final sort = Sort(
+      id: sortProposalId,
+      user: user,
+      elements: elements.values.flattened.toList(),
+      voteBalance: 0,
+      votes: [],
+    );
+    final newProduct = product.copyWith(sortProposals: {...product.sortProposals, sortProposalId: sort});
+    final updateData = {'sortProposals.$sortProposalId': sort.toJson()};
+    await productRepository.update(product.id, updateData, newProduct);
   }
 }

@@ -12,13 +12,16 @@ abstract class BaseRepository<V> with CacheNotifierMixin<V> {
     return doc.id;
   }
 
-  Future<void> update(String id, Map<String, dynamic> data) async {
+  Future<void> update(String id, Map<String, dynamic> data, [V? item]) async {
     final doc = collection.doc(id);
     await doc.update(data);
+    if (item != null) {
+      addToCache(id, item);
+    }
   }
 
   Future<List<V>> fetchAll() async {
-    if(_fetchedAll){
+    if (_fetchedAll) {
       return cache.values.toList();
     }
 
@@ -48,8 +51,8 @@ abstract class BaseRepository<V> with CacheNotifierMixin<V> {
     }
     return ids
         .map((e) {
-      return cache[e];
-    })
+          return cache[e];
+        })
         .where((element) => element != null)
         .cast<V>()
         .toList();

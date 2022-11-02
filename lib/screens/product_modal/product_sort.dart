@@ -7,6 +7,7 @@ import 'package:inzynierka/screens/widgets/sort_container.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProductSort extends ConsumerWidget {
   const ProductSort({
@@ -36,9 +37,12 @@ class ProductSort extends ConsumerWidget {
               children: [
                 Text('Propozycje segregacji', style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 8),
-                for (var sortProposal in product.sortProposals.values) ...[
-                  SortContainer(product: product, sort: sortProposal, verified: false),
-                ],
+                GutterColumn(
+                  children: [
+                    for (var sortProposal in product.sortProposals.values)
+                      SortContainer(product: product, sort: sortProposal, verified: false),
+                  ],
+                ),
               ],
             ),
             ifFalse: () => Card(
@@ -65,7 +69,7 @@ class ProductSort extends ConsumerWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () =>
-                    showDefaultBottomSheet(context: context, builder: (context) => const SortProposalForm()),
+                    showDefaultBottomSheet(context: context, builder: (context) => SortProposalForm(product: product)),
                 child: const Text('Dodaj swoją propozycję'),
               ),
             ),

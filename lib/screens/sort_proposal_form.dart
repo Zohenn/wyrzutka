@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/providers/product_service_provider.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
+import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 class SortProposalForm extends HookConsumerWidget {
-  const SortProposalForm({Key? key}) : super(key: key);
+  const SortProposalForm({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+
+  final Product product;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final elements = useState<SortElements>({});
+    final isSaving = useState(false);
     final isValid = useMemoized(
       () => elements.value.isNotEmpty && elements.value.values.every((element) => element.isNotEmpty),
       [elements.value],
@@ -32,7 +41,16 @@ class SortProposalForm extends HookConsumerWidget {
           ),
           const SizedBox(height: 24.0),
           ProgressIndicatorButton(
-            onPressed: isValid ? (){} : null,
+            isLoading: isSaving.value,
+            onPressed: isValid
+                ? () async {
+                    isSaving.value = true;
+                    final productService = ref.read(productServiceProvider);
+                    await asyncCall(context, () => productService.addSortProposal(product, elements.value));
+                    isSaving.value = false;
+                    Navigator.of(context).pop();
+                  }
+                : null,
             child: const Center(
               child: Text('Dodaj propozycję'),
             ),
