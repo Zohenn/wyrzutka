@@ -35,33 +35,32 @@ class ProductFormSort extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Segregacja',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
+      padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Segregacja',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 24.0),
+          ConditionalBuilder(
+            condition: model.product == null || model.product!.sort != null,
+            ifTrue: () => SortElementsInput(
+              elements: elements,
+              onElementsChanged: onElementsChanged,
+              required: false,
             ),
-            const SizedBox(height: 24.0),
-            ConditionalBuilder(
-              condition: model.product == null || model.product!.sort != null,
-              ifTrue: () => SortElementsInput(
-                elements: elements,
-                onElementsChanged: onElementsChanged,
-              ),
-              ifFalse: () => const _SortEditUnavailableCard(),
+            ifFalse: () => const _SortEditUnavailableCard(),
+          ),
+          const SizedBox(height: 24.0),
+          ProgressIndicatorButton(
+            onPressed: isValid ? onSubmitPressed : null,
+            child: const Center(
+              child: Text('Zapisz produkt'),
             ),
-            const SizedBox(height: 24.0),
-            ProgressIndicatorButton(
-              onPressed: isValid ? onSubmitPressed : null,
-              child: const Center(
-                child: Text('Zapisz produkt'),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -20,10 +20,12 @@ class SortElementsInput extends StatelessWidget {
     Key? key,
     required this.elements,
     required this.onElementsChanged,
+    required this.required,
   }) : super(key: key);
 
   final SortElements elements;
   final void Function(SortElements) onElementsChanged;
+  final bool required;
 
   Iterable<ElementContainer> get selectedContainers => elements.keys;
 
@@ -158,7 +160,7 @@ class SortElementsInput extends StatelessWidget {
                 ),
             ],
           ),
-          ifFalse: () => const _EmptySortCard(),
+          ifFalse: () => _EmptySortCard(required: required),
         ),
       ],
     );
@@ -260,7 +262,12 @@ class _ContainerChip extends StatelessWidget {
 }
 
 class _EmptySortCard extends StatelessWidget {
-  const _EmptySortCard({Key? key}) : super(key: key);
+  const _EmptySortCard({
+    Key? key,
+    required this.required,
+  }) : super(key: key);
+
+  final bool required;
 
   @override
   Widget build(BuildContext context) {
@@ -279,7 +286,9 @@ class _EmptySortCard extends StatelessWidget {
               const SizedBox(height: 16.0),
               Text('Pusta propozycja segregacji', style: Theme.of(context).textTheme.titleMedium),
               Text(
-                'Zakończ dodawanie produktu, a propozycje uzupełnią inni.',
+                required
+                    ? 'Wybierz pojemniki i uzupełnij elementy, aby móc dodać swoją propozycję.'
+                    : 'Zakończ dodawanie produktu, a propozycje uzupełnią inni.',
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),

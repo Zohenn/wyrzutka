@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/screens/sort_proposal_form.dart';
 import 'package:inzynierka/screens/widgets/sort_container.dart';
+import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -13,11 +15,6 @@ class ProductSort extends ConsumerWidget {
   }) : super(key: key);
 
   final Product product;
-
-  void addSortProposal() {
-    // TODO
-    print('Button action');
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -66,7 +63,7 @@ class ProductSort extends ConsumerWidget {
             const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
-                onPressed: addSortProposal,
+                onPressed: () => showDefaultBottomSheet(context: context, builder: (context) => const SortProposalForm()),
                 child: const Text('Dodaj swoją propozycję'),
               ),
             ),
