@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
@@ -10,6 +11,7 @@ import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/product_modal/product_delete_dialog.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 
 class ProductActionsSheet extends HookConsumerWidget {
   const ProductActionsSheet({
@@ -32,19 +34,31 @@ class ProductActionsSheet extends HookConsumerWidget {
         children: [
           ListTile(
             iconColor: !isSaved ? AppColors.positive : AppColors.negative,
-            leading: Icon(!isSaved ? Icons.add : Icons.remove),
+            leading: ConditionalBuilder(
+              condition: isSaving.value == false,
+              ifTrue: () => Icon(!isSaved ? Icons.add : Icons.remove),
+              ifFalse: () => SizedBox.square(
+                dimension: 24,
+                child: SpinKitDoubleBounce(
+                  size: 18,
+                  color: !isSaved ? AppColors.positive : AppColors.negative,
+                ),
+              ),
+            ),
             title: Text(!isSaved ? 'Zapisz na swojej liście' : 'Usuń z listy zapisanych'),
-            onTap: () async {
-              final authUserService = ref.read(authUserServiceProvider);
-              isSaving.value = true;
-              await asyncCall(context, () => authUserService.updateSavedProduct(product.id));
-              isSaving.value = false;
-            },
+            onTap: isSaving.value == false
+                ? () async {
+                    final authUserService = ref.read(authUserServiceProvider);
+                    isSaving.value = true;
+                    await asyncCall(context, () => authUserService.updateSavedProduct(product.id));
+                    isSaving.value = false;
+                  }
+                : null,
           ),
           if (authUser?.role == Role.mod || authUser?.role == Role.admin) ...[
             ListTile(
-              leading: Icon(Icons.edit),
-              title: Text('Edytuj informacje'),
+              leading: const Icon(Icons.edit),
+              title: const Text('Edytuj informacje'),
               onTap: () {
                 Navigator.of(context).pop();
                 showDefaultBottomSheet(
@@ -55,8 +69,8 @@ class ProductActionsSheet extends HookConsumerWidget {
             ),
             ListTile(
               iconColor: AppColors.negative,
-              leading: Icon(Icons.delete),
-              title: Text('Usuń produkt'),
+              leading: const Icon(Icons.delete),
+              title: const Text('Usuń produkt'),
               onTap: () async {
                 final wasDeleted =
                     await showDialog(context: context, builder: (context) => ProductDeleteDialog(product: product));
