@@ -78,6 +78,7 @@ class SignUpScreen extends HookConsumerWidget {
                               decoration: InputDecoration(
                                 label: Text('Imię'),
                               ),
+                              textInputAction: TextInputAction.next,
                               onChanged: (value) => model.value.name = value,
                               validator: Validators.required('Uzupełnij imię'),
                             ),
@@ -89,6 +90,7 @@ class SignUpScreen extends HookConsumerWidget {
                               decoration: InputDecoration(
                                 label: Text('Nazwisko'),
                               ),
+                              textInputAction: TextInputAction.next,
                               onChanged: (value) => model.value.surname = value,
                               validator: Validators.required('Uzupełnij nazwisko'),
                             ),
@@ -100,6 +102,8 @@ class SignUpScreen extends HookConsumerWidget {
                         decoration: InputDecoration(
                           label: Text('Adres email'),
                         ),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
                         onChanged: (value) => model.value.email = value,
                         validator: Validators.required('Uzupełnij adres email'),
                       ),

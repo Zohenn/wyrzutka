@@ -80,6 +80,8 @@ class SignInScreen extends HookConsumerWidget {
                         decoration: InputDecoration(
                           label: Text('Adres email'),
                         ),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
                         onChanged: (value) => model.value.email = value,
                         validator: Validators.required('Uzupełnij adres email'),
                       ),
