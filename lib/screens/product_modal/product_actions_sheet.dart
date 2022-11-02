@@ -5,7 +5,7 @@ import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/providers/auth_user_service_provider.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/product_modal/product_delete_dialog.dart';
 import 'package:inzynierka/utils/async_call.dart';
@@ -35,18 +35,9 @@ class ProductActionsSheet extends HookConsumerWidget {
             leading: Icon(!isSaved ? Icons.add : Icons.remove),
             title: Text(!isSaved ? 'Zapisz na swojej liście' : 'Usuń z listy zapisanych'),
             onTap: () async {
-              // todo: extract to some service
-              final userRepository = ref.watch(userRepositoryProvider);
+              final authUserService = ref.read(authUserServiceProvider);
               isSaving.value = true;
-              await asyncCall(context, () async {
-                if (!isSaved) {
-                  final user = await userRepository.saveProduct(authUser!, product.id);
-                  ref.read(authUserProvider.notifier).state = user;
-                } else {
-                  final user = await userRepository.removeProduct(authUser!, product.id);
-                  ref.read(authUserProvider.notifier).state = user;
-                }
-              });
+              await asyncCall(context, () => authUserService.updateSavedProduct(product.id));
               isSaving.value = false;
             },
           ),

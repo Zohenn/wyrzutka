@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/providers/auth_user_service_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
-import 'package:inzynierka/providers/user_provider.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/product_modal/product_sort.dart';
@@ -103,18 +103,9 @@ class ScannerProductModal extends HookConsumerWidget {
                                 side: BorderSide(color: Theme.of(context).primaryColor),
                               ),
                               onPressed: () async {
-                                // todo: extract to some service
-                                final userRepository = ref.watch(userRepositoryProvider);
+                                final authUserService = ref.read(authUserServiceProvider);
                                 isSaving.value = true;
-                                await asyncCall(context, () async {
-                                  if (!isSaved) {
-                                    final user = await userRepository.saveProduct(authUser!, id);
-                                    ref.read(authUserProvider.notifier).state = user;
-                                  } else {
-                                    final user = await userRepository.removeProduct(authUser!, id);
-                                    ref.read(authUserProvider.notifier).state = user;
-                                  }
-                                });
+                                await asyncCall(context, () => authUserService.updateSavedProduct(id));
                                 isSaving.value = false;
                               },
                               child: !isSaved ? const Text('Zapisz na liście') : const Text('Zapisano na liście'),
