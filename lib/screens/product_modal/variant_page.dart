@@ -5,7 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/product_provider.dart';
+import 'package:inzynierka/screens/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/text_overflow_ellipsis_fix.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
@@ -41,21 +43,30 @@ class VariantPage extends HookConsumerWidget {
               // todo: make these clickable, I suppose?
               for (var variant in variants) ...[
                 Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        ProductPhoto(product: variant),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            variant.name.overflowFix,
-                            style: Theme.of(context).textTheme.titleMedium,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      showDefaultBottomSheet(context: context, builder: (context) => ProductModal(id: variant.id));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          ProductPhoto(product: variant),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Tooltip(
+                              message: variant.name,
+                              child: Text(
+                                variant.name.overflowFix,
+                                style: Theme.of(context).textTheme.titleMedium,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
