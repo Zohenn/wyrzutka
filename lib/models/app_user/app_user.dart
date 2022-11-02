@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/util.dart';
 
 part 'app_user.freezed.dart';
@@ -46,6 +47,7 @@ class AppUser with _$AppUser {
     required String name,
     required String surname,
     required Role role,
+    @JsonKey(fromJson: FirestoreDateTime.fromFirestore, toJson: FirestoreDateTime.toFirestore) required FirestoreDateTime signUpDate,
     @Default([]) List<String> savedProducts,
     @Default([]) List<String> verifiedSortProposals,
   }) = _AppUser;
