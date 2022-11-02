@@ -19,8 +19,9 @@ class ProductSort extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
-    final canAddProposal =
-        authUser != null && !product.sortProposals.values.any((element) => element.user == authUser.id);
+    final canAddProposal = authUser != null &&
+        product.sortProposals.length < 5 &&
+        !product.sortProposals.values.any((element) => element.user == authUser.id);
 
     return ConditionalBuilder(
       condition: product.sort != null,
@@ -63,7 +64,8 @@ class ProductSort extends ConsumerWidget {
             const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
-                onPressed: () => showDefaultBottomSheet(context: context, builder: (context) => const SortProposalForm()),
+                onPressed: () =>
+                    showDefaultBottomSheet(context: context, builder: (context) => const SortProposalForm()),
                 child: const Text('Dodaj swoją propozycję'),
               ),
             ),
