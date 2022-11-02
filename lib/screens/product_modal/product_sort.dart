@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/widgets/sort_container.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ProductSort extends StatelessWidget {
-  final Product product;
-
+class ProductSort extends ConsumerWidget {
   const ProductSort({
     Key? key,
     required this.product,
   }) : super(key: key);
+
+  final Product product;
 
   void addSortProposal() {
     // TODO
@@ -18,7 +20,11 @@ class ProductSort extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authUser = ref.watch(authUserProvider);
+    final canAddProposal =
+        authUser != null && !product.sortProposals.values.any((element) => element.user == authUser.id);
+
     return ConditionalBuilder(
       condition: product.sort != null,
       ifTrue: () => SortContainer(product: product, sort: product.sort!, verified: true),
@@ -56,13 +62,15 @@ class ProductSort extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          Center(
-            child: ElevatedButton(
-              onPressed: addSortProposal,
-              child: const Text('Dodaj swoją propozycję'),
+          if (canAddProposal) ...[
+            const SizedBox(height: 16),
+            Center(
+              child: ElevatedButton(
+                onPressed: addSortProposal,
+                child: const Text('Dodaj swoją propozycję'),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
