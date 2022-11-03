@@ -92,7 +92,7 @@ void main() {
 
   group('signUp', () {
     test('Should create user doc', () async {
-      when(userRepository.create(any))
+      when(userRepository.createAndGet(any))
           .thenAnswer((realInvocation) => Future.value(realInvocation.positionalArguments[0]));
       await container.read(authServiceProvider).signUp(
             name: 'Michał',
@@ -101,7 +101,7 @@ void main() {
             password: 'qwerty',
           );
 
-      verify(userRepository.create(any)).called(1);
+      verify(userRepository.createAndGet(any)).called(1);
       expect(
         container.read(authUserProvider),
         isA<AppUser>()
@@ -113,7 +113,7 @@ void main() {
     });
 
     test('Should update display name on user', () async {
-      when(userRepository.create(any))
+      when(userRepository.createAndGet(any))
           .thenAnswer((realInvocation) => Future.value(realInvocation.positionalArguments[0]));
       await container.read(authServiceProvider).signUp(
             name: 'Michał',
@@ -137,12 +137,12 @@ void main() {
 
     test('Should create userDoc if does not exist', () async {
       when(userRepository.fetchId(any, any)).thenAnswer((realInvocation) => Future.value(null));
-      when(userRepository.create(any))
+      when(userRepository.createAndGet(any))
           .thenAnswer((realInvocation) => Future.value(realInvocation.positionalArguments[0]));
 
       await container.read(authServiceProvider).signIn(email: 'mmarciniak299@gmail.com', password: 'qwerty');
 
-      verify(userRepository.create(any)).called(1);
+      verify(userRepository.createAndGet(any)).called(1);
       expect(
         container.read(authUserProvider),
         isA<AppUser>()
@@ -165,12 +165,12 @@ void main() {
 
     test('Should create userDoc if does not exist', () async {
       when(userRepository.fetchId(any, any)).thenAnswer((realInvocation) => Future.value(null));
-      when(userRepository.create(any))
+      when(userRepository.createAndGet(any))
           .thenAnswer((realInvocation) => Future.value(realInvocation.positionalArguments[0]));
 
       await container.read(authServiceProvider).signInWithGoogle();
 
-      verify(userRepository.create(any)).called(1);
+      verify(userRepository.createAndGet(any)).called(1);
       expect(
         container.read(authUserProvider),
         isA<AppUser>()
