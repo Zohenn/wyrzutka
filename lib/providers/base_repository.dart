@@ -1,7 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 
 abstract class BaseRepository<V> with CacheNotifierMixin<V> {
+  Ref get ref;
+
+  @protected
+  CollectionReference<V> get collection;
+
   bool _fetchedAll = false;
 
   String? getId(V item);

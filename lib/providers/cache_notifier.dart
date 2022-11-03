@@ -56,17 +56,14 @@ class CacheNotifier<V> extends StateNotifier<Map<String, V>> {
 
   int get length => state.length;
 
+  bool get isEmpty => state.isEmpty;
+
   Iterable<V> get values => state.values;
 }
 
 mixin CacheNotifierMixin<V> {
-  Ref get ref;
-
   @protected
   CacheNotifier<V> get cache;
-
-  @protected
-  CollectionReference<V> get collection;
 
   @protected
   List<V> mapDocs(QuerySnapshot<V> querySnapshot, [bool clearCache = false]) {
