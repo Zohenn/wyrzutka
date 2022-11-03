@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:mockito/annotations.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
@@ -57,6 +58,7 @@ void main() {
       name: 'Michał',
       surname: 'Marciniak',
       role: Role.user,
+      signUpDate: FirestoreDateTime.serverTimestamp(),
     );
     mockFirebaseAuth = MockFirebaseAuth(mockUser: mockUser);
     userRepository = MockUserRepository();

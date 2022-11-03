@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
@@ -52,6 +53,7 @@ void main() {
       name: 'Michał',
       surname: 'Marciniak',
       role: Role.user,
+      signUpDate: FirestoreDateTime.serverTimestamp(),
     );
     when(anySignUp()).thenAnswer((realInvocation) => Future.value(user));
     when(authService.signInWithGoogle()).thenAnswer((realInvocation) => Future.value(user));
