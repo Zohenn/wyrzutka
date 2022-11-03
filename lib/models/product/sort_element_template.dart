@@ -4,12 +4,13 @@ import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/util.dart';
 
 part 'sort_element_template.freezed.dart';
+
 part 'sort_element_template.g.dart';
 
 @freezed
 class SortElementTemplate with _$SortElementTemplate {
   const factory SortElementTemplate({
-    required String id,
+    @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
     required ElementContainer container,
     required String name,
     String? description,
