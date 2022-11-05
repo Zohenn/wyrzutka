@@ -149,6 +149,11 @@ class ProductService {
     return productRepository.fetchNext(filters: _mapFilters(filters), startAfterDocument: startAfterDocument);
   }
 
+  Future<List<Product>> search(String value) {
+    final productRepository = ref.read(productRepositoryProvider);
+    return productRepository.search('searchName', value);
+  }
+
   Future<void> addSortProposal(Product product, SortElements elements) async {
     final productRepository = ref.read(productRepositoryProvider);
     final user = ref.read(authUserProvider)!.id;

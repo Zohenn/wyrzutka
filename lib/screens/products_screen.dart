@@ -41,7 +41,6 @@ class ProductsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productService = ref.watch(productServiceProvider);
-    final productRepository = ref.watch(productRepositoryProvider);
     final isMounted = useIsMounted();
     final productIds = useState<List<String>>([]);
     final initialProductIds = useRef<List<String>>([]);
@@ -61,7 +60,7 @@ class ProductsScreen extends HookConsumerWidget {
 
     useEffect(() {
       if (searchText.value.isNotEmpty) {
-        innerFuture.value = productRepository.search(searchText.value).then((value) async {
+        innerFuture.value = productService.search(searchText.value).then((value) async {
           productIds.value = value.map((product) => product.id).toList();
         });
       } else {

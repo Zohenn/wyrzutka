@@ -59,13 +59,6 @@ class ProductRepository extends BaseRepository<Product> {
   @override
   String? getId(Product item) => item.id;
 
-  Future<List<Product>> search(String value) async {
-    value = value.toLowerCase();
-    final querySnapshot =
-        await collection.orderBy('searchName').startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
-    return mapDocs(querySnapshot);
-  }
-
   // todo: mark as verified if voteBalance >= 50
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final vote = Vote(user: user.id, value: value);

@@ -84,6 +84,12 @@ abstract class BaseRepository<V> with CacheNotifierMixin<V> {
     return mapDocs(querySnapshot, startAfterDocument == null);
   }
 
+  Future<List<V>> search(String searchKey, String value) async {
+    value = value.toLowerCase();
+    final querySnapshot = await collection.orderBy(searchKey).startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
+    return mapDocs(querySnapshot);
+  }
+
   Future<void> delete(String id) async {
     await collection.doc(id).delete();
     removeFromCache(id);
