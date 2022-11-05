@@ -5,11 +5,13 @@ import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 import 'package:inzynierka/providers/image_upload_service_provider.dart';
 import 'package:inzynierka/providers/product_provider.dart';
+import 'package:inzynierka/providers/query_filter.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 
@@ -105,6 +107,46 @@ class ProductService {
     final query = productRepository.collection.where('keywords', arrayContainsAny: keywords).limit(1);
     final snapshot = await query.get();
     return snapshot.docs.firstOrNull?.data();
+  }
+
+  List<QueryFilter> _mapFilters(List<dynamic> filters) {
+    final nestedFilterList = filters.map((filter) {
+      if (filter is ProductSortFilters) {
+        switch (filter) {
+          case ProductSortFilters.verified:
+            return [QueryFilter('sort', FilterOperator.isNull, false)];
+          case ProductSortFilters.unverified:
+            return [
+              QueryFilter('sort', FilterOperator.isNull, true),
+              QueryFilter('sortProposals', FilterOperator.isNotEqualTo, {})
+            ];
+          case ProductSortFilters.noProposals:
+            return [
+              QueryFilter('sort', FilterOperator.isNull, true),
+              QueryFilter('sortProposals', FilterOperator.isEqualTo, {})
+            ];
+        }
+      }
+
+      if (filter is ProductContainerFilters) {
+        if (filter != ProductContainerFilters.many) {
+          return [QueryFilter('containers', FilterOperator.arrayContains, filter.name)];
+        } else {
+          return [QueryFilter('containerCount', FilterOperator.isGreaterThan, 1)];
+        }
+      }
+
+      throw UnsupportedError('${filter.runtimeType} is not supported as a Product filter');
+    });
+    return nestedFilterList.flattened.toList();
+  }
+
+  Future<List<Product>> fetchNext({
+    List<dynamic> filters = const [],
+    DocumentSnapshot? startAfterDocument,
+  }) async {
+    final productRepository = ref.read(productRepositoryProvider);
+    return productRepository.fetchNext(filters: _mapFilters(filters), startAfterDocument: startAfterDocument);
   }
 
   Future<void> addSortProposal(Product product, SortElements elements) async {

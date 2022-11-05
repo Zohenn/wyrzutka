@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
+import 'package:inzynierka/providers/query_filter.dart';
 
 abstract class BaseRepository<V> with CacheNotifierMixin<V> {
   Ref get ref;
@@ -63,6 +64,24 @@ abstract class BaseRepository<V> with CacheNotifierMixin<V> {
         .where((element) => element != null)
         .cast<V>()
         .toList();
+  }
+
+  Future<List<V>> fetchNext({
+    List<QueryFilter> filters = const [],
+    DocumentSnapshot? startAfterDocument,
+    int batchSize = 10,
+  }) async {
+    Query<V> query = collection.limit(batchSize);
+    for (var filter in filters) {
+      query = filter.apply(query);
+    }
+
+    if (startAfterDocument != null) {
+      query = query.startAfterDocument(startAfterDocument);
+    }
+
+    final querySnapshot = await query.get();
+    return mapDocs(querySnapshot, startAfterDocument == null);
   }
 
   Future<void> delete(String id) async {

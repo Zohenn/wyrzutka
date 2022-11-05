@@ -20,7 +20,7 @@ Future saveExampleProductData(WidgetRef ref) async {
 
 final productsFutureProvider = Provider((ref) async {
   final repository = ref.read(productRepositoryProvider);
-  final products = await repository.fetchMore();
+  final products = await repository.fetchNext();
   return products;
 });
 
@@ -58,47 +58,6 @@ class ProductRepository extends BaseRepository<Product> {
 
   @override
   String? getId(Product item) => item.id;
-
-  Future<List<Product>> fetchMore({
-    Map<String, dynamic> filters = const {},
-    DocumentSnapshot? startAfterDocument,
-  }) async {
-    Query<Product> query = collection.limit(batchSize);
-    if (filters[ProductSortFilters.groupKey] != null) {
-      final filter = filters[ProductSortFilters.groupKey] as ProductSortFilters;
-      switch (filter) {
-        case ProductSortFilters.verified:
-          query = query.where('sort', isNull: false).orderBy('sort').orderBy(FieldPath.documentId);
-          break;
-        case ProductSortFilters.unverified:
-          query = query
-              .where('sort', isNull: true)
-              .where('sortProposals', isNotEqualTo: [])
-              .orderBy('sortProposals')
-              .orderBy(FieldPath.documentId);
-          break;
-        case ProductSortFilters.noProposals:
-          query = query.where('sort', isNull: true).where('sortProposals', isEqualTo: []).orderBy(FieldPath.documentId);
-          break;
-      }
-    }
-
-    if (filters[ProductContainerFilters.groupKey] != null) {
-      final filter = filters[ProductContainerFilters.groupKey] as ProductContainerFilters;
-      if (filter != ProductContainerFilters.many) {
-        query = query.where('containers', arrayContains: filter.name);
-      } else {
-        query = query.where('containerCount', isGreaterThan: 1);
-      }
-    }
-
-    if (startAfterDocument != null) {
-      query = query.startAfterDocument(startAfterDocument);
-    }
-
-    final querySnapshot = await query.get();
-    return mapDocs(querySnapshot, startAfterDocument == null);
-  }
 
   Future<List<Product>> search(String value) async {
     value = value.toLowerCase();

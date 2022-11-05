@@ -7,6 +7,7 @@ import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/providers/product_provider.dart';
+import 'package:inzynierka/providers/product_service_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
@@ -39,6 +40,7 @@ class ProductsScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final productService = ref.watch(productServiceProvider);
     final productRepository = ref.watch(productRepositoryProvider);
     final isMounted = useIsMounted();
     final productIds = useState<List<String>>([]);
@@ -75,7 +77,7 @@ class ProductsScreen extends HookConsumerWidget {
     }, [searchText.value]);
 
     useEffect(() {
-      innerFuture.value = productRepository.fetchMore(filters: selectedFilters.value).then((value) {
+      innerFuture.value = productService.fetchNext(filters: selectedFilters.value.values.toList()).then((value) {
         productIds.value = value.map((product) => product.id).toList();
         fetchedAll.value = false;
       });
@@ -120,8 +122,10 @@ class ProductsScreen extends HookConsumerWidget {
                     isFetchingMore.value = true;
                     await asyncCall(
                       context,
-                      () => productRepository
-                          .fetchMore(filters: selectedFilters.value, startAfterDocument: products.last.snapshot!)
+                      () => productService
+                          .fetchNext(
+                              filters: selectedFilters.value.values.toList(),
+                              startAfterDocument: products.last.snapshot!)
                           .then((value) {
                         if (isMounted()) {
                           productIds.value = [...productIds.value, ...value.map((product) => product.id)];
