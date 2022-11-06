@@ -5,7 +5,7 @@ import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/product/sort_element_template.dart';
-import 'package:inzynierka/repositories/sort_element_template_provider.dart';
+import 'package:inzynierka/repositories/sort_element_template_repository.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';

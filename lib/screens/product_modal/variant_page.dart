@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/repositories/product_provider.dart';
+import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';

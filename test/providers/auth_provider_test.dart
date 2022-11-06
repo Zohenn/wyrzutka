@@ -9,7 +9,7 @@ import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
-import 'package:inzynierka/repositories/user_provider.dart';
+import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:mockito/mockito.dart';
 
 import 'auth_provider_test.mocks.dart';

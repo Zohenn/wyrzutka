@@ -4,7 +4,7 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/services/auth_user_service.dart';
-import 'package:inzynierka/repositories/user_provider.dart';
+import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
-import 'package:inzynierka/repositories/user_provider.dart';
+import 'package:inzynierka/repositories/user_repository.dart';
 
 void main() {
   late FakeFirebaseFirestore firestore;

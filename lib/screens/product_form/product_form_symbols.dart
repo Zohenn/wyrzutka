@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product_symbol/product_symbol.dart';
-import 'package:inzynierka/repositories/product_symbol_provider.dart';
+import 'package:inzynierka/repositories/product_symbol_repository.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/symbol_item.dart';
 import 'package:inzynierka/utils/image_error_builder.dart';
