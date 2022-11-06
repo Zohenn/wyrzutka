@@ -50,7 +50,7 @@ class SortContainer extends HookConsumerWidget {
     final updateVoteState = useState(_UpdateVoteState.none);
     final disableButtons =
         updateVoteState.value != _UpdateVoteState.none || authUser == null || authUser.id == sort.user;
-    final userVote = sort.votes.firstWhereOrNull((element) => element.user == authUser?.id);
+    final userVote = sort.votes[authUser?.id];
 
     return Card(
       child: Column(
@@ -113,7 +113,7 @@ class SortContainer extends HookConsumerWidget {
                                   context, () => productRepository.updateVote(product, sort, authUser, true));
                               updateVoteState.value = _UpdateVoteState.none;
                             },
-                      color: userVote?.value == true ? AppColors.positive : null,
+                      color: userVote == true ? AppColors.positive : null,
                       icon: const Icon(Icons.expand_less),
                       style: const ButtonStyle(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -130,7 +130,7 @@ class SortContainer extends HookConsumerWidget {
                                   context, () => productRepository.updateVote(product, sort, authUser, false));
                               updateVoteState.value = _UpdateVoteState.none;
                             },
-                      color: userVote?.value == false ? AppColors.negative : null,
+                      color: userVote == false ? AppColors.negative : null,
                       icon: const Icon(Icons.expand_more),
                       style: const ButtonStyle(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,

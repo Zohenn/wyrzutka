@@ -274,7 +274,7 @@ final productsList = [
           SortElement(name: 'Zużyte chusteczki', container: ElementContainer.mixed)
         ],
         voteBalance: 0,
-        votes: [],
+        votes: {},
       ),
     },
     user: '1',
@@ -293,12 +293,9 @@ final productsList = [
           SortElement(name: 'Pieczywo', container: ElementContainer.bio),
         ],
         voteBalance: 1,
-        votes: [
-          Vote(
-            user: 'VJHS5rQwHxh08064vjhkMhes2lS2',
-            value: true,
-          ),
-        ],
+        votes: {
+          'VJHS5rQwHxh08064vjhkMhes2lS2': true,
+        }
       ),
     },
     user: '1',
@@ -522,7 +519,7 @@ final productsList = [
           SortElement(container: ElementContainer.plastic, name: 'Opakowanie'),
         ],
         voteBalance: 0,
-        votes: [],
+        votes: {},
       ),
     },
     user: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',

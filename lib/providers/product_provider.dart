@@ -34,7 +34,7 @@ final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 class UpdateVoteDto {
   UpdateVoteDto(this.votes, this.balance);
 
-  List<Vote> votes;
+  Map<String, bool> votes;
   int balance;
 }
 
@@ -62,20 +62,19 @@ class ProductRepository extends BaseRepository<Product> {
     final transactionData = await FirebaseFirestore.instance.runTransaction<UpdateVoteDto>((transaction) async {
       final _product = (await productDoc.get()).data()!;
       final _sort = _product.sortProposals[sort.id]!;
-      final previousVote = _sort.votes.firstWhereOrNull((vote) => vote.user == user.id);
-      List<Vote> newVotes;
-      if (previousVote == null) {
-        newVotes = [..._sort.votes, vote];
-      } else if (previousVote.value == value) {
-        newVotes = [..._sort.votes]..remove(previousVote);
+      final previousVote = _sort.votes[user.id];
+      Map<String, bool> newVotes;
+      if (previousVote == value) {
+        // vote cancellation
+        newVotes = {..._sort.votes}..remove(user.id);
       } else {
-        newVotes = [..._sort.votes, vote]..remove(previousVote);
+        newVotes = {..._sort.votes, user.id: value};
       }
-      final newBalance = newVotes.fold<int>(0, (previousValue, element) => previousValue + (element.value ? 1 : -1));
+      final newBalance = newVotes.values.fold<int>(0, (previousValue, element) => previousValue + (element ? 1 : -1));
       transaction.update(
         productDoc,
         {
-          'sortProposals.${sort.id}.votes': newVotes.map((e) => e.toJson()).toList(),
+          'sortProposals.${sort.id}.votes': newVotes,
           'sortProposals.${sort.id}.voteBalance': newBalance,
         },
       );
@@ -85,7 +84,7 @@ class ProductRepository extends BaseRepository<Product> {
     final newProduct = product.copyWith(
       sortProposals: {
         ...product.sortProposals,
-        sort.id: sort.copyWith(voteBalance: transactionData.balance, votes: transactionData.votes),
+        sort.id: sort.copyWith(voteBalance: transactionData.balance, votes: {...transactionData.votes}),
       },
     );
     addToCache(newProduct.id, newProduct);

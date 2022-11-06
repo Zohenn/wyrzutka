@@ -54,7 +54,7 @@ void main() {
           user: 'user',
           elements: [SortElement(container: ElementContainer.plastic, name: 'name')],
           voteBalance: 0,
-          votes: [],
+          votes: {},
         ),
         addedDate: FirestoreDateTime.serverTimestamp(),
       );

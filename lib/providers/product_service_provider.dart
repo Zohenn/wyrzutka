@@ -41,7 +41,7 @@ class ProductService {
                   user: user,
                   elements: model.elements.values.flattened.toList(),
                   voteBalance: 0,
-                  votes: [],
+                  votes: {},
                 ),
             },
       user: user,
@@ -161,7 +161,7 @@ class ProductService {
       user: user,
       elements: elements.values.flattened.toList(),
       voteBalance: 0,
-      votes: [],
+      votes: {},
     );
     final newProduct = product.copyWith(sortProposals: {...product.sortProposals, sortProposalId: sort});
     final updateData = {'sortProposals.$sortProposalId': sort.toJson()};

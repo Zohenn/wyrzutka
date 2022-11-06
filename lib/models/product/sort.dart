@@ -14,7 +14,7 @@ class Sort with _$Sort {
     required List<SortElement> elements,
     required int voteBalance,
     // todo: perhaps this could be changed to Map<String, bool>?
-    required List<Vote> votes,
+    required Map<String, bool> votes,
   }) = _Sort;
 
   factory Sort.verified({
@@ -26,7 +26,7 @@ class Sort with _$Sort {
         user: user,
         elements: elements,
         voteBalance: 0,
-        votes: [],
+        votes: {},
       );
 
   factory Sort.fromJson(Map<String, dynamic> json) => _$SortFromJson(json);

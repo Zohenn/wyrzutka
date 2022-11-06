@@ -61,11 +61,13 @@ class ProgressIndicatorIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {
-        if (!isLoading) {
-          onPressed?.call();
-        }
-      },
+      onPressed: onPressed != null
+          ? () {
+              if (!isLoading) {
+                onPressed?.call();
+              }
+            }
+          : null,
       iconSize: iconSize,
       visualDensity: visualDensity,
       padding: padding,
