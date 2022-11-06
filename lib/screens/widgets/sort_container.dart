@@ -2,6 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:inzynierka/screens/widgets/sort_proposal_delete_dialog.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
@@ -52,97 +54,124 @@ class SortContainer extends HookConsumerWidget {
     final userVote = sort.votes[authUser?.id];
 
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var key in elements.keys) SortContainerGroup(container: key, elements: elements[key]!),
-          ConditionalBuilder(
-            condition: verified,
-            ifTrue: () => Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.done, color: AppColors.positive),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Zweryfikowano',
-                        style: Theme.of(context).textTheme.labelLarge,
-                      )
+      child: InkWell(
+        onLongPress: !verified && authUser?.role == Role.mod
+            ? () {
+                showDialog(
+                  context: context,
+                  builder: (context) => SortProposalDeleteDialog(product: product, sortProposal: sort),
+                );
+              }
+            : null,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var key in elements.keys) SortContainerGroup(container: key, elements: elements[key]!),
+            ConditionalBuilder(
+              condition: verified,
+              ifTrue: () => Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.done, color: AppColors.positive),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Zweryfikowano',
+                          style: Theme.of(context).textTheme.labelLarge,
+                        )
+                      ],
+                    ),
+                    AvatarIcon(
+                      user: user,
+                      profileLoading: true,
+                    ),
+                  ],
+                ),
+              ),
+              ifFalse: () => Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                sort.voteBalance.toString(),
+                                style: TextStyle(color: balanceColor(sort.voteBalance)),
+                              ),
+                              const SizedBox(width: 8.0),
+                              if (sort.user == authUser?.id) ...[
+                                const SizedBox(width: 8.0),
+                                Expanded(
+                                  child: Text(
+                                    'Twoja propozycja',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(color: AppColors.primaryDarker),
+                                  ),
+                                ),
+                              ],
+                              if (sort.user != authUser?.id) ...[
+                                ProgressIndicatorIconButton(
+                                  isLoading: updateVoteState.value == _UpdateVoteState.up,
+                                  spinnerColor: AppColors.positive,
+                                  onPressed: disableButtons
+                                      ? null
+                                      : () async {
+                                          updateVoteState.value = _UpdateVoteState.up;
+                                          await asyncCall(context,
+                                              () => productRepository.updateVote(product, sort, authUser, true));
+                                          updateVoteState.value = _UpdateVoteState.none;
+                                        },
+                                  color: userVote == true ? AppColors.positive : null,
+                                  icon: const Icon(Icons.expand_less),
+                                  style: const ButtonStyle(
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                ),
+                                ProgressIndicatorIconButton(
+                                  isLoading: updateVoteState.value == _UpdateVoteState.down,
+                                  spinnerColor: AppColors.negative,
+                                  onPressed: disableButtons
+                                      ? null
+                                      : () async {
+                                          updateVoteState.value = _UpdateVoteState.down;
+                                          await asyncCall(context,
+                                              () => productRepository.updateVote(product, sort, authUser, false));
+                                          updateVoteState.value = _UpdateVoteState.none;
+                                        },
+                                  color: userVote == false ? AppColors.negative : null,
+                                  icon: const Icon(Icons.expand_more),
+                                  style: const ButtonStyle(
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        AvatarIcon(user: user),
+                      ],
+                    ),
+                    if (authUser?.role == Role.mod) ...[
+                      const SizedBox(height: 8.0),
+                      Text('ID: ${sort.id}', style: TextStyle(color: Theme.of(context).hintColor)),
                     ],
-                  ),
-                  AvatarIcon(
-                    user: user,
-                    profileLoading: true,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            ifFalse: () => Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    sort.voteBalance.toString(),
-                    style: TextStyle(color: balanceColor(sort.voteBalance)),
-                  ),
-                  const SizedBox(width: 8.0),
-                  if (sort.user == authUser?.id) ...[
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: Text(
-                        'Twoja propozycja',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.primaryDarker),
-                      ),
-                    ),
-                  ],
-                  if (sort.user != authUser?.id) ...[
-                    ProgressIndicatorIconButton(
-                      isLoading: updateVoteState.value == _UpdateVoteState.up,
-                      spinnerColor: AppColors.positive,
-                      onPressed: disableButtons
-                          ? null
-                          : () async {
-                              updateVoteState.value = _UpdateVoteState.up;
-                              await asyncCall(
-                                  context, () => productRepository.updateVote(product, sort, authUser, true));
-                              updateVoteState.value = _UpdateVoteState.none;
-                            },
-                      color: userVote == true ? AppColors.positive : null,
-                      icon: const Icon(Icons.expand_less),
-                      style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                    ),
-                    ProgressIndicatorIconButton(
-                      isLoading: updateVoteState.value == _UpdateVoteState.down,
-                      spinnerColor: AppColors.negative,
-                      onPressed: disableButtons
-                          ? null
-                          : () async {
-                              updateVoteState.value = _UpdateVoteState.down;
-                              await asyncCall(
-                                  context, () => productRepository.updateVote(product, sort, authUser, false));
-                              updateVoteState.value = _UpdateVoteState.none;
-                            },
-                      color: userVote == false ? AppColors.negative : null,
-                      icon: const Icon(Icons.expand_more),
-                      style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                    ),
-                    const Expanded(child: SizedBox.shrink()),
-                  ],
-                  AvatarIcon(user: user),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

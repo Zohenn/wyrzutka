@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/sort_proposal_form.dart';
