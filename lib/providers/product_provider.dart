@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/models/product/vote.dart';
 import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
@@ -56,7 +53,6 @@ class ProductRepository extends BaseRepository<Product> {
 
   // todo: mark as verified if voteBalance >= 50
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
-    final vote = Vote(user: user.id, value: value);
     final productDoc = collection.doc(product.id);
 
     final transactionData = await FirebaseFirestore.instance.runTransaction<UpdateVoteDto>((transaction) async {

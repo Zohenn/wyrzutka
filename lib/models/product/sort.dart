@@ -1,7 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/models/product/vote.dart';
 
 part 'sort.freezed.dart';
 part 'sort.g.dart';
@@ -13,7 +11,6 @@ class Sort with _$Sort {
     required String user,
     required List<SortElement> elements,
     required int voteBalance,
-    // todo: perhaps this could be changed to Map<String, bool>?
     required Map<String, bool> votes,
   }) = _Sort;
 

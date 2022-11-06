@@ -3,32 +3,11 @@
 import 'package:collection/collection.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/product/sort_element_template.dart';
 import 'package:inzynierka/models/product_symbol/product_symbol.dart';
-import 'package:inzynierka/models/product/vote.dart';
 
 List<AppUser> users = [
   AppUser(
