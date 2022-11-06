@@ -9,6 +9,17 @@ part 'product.freezed.dart';
 
 part 'product.g.dart';
 
+Sort? _sortFromJson(Map<String, dynamic>? data) {
+  return data != null ? Sort.fromJson({'id': '', ...data}) : null;
+}
+
+Map<String, Sort> _sortProposalsFromJson(Map<String, dynamic> data) {
+  return data.map((k, e) {
+    final sortData = e as Map<String, dynamic>;
+    return MapEntry(k, Sort.fromJson({'id': k, ...sortData}));
+  });
+}
+
 @freezed
 class Product with _$Product, Identifiable {
   const Product._();
@@ -20,12 +31,13 @@ class Product with _$Product, Identifiable {
     String? photo,
     String? photoSmall,
     @Default([]) List<String> symbols,
-    Sort? sort,
+    @JsonKey(fromJson: _sortFromJson) Sort? sort,
     String? verifiedBy,
-    @Default({}) Map<String, Sort> sortProposals,
+    @JsonKey(fromJson: _sortProposalsFromJson) @Default({}) Map<String, Sort> sortProposals,
     @Default([]) List<String> variants,
     required String user,
-    @JsonKey(fromJson: FirestoreDateTime.fromFirestore, toJson: FirestoreDateTime.toFirestore) required FirestoreDateTime addedDate,
+    @JsonKey(fromJson: FirestoreDateTime.fromFirestore, toJson: FirestoreDateTime.toFirestore)
+        required FirestoreDateTime addedDate,
     @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
         DocumentSnapshot<Map<String, dynamic>>? snapshot,
   }) = _Product;
