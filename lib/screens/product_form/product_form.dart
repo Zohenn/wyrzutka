@@ -10,7 +10,7 @@ import 'package:inzynierka/hooks/debounce.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/providers/product_service_provider.dart';
+import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/screens/product_form/product_form_information.dart';
 import 'package:inzynierka/screens/product_form/product_form_save.dart';
 import 'package:inzynierka/screens/product_form/product_form_sort.dart';

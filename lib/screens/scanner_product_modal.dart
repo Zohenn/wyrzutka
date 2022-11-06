@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/providers/auth_user_service_provider.dart';
+import 'package:inzynierka/services/auth_user_service.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';

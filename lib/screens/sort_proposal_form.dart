@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/providers/product_service_provider.dart';
+import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/snackbars.dart';

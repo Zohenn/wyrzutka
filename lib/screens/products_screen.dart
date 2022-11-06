@@ -8,7 +8,7 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/product_provider.dart';
-import 'package:inzynierka/providers/product_service_provider.dart';
+import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
