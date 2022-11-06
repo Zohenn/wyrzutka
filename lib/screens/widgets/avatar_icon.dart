@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/screens/profile/profile_screen.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';

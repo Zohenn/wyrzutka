@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/models/util.dart';
+import 'package:inzynierka/theme/colors.dart';
 
 part 'app_user.freezed.dart';
 

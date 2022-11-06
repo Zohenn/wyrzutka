@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/screens/image_crop_modal.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';

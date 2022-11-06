@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/app_theme.dart';
+import 'package:inzynierka/theme/app_theme.dart';
 
 Widget wrapForTesting(
   Widget child, {

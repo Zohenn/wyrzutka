@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image/image.dart' as image_x;
-import 'package:inzynierka/colors.dart';
+import 'package:inzynierka/theme/colors.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ImageCropModal extends HookWidget {
