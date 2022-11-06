@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/password_recovery_screen.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/screens/sign_up_screen.dart';
+import 'package:inzynierka/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
