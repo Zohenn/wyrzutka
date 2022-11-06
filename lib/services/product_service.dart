@@ -8,8 +8,8 @@ import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 import 'package:inzynierka/services/image_upload_service.dart';
-import 'package:inzynierka/providers/product_provider.dart';
-import 'package:inzynierka/providers/query_filter.dart';
+import 'package:inzynierka/repositories/product_provider.dart';
+import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 

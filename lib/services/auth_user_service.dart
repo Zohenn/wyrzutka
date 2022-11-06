@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/providers/user_provider.dart';
+import 'package:inzynierka/repositories/user_provider.dart';
 
 final authUserServiceProvider = Provider(AuthUserService.new);
 

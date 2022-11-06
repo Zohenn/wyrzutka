@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/product/sort_element_template.dart';
-import 'package:inzynierka/providers/base_repository.dart';
+import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 

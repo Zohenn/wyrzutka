@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/hooks/init_future.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/models/product/sort_element_template.dart';
-import 'package:inzynierka/providers/sort_element_template_provider.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/future_handler.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
-import 'package:inzynierka/widgets/gutter_row.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 class ProductFormSort extends HookWidget {

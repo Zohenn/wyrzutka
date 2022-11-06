@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
-import 'package:inzynierka/providers/query_filter.dart';
+import 'package:inzynierka/repositories/query_filter.dart';
 
 abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V> {
   Ref get ref;

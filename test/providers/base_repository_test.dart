@@ -3,7 +3,7 @@ import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/identifiable.dart';
-import 'package:inzynierka/providers/base_repository.dart';
+import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 
