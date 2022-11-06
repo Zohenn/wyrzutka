@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
@@ -10,7 +11,7 @@ final _testCacheProvider = createCacheProvider<_Test>();
 
 final _testRepositoryProvider = Provider(_TestRepository.new);
 
-class _Test {
+class _Test with Identifiable {
   _Test(this.id, this.a, this.b);
 
   factory _Test.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
@@ -18,6 +19,7 @@ class _Test {
     return _Test(snapshot.id, data['a'], data['b']);
   }
 
+  @override
   String id;
   int a;
   String b;

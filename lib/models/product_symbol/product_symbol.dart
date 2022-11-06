@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/models/util.dart';
 
 part 'product_symbol.freezed.dart';
@@ -7,7 +8,7 @@ part 'product_symbol.g.dart';
 
 // Symbol already exists within Dart.
 @freezed
-class ProductSymbol with _$ProductSymbol {
+class ProductSymbol with _$ProductSymbol, Identifiable {
   const factory ProductSymbol({
     @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
     required String name,

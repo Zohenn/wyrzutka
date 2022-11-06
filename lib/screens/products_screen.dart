@@ -6,6 +6,7 @@ import 'package:inzynierka/hooks/debounce.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/product_filters.dart';
+import 'package:inzynierka/providers/base_repository.dart';
 import 'package:inzynierka/providers/product_provider.dart';
 import 'package:inzynierka/providers/product_service_provider.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
@@ -128,7 +129,7 @@ class ProductsScreen extends HookConsumerWidget {
                           .then((value) {
                         if (isMounted()) {
                           productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-                          fetchedAll.value = value.length < ProductRepository.batchSize;
+                          fetchedAll.value = value.length < BaseRepository.batchSize;
                         }
                       }),
                     );

@@ -34,7 +34,4 @@ class SortElementTemplateRepository extends BaseRepository<SortElementTemplate> 
             fromFirestore: SortElementTemplate.fromFirestore,
             toFirestore: SortElementTemplate.toFirestore,
           );
-
-  @override
-  String? getId(SortElementTemplate item) => item.id;
 }

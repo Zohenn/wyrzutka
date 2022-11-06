@@ -29,8 +29,6 @@ class UserRepository extends BaseRepository<AppUser> {
             toFirestore: AppUser.toFirestore,
           );
 
-  String? getId(AppUser item) => item.id.isNotEmpty ? item.id : null;
-
   Future<AppUser> createAndGet(AppUser user) async {
     final docId = await create(user);
     return user.copyWith(id: docId);

@@ -36,7 +36,4 @@ class ProductSymbolRepository extends BaseRepository<ProductSymbol> {
             fromFirestore: ProductSymbol.fromFirestore,
             toFirestore: ProductSymbol.toFirestore,
           );
-
-  @override
-  String? getId(ProductSymbol item) => item.id;
 }

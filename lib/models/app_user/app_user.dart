@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inzynierka/colors.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/models/util.dart';
 
 part 'app_user.freezed.dart';
@@ -38,7 +39,7 @@ enum Role {
 }
 
 @freezed
-class AppUser with _$AppUser {
+class AppUser with _$AppUser, Identifiable {
   const AppUser._();
 
   const factory AppUser({

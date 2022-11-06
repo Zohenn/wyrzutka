@@ -54,11 +54,6 @@ class ProductRepository extends BaseRepository<Product> {
             toFirestore: Product.toFirestore,
           );
 
-  static const int batchSize = 10;
-
-  @override
-  String? getId(Product item) => item.id;
-
   // todo: mark as verified if voteBalance >= 50
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final vote = Vote(user: user.id, value: value);

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/util.dart';
 
@@ -8,7 +9,7 @@ part 'sort_element_template.freezed.dart';
 part 'sort_element_template.g.dart';
 
 @freezed
-class SortElementTemplate with _$SortElementTemplate {
+class SortElementTemplate with _$SortElementTemplate, Identifiable {
   const factory SortElementTemplate({
     @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
     required ElementContainer container,

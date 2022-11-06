@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/query_filter.dart';
 
-abstract class BaseRepository<V> with CacheNotifierMixin<V> {
+abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V> {
   Ref get ref;
 
   @protected
   CollectionReference<V> get collection;
 
+  static const int batchSize = 10;
+
   bool _fetchedAll = false;
 
-  String? getId(V item);
-
   Future<String> create(V item) async {
-    final doc = collection.doc(getId(item));
+    final doc = collection.doc(item.id.isNotEmpty ? item.id : null);
     await doc.set(item);
     return doc.id;
   }
@@ -69,7 +70,7 @@ abstract class BaseRepository<V> with CacheNotifierMixin<V> {
   Future<List<V>> fetchNext({
     List<QueryFilter> filters = const [],
     DocumentSnapshot? startAfterDocument,
-    int batchSize = 10,
+    int batchSize = BaseRepository.batchSize,
   }) async {
     Query<V> query = collection.limit(batchSize);
     for (var filter in filters) {

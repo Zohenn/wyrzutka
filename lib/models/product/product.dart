@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/util.dart';
 
@@ -9,7 +10,7 @@ part 'product.freezed.dart';
 part 'product.g.dart';
 
 @freezed
-class Product with _$Product {
+class Product with _$Product, Identifiable {
   const Product._();
 
   const factory Product({
