@@ -167,4 +167,11 @@ class ProductService {
     final updateData = {'sortProposals.$sortProposalId': sort.toJson()};
     await productRepository.update(product.id, updateData, newProduct);
   }
+
+  Future<void> deleteSortProposal(Product product, String sortProposalId) async {
+    final productRepository = ref.read(productRepositoryProvider);
+    final newProduct = product.copyWith(sortProposals: {...product.sortProposals}..remove(sortProposalId));
+    final updateData = {'sortProposals.$sortProposalId': FieldValue.delete()};
+    await productRepository.update(product.id, updateData, newProduct);
+  }
 }

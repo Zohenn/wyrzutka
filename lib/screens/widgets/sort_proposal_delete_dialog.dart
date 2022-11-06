@@ -3,8 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/repositories/product_provider.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
@@ -21,7 +21,7 @@ class SortProposalDeleteDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productRepository = ref.watch(productRepositoryProvider);
+    final productService = ref.watch(productServiceProvider);
     final isDeleting = useState(false);
 
     return Dialog(
@@ -57,6 +57,7 @@ class SortProposalDeleteDialog extends HookConsumerWidget {
                   onPressed: () async {
                     isDeleting.value = true;
                     await asyncCall(context, () async {
+                      await productService.deleteSortProposal(product, sortProposal.id);
                       Navigator.of(context).pop(true);
                     });
                     isDeleting.value = false;
