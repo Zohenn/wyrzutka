@@ -10,6 +10,7 @@ import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products_page.dart';
+import 'package:inzynierka/screens/profile/profile_screen.dart';
 import 'package:inzynierka/screens/profile/profile_sort_proposals_page.dart';
 import 'package:inzynierka/screens/profile/profile_user.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
@@ -23,12 +24,12 @@ class ProfilePage extends HookConsumerWidget {
     Key? key,
     required this.user,
     required this.isMainUser,
-    required this.pageStep,
+    required this.onPageChanged,
   }) : super(key: key);
 
   final AppUser user;
   final bool isMainUser;
-  final ValueNotifier pageStep;
+  final void Function(ProfileScreenPages) onPageChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,8 +39,8 @@ class ProfilePage extends HookConsumerWidget {
         child: GutterColumn(
           children: [
             ProfileUser(user: user, isMainUser: isMainUser),
-            _SavedProductsContainer(savedProducts: user.savedProducts, pageStep: pageStep),
-            _SortProposalsContainer(sortProposals: user.verifiedSortProposals, pageStep: pageStep),
+            _SavedProductsContainer(savedProducts: user.savedProducts, onPageChanged: onPageChanged),
+            _SortProposalsContainer(sortProposals: user.verifiedSortProposals, onPageChanged: onPageChanged),
           ],
         ),
       ),
@@ -51,11 +52,11 @@ class _SavedProductsContainer extends HookConsumerWidget {
   const _SavedProductsContainer({
     Key? key,
     required this.savedProducts,
-    required this.pageStep,
+    required this.onPageChanged,
   }) : super(key: key);
 
   final List<String> savedProducts;
-  final ValueNotifier pageStep;
+  final void Function(ProfileScreenPages) onPageChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -118,7 +119,7 @@ class _SavedProductsContainer extends HookConsumerWidget {
           condition: savedProducts.length > numberOfProducts,
           ifTrue: () =>
               TextButton(
-                onPressed: () => pageStep.value = 1,
+                onPressed: () => onPageChanged(ProfileScreenPages.savedProducts),
                 child: const Text(
                   'Pokaż wszystko',
                   style: TextStyle(color: AppColors.primaryDarker),
@@ -134,11 +135,11 @@ class _SortProposalsContainer extends HookConsumerWidget {
   const _SortProposalsContainer({
     Key? key,
     required this.sortProposals,
-    required this.pageStep,
+    required this.onPageChanged,
   }) : super(key: key);
 
   final List<String> sortProposals;
-  final ValueNotifier pageStep;
+  final void Function(ProfileScreenPages) onPageChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -201,7 +202,7 @@ class _SortProposalsContainer extends HookConsumerWidget {
           condition: sortProposals.length > numberOfProducts,
           ifTrue: () =>
               TextButton(
-                onPressed: () => pageStep.value = 2,
+                onPressed: () => onPageChanged(ProfileScreenPages.sortProposals),
                 child: const Text(
                   'Pokaż wszystko',
                   style: TextStyle(color: AppColors.primaryDarker),

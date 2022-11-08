@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,6 +10,12 @@ import 'package:inzynierka/screens/profile/profile_page.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products_page.dart';
 import 'package:inzynierka/screens/profile/profile_sort_proposals_page.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
+
+enum ProfileScreenPages {
+  profile,
+  savedProducts,
+  sortProposals,
+}
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({
@@ -53,15 +60,21 @@ class ProfileScreenContent extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final step = useState(0);
+    final visiblePage = useState(ProfileScreenPages.profile);
+    final previousPage = usePrevious(visiblePage.value);
 
     Future<bool> returnToProfile() async {
-      step.value = 0;
-      return false;
+      if (visiblePage.value != ProfileScreenPages.profile) {
+        visiblePage.value = ProfileScreenPages.profile;
+        return false;
+      }
+      return true;
     }
 
     return Scaffold(
-      body: PageTransitionSwitcher(
+      body: WillPopScope(
+        onWillPop: returnToProfile,
+        child: PageTransitionSwitcher(
           transitionBuilder: (child, primaryAnimation, secondaryAnimation) => SharedAxisTransition(
             animation: primaryAnimation,
             secondaryAnimation: secondaryAnimation,
@@ -73,18 +86,15 @@ class ProfileScreenContent extends HookConsumerWidget {
             alignment: Alignment.topCenter,
             children: entries,
           ),
-          child: [
-            ProfilePage(user: user, isMainUser: isMainUser, pageStep: step),
-            WillPopScope(
-              onWillPop: returnToProfile,
-              child: ProfileSavedProductsPage(user: user),
-            ),
-            WillPopScope(
-              onWillPop: returnToProfile,
-              child: ProfileSortProposalsPage(user: user),
-            ),
-          ][step.value],
+          reverse: previousPage != null && previousPage != ProfileScreenPages.profile,
+          child: {
+            ProfileScreenPages.profile:
+                ProfilePage(user: user, isMainUser: isMainUser, onPageChanged: (page) => visiblePage.value = page),
+            ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: user),
+            ProfileScreenPages.sortProposals: ProfileSortProposalsPage(user: user),
+          }[visiblePage.value],
         ),
+      ),
     );
   }
 }

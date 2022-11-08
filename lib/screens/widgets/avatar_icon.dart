@@ -9,6 +9,7 @@ import 'package:inzynierka/screens/profile/profile_screen.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AvatarIcon extends StatelessWidget {
   const AvatarIcon({

@@ -62,7 +62,6 @@ class ScannerProductModal extends HookConsumerWidget {
                     condition: product == null,
                     ifTrue: () => _UnknownProductInfo(
                       onFillTap: () {
-                        Navigator.of(context).pop();
                         showDefaultBottomSheet(
                           context: context,
                           builder: (context) => ProductForm(id: id),
@@ -119,7 +118,6 @@ class ScannerProductModal extends HookConsumerWidget {
                             side: BorderSide(color: Theme.of(context).primaryColor),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pop();
                             showDefaultBottomSheet(
                               context: context,
                               builder: (context) => ProductModal(id: product!.id),
