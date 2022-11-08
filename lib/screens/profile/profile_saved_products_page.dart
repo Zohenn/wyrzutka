@@ -24,25 +24,17 @@ class ProfileSavedProductsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productIds = useState<List<String>>([]);
-    final userSavedProducts = useState([...user.savedProducts]);
-    final filterProducts = productIds.value.where((element) => user.savedProducts.contains(element)).toList();
-    final products = ref.watch(productsProvider(filterProducts));
-
-    final future = useInitFuture(
-      () {
-        final newProducts = [...userSavedProducts.value.take(10)];
-        userSavedProducts.value.removeWhere((id) => newProducts.contains(id));
-        return ref.read(productRepositoryProvider).fetchIds(newProducts.toList()).then((value) {
-          productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-          return value;
-        });
-      },
+    final visibleProductsCount = useState(10);
+    final visibleProductIds = useMemoized(
+      () => user.savedProducts.take(visibleProductsCount.value).toList(),
+      [user.savedProducts, visibleProductsCount.value],
     );
-    final isFetchingMore = useState(false);
-    final fetchedAll = useState(false);
+    final products = ref.watch(productsProvider(visibleProductIds));
 
-    useState(() {});
+    final future = useInitFuture(() => ref.read(productRepositoryProvider).fetchIds(visibleProductIds));
+
+    final isFetchingMore = useState(false);
+    final fetchedAll = products.length == user.savedProducts.length;
 
     return FutureHandler(
       future: future,
@@ -54,23 +46,18 @@ class ProfileSavedProductsPage extends HookConsumerWidget {
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification.metrics.extentAfter < 50.0 &&
-                    productIds.value.length >= 10 &&
-                    !fetchedAll.value &&
+                    products.length >= 10 &&
+                    !fetchedAll &&
                     !isFetchingMore.value) {
                   (() async {
                     isFetchingMore.value = true;
                     await asyncCall(
                       context,
-                      () {
-                        final newProducts = [...userSavedProducts.value.take(2)];
-                        userSavedProducts.value.removeWhere((id) => newProducts.contains(id));
-                        if (newProducts.isEmpty) {
-                          fetchedAll.value = true;
-                        }
-                        return ref.read(productRepositoryProvider).fetchIds(newProducts.toList()).then((value) {
-                          productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-                          return value;
-                        });
+                      () async {
+                        final productRepository = ref.read(productRepositoryProvider);
+                        final fetchedProducts = await productRepository
+                            .fetchIds(user.savedProducts.skip(visibleProductsCount.value).take(10).toList());
+                        visibleProductsCount.value += fetchedProducts.length;
                       },
                     );
                     isFetchingMore.value = false;
@@ -86,6 +73,7 @@ class ProfileSavedProductsPage extends HookConsumerWidget {
                   itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
                     condition: index < products.length,
                     ifTrue: () => ProductItem(product: products[index]),
+                    ifFalse: () => const Center(child: CircularProgressIndicator()),
                   ),
                 ),
               ),

@@ -13,11 +13,9 @@ class ProfileUser extends HookConsumerWidget {
   const ProfileUser({
     Key? key,
     required this.user,
-    this.isMainUser = false,
   }) : super(key: key);
 
   final AppUser user;
-  final bool isMainUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,7 +52,7 @@ class ProfileUser extends HookConsumerWidget {
                     onPressed: () async {
                       final result = await showDefaultBottomSheet(
                         context: context,
-                        builder: (context) => ProfileActionsSheet(user: user, isMainUser: isMainUser),
+                        builder: (context) => ProfileActionsSheet(user: user),
                       );
                     },
                     icon: const Icon(Icons.settings_outlined),

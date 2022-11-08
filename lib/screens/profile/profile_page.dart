@@ -38,7 +38,7 @@ class ProfilePage extends HookConsumerWidget {
         padding: const EdgeInsets.all(16.0),
         child: GutterColumn(
           children: [
-            ProfileUser(user: user, isMainUser: isMainUser),
+            ProfileUser(user: user),
             _SavedProductsContainer(savedProducts: user.savedProducts, onPageChanged: onPageChanged),
             _SortProposalsContainer(sortProposals: user.verifiedSortProposals, onPageChanged: onPageChanged),
           ],
