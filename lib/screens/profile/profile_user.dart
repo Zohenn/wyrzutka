@@ -22,81 +22,76 @@ class ProfileUser extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
-    return GutterColumn(
+    return Column(
       children: [
-        Column(
-          children: [
-            Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
-              ),
-              color: Theme.of(context).primaryColorLight,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                child: Row(
+        Card(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+          ),
+          color: Theme.of(context).primaryColorLight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            child: Row(
+              children: [
+                AvatarIcon(user: user, radius: 24),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.displayName,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(user.role.desc,
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: user.role.descColor)),
+                    ],
+                  ),
+                ),
+                ConditionalBuilder(
+                  condition: authUser != null,
+                  ifTrue: () => IconButton(
+                    onPressed: () async {
+                      final result = await showDefaultBottomSheet(
+                        context: context,
+                        builder: (context) => ProfileActionsSheet(user: user, isMainUser: isMainUser),
+                      );
+                    },
+                    icon: const Icon(Icons.settings_outlined),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  child: Icon(Icons.calendar_today),
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AvatarIcon(user: user, radius: 24),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user.displayName,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          Text(user.role.desc,
-                              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: user.role.descColor)),
-                        ],
-                      ),
+                    Text(
+                      'Data dołączenia',
+                      style: Theme.of(context).textTheme.labelSmall,
                     ),
-                    ConditionalBuilder(
-                      condition: authUser != null,
-                      ifTrue: () => IconButton(
-                        onPressed: () async {
-                          final result = await showDefaultBottomSheet(
-                            context: context,
-                            builder: (context) => ProfileActionsSheet(user: user, isMainUser: isMainUser),
-                          );
-                        },
-                        icon: const Icon(Icons.settings_outlined),
-                      ),
+                    Text(
+                      '${DateFormat('dd.MM.yyyy').format(user.signUpDate)} r.',
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
-            Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      child: Icon(Icons.calendar_today),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Data dołączenia',
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                        // TODO: get date from database
-                        Text(
-                          '${DateFormat('dd.MM.yyyy').format(DateTime.now())} r.',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );

@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:inzynierka/routing/router.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/screens/profile/profile_screen.dart';
@@ -34,11 +38,10 @@ class AvatarIcon extends StatelessWidget {
             onTap: profileLoading
                 ? () {
                     if (profileLoading) {
-                      Navigator.of(context).pop();
                       showDefaultBottomSheet(
                         context: context,
                         builder: (context) => DefaultBottomSheet(
-                          child: ProfileScreen(user: user),
+                          child: ProfileScreenContent(user: user!),
                         ),
                       );
                     }
