@@ -6,23 +6,25 @@ import 'package:inzynierka/models/identifiable.dart';
 import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
+import 'package:inzynierka/repositories/query_filter.dart';
 
 final _testCacheProvider = createCacheProvider<_Test>();
 
 final _testRepositoryProvider = Provider(_TestRepository.new);
 
 class _Test with Identifiable {
-  _Test(this.id, this.a, this.b);
+  _Test(this.id, this.a, this.b, [this.snapshot]);
 
   factory _Test.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
     final data = snapshot.data()!;
-    return _Test(snapshot.id, data['a'], data['b']);
+    return _Test(snapshot.id, data['a'], data['b'], snapshot);
   }
 
   @override
   String id;
   int a;
   String b;
+  DocumentSnapshot? snapshot;
 
   static Map<String, Object?> toFirestore(_Test item, SetOptions? options) {
     return {
@@ -223,6 +225,96 @@ void main() {
 
     test('Should not fail with empty list', () async {
       await expectLater(repository.fetchIds([]), completes);
+    });
+  });
+
+  group('fetchNext', () {
+    late List<_Test> items;
+
+    setUp(() async {
+      items = [
+        _Test('1', 1, 'aaa'),
+        _Test('2', 2, 'aab'),
+        _Test('3', 3, 'ccd'),
+      ];
+      for (var item in items) {
+        await repository.collection.doc(item.id).set(item);
+      }
+    });
+
+    test('Should return batch size of items when called without filters or offset', () async {
+      final _items = await repository.fetchNext(batchSize: 2);
+
+      expect(_items.map((e) => e.id).toList(), ['1', '2']);
+    });
+
+    test('Should apply filters', () async {
+      final _items = await repository.fetchNext(filters: [
+        QueryFilter('b', FilterOperator.whereIn, ['aaa', 'ccd'])
+      ]);
+
+      expect(_items.map((e) => e.id).toList(), ['1', '3']);
+    });
+
+    test('Should return unfiltered items if filters are empty', () async {
+      final _items = await repository.fetchNext(filters: []);
+
+      expect(_items.map((e) => e.id).toList(), ['1', '2', '3']);
+    });
+
+    test('Should apply offset', () async {
+      final _item = await repository.fetchId('1');
+      final _items = await repository.fetchNext(startAfterDocument: _item!.snapshot);
+
+      expect(_items.map((e) => e.id).toList(), ['2', '3']);
+    });
+
+    test('Should apply both filters and offset', () async {
+      final _item = await repository.fetchId('1');
+      final _items = await repository.fetchNext(
+        filters: [
+          QueryFilter('b', FilterOperator.whereIn, ['aaa', 'ccd'])
+        ],
+        startAfterDocument: _item!.snapshot,
+      );
+
+      expect(_items.map((e) => e.id).toList(), ['3']);
+    });
+
+    test('Should add fetched items to cache', () async {
+      final _items = await repository.fetchNext();
+      final ids = _items.map((e) => e.id).toList();
+
+      expect(repository.cache.keys, containsAll(ids));
+    });
+  });
+
+  group('search', () {
+    late List<_Test> items;
+
+    setUp(() async {
+      items = [
+        _Test('1', 1, 'aaa'),
+        _Test('2', 2, 'aab'),
+        _Test('3', 3, 'ccd'),
+      ];
+      for (var item in items) {
+        await repository.collection.doc(item.id).set(item);
+      }
+    });
+
+    test('Should return found items', () async {
+      final foundItems = await repository.search('b', 'aa');
+      final ids = foundItems.map((e) => e.id).toList();
+
+      expect(ids, ['1', '2']);
+    });
+
+    test('Should add found items to cache', () async {
+      final foundItems = await repository.search('b', 'aa');
+      final ids = foundItems.map((e) => e.id).toList();
+
+      expect(repository.cache.keys, containsAll(ids));
     });
   });
 

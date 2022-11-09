@@ -82,7 +82,7 @@ abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V>
     }
 
     final querySnapshot = await query.get();
-    return mapDocs(querySnapshot, startAfterDocument == null);
+    return mapDocs(querySnapshot);
   }
 
   Future<List<V>> search(String searchKey, String value) async {

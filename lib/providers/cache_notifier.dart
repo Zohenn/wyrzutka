@@ -58,6 +58,8 @@ class CacheNotifier<V> extends StateNotifier<Map<String, V>> {
 
   bool get isEmpty => state.isEmpty;
 
+  Iterable<String> get keys => state.keys;
+
   Iterable<V> get values => state.values;
 }
 
