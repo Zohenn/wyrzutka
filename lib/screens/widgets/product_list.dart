@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
+import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/theme/colors.dart';
@@ -41,6 +43,7 @@ class ProductList extends HookConsumerWidget {
       data: () => Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: GutterColumn(
+          gutterSize: 4,
           children: [
             ProductListTitle(products: products, title: title),
             NotificationListener<ScrollNotification>(

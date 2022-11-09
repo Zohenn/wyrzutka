@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
@@ -31,13 +32,13 @@ class ProfileListContainer extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     const numberOfProducts = 2;
 
-    var savedProductsIds = productsIds.take(numberOfProducts).toList();
-    final products = ref.watch(productsProvider(savedProductsIds));
+    final savedProductsIds = useRef(productsIds.take(numberOfProducts).toList());
+    final products = ref.watch(productsProvider(savedProductsIds.value));
 
     final future = useInitFuture<List<Product>>(
-      () => ref.read(productRepositoryProvider).fetchIds(savedProductsIds).then(
+      () => ref.read(productRepositoryProvider).fetchIds(savedProductsIds.value).then(
         (value) {
-          savedProductsIds = value.map((product) => product.id).toList();
+          savedProductsIds.value = value.map((product) => product.id).toList();
           return value;
         },
       ),
@@ -53,6 +54,7 @@ class ProfileListContainer extends HookConsumerWidget {
           data: () => ConditionalBuilder(
             condition: products.isNotEmpty,
             ifTrue: () => ListView.separated(
+              padding: EdgeInsets.zero,
               primary: false,
               shrinkWrap: true,
               itemCount: products.length,

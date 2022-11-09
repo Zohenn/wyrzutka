@@ -69,8 +69,7 @@ class ProfileScreenContent extends HookConsumerWidget {
       return true;
     }
 
-    return Scaffold(
-      body: WillPopScope(
+    return WillPopScope(
         onWillPop: returnToProfile,
         child: PageTransitionSwitcher(
           transitionBuilder: (child, primaryAnimation, secondaryAnimation) => SharedAxisTransition(
@@ -100,7 +99,6 @@ class ProfileScreenContent extends HookConsumerWidget {
             ),
           }[visiblePage.value],
         ),
-      ),
     );
   }
 }
