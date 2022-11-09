@@ -35,7 +35,7 @@ class ProfileActionsSheet extends HookConsumerWidget {
               onTap: () {},
             ),
           ],
-          if (user.role == Role.mod || user.role == Role.admin) ...[
+          if (authUser?.role == Role.mod || authUser?.role == Role.admin) ...[
             ListTile(
               leading: const Icon(Icons.verified_outlined),
               title: const Text('Zmień rolę'),

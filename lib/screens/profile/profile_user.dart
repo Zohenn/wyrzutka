@@ -7,7 +7,6 @@ import 'package:inzynierka/screens/profile/profile_actions_sheet.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProfileUser extends HookConsumerWidget {
   const ProfileUser({
@@ -20,6 +19,7 @@ class ProfileUser extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
+
     return Column(
       children: [
         Card(
@@ -47,10 +47,11 @@ class ProfileUser extends HookConsumerWidget {
                   ),
                 ),
                 ConditionalBuilder(
-                  condition: authUser != null,
+                  condition: authUser?.role != Role.user || authUser?.id == user.id,
                   ifTrue: () => IconButton(
-                    onPressed: () async {
-                      final result = await showDefaultBottomSheet(
+                    onPressed: () {
+                      showDefaultBottomSheet(
+                        popModals: false,
                         context: context,
                         builder: (context) => ProfileActionsSheet(user: user),
                       );

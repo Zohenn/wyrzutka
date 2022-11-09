@@ -1,5 +1,4 @@
 import 'package:animations/animations.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,8 +6,9 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/profile/profile_features_screen.dart';
 import 'package:inzynierka/screens/profile/profile_page.dart';
-import 'package:inzynierka/screens/profile/profile_saved_products_page.dart';
-import 'package:inzynierka/screens/profile/profile_sort_proposals_page.dart';
+import 'package:inzynierka/screens/profile/profile_list_page.dart';
+import 'package:inzynierka/screens/profile/profile_saved_products.dart';
+import 'package:inzynierka/screens/profile/profile_sort_proposals.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
 enum ProfileScreenPages {
@@ -41,7 +41,7 @@ class ProfileScreen extends HookConsumerWidget {
     return SafeArea(
       child: ConditionalBuilder(
         condition: authUser != null,
-        ifTrue: () => ProfileScreenContent(user: authUser!, isMainUser: true),
+        ifTrue: () => ProfileScreenContent(user: authUser!),
         ifFalse: () => const ProfileFeaturesScreen(),
       ),
     );
@@ -52,11 +52,9 @@ class ProfileScreenContent extends HookConsumerWidget {
   const ProfileScreenContent({
     Key? key,
     required this.user,
-    this.isMainUser = false,
   }) : super(key: key);
 
   final AppUser user;
-  final bool isMainUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,10 +86,18 @@ class ProfileScreenContent extends HookConsumerWidget {
           ),
           reverse: previousPage != null && previousPage != ProfileScreenPages.profile,
           child: {
-            ProfileScreenPages.profile:
-                ProfilePage(user: user, isMainUser: isMainUser, onPageChanged: (page) => visiblePage.value = page),
-            ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: user),
-            ProfileScreenPages.sortProposals: ProfileSortProposalsPage(user: user),
+            ProfileScreenPages.profile: ProfilePage(
+              user: user,
+              onPageChanged: (page) => visiblePage.value = page,
+            ),
+            ProfileScreenPages.savedProducts: ProfileListPage(
+              productsIds: user.savedProducts,
+              title: const SavedProductsTitle(),
+            ),
+            ProfileScreenPages.sortProposals: ProfileListPage(
+              productsIds: user.verifiedSortProposals,
+              title: const SortProposalsTitle(),
+            ),
           }[visiblePage.value],
         ),
       ),

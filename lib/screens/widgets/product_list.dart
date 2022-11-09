@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/theme/colors.dart';
@@ -12,35 +10,31 @@ import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
-class ProfileSortProposalsPage extends HookConsumerWidget {
-  const ProfileSortProposalsPage({
+class ProductList extends HookConsumerWidget {
+  const ProductList({
     Key? key,
-    required this.user,
+    required this.productsIds,
+    this.productsCount = 10,
+    required this.title,
   }) : super(key: key);
 
-  final AppUser user;
+  final List<String> productsIds;
+  final int productsCount;
+  final Widget title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productIds = useState<List<String>>([]);
-    final userSortProposals = useState([...user.verifiedSortProposals]);
-    final filterProducts = productIds.value.where((element) => user.verifiedSortProposals.contains(element)).toList();
-    final products = ref.watch(productsProvider(filterProducts));
-
-    final future = useInitFuture(
-          () {
-        final newProducts = [...userSortProposals.value.take(10)];
-        userSortProposals.value.removeWhere((id) => newProducts.contains(id));
-        return ref.read(productRepositoryProvider).fetchIds(newProducts.toList()).then((value) {
-          productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-          return value;
-        });
-      },
+    final visibleProductsCount = useState(productsCount);
+    final visibleProductIds = useMemoized(
+      () => productsIds.take(visibleProductsCount.value).toList(),
+      [productsIds, visibleProductsCount.value],
     );
-    final isFetchingMore = useState(false);
-    final fetchedAll = useState(false);
+    final products = ref.watch(productsProvider(visibleProductIds));
 
-    useState(() {});
+    final future = useInitFuture(() => ref.read(productRepositoryProvider).fetchIds(visibleProductIds));
+
+    final isFetchingMore = useState(false);
+    final fetchedAll = products.length == productsIds.length;
 
     return FutureHandler(
       future: future,
@@ -48,27 +42,22 @@ class ProfileSortProposalsPage extends HookConsumerWidget {
         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: GutterColumn(
           children: [
-            ProfileSortProposalsListTitle(products: products),
+            ProductListTitle(products: products, title: title),
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification.metrics.extentAfter < 50.0 &&
-                    productIds.value.length >= 10 &&
-                    !fetchedAll.value &&
+                    products.length >= productsCount &&
+                    !fetchedAll &&
                     !isFetchingMore.value) {
                   (() async {
                     isFetchingMore.value = true;
                     await asyncCall(
                       context,
-                          () {
-                        final newProducts = [...userSortProposals.value.take(2)];
-                        userSortProposals.value.removeWhere((id) => newProducts.contains(id));
-                        if (newProducts.isEmpty) {
-                          fetchedAll.value = true;
-                        }
-                        return ref.read(productRepositoryProvider).fetchIds(newProducts.toList()).then((value) {
-                          productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-                          return value;
-                        });
+                      () async {
+                        final productRepository = ref.read(productRepositoryProvider);
+                        final fetchedProducts = await productRepository
+                            .fetchIds(productsIds.skip(visibleProductsCount.value).take(productsCount).toList());
+                        visibleProductsCount.value += fetchedProducts.length;
                       },
                     );
                     isFetchingMore.value = false;
@@ -84,6 +73,7 @@ class ProfileSortProposalsPage extends HookConsumerWidget {
                   itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
                     condition: index < products.length,
                     ifTrue: () => ProductItem(product: products[index]),
+                    ifFalse: () => const Center(child: CircularProgressIndicator()),
                   ),
                 ),
               ),
@@ -95,31 +85,22 @@ class ProfileSortProposalsPage extends HookConsumerWidget {
   }
 }
 
-class ProfileSortProposalsListTitle extends StatelessWidget {
-  const ProfileSortProposalsListTitle({
-    Key? key,
+class ProductListTitle extends HookConsumerWidget {
+  const ProductListTitle({
     required this.products,
+    required this.title,
+    Key? key,
   }) : super(key: key);
 
-  final List<Product> products;
+  final List products;
+  final Widget title;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Propozycje segregacji',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            Text(
-              'Zweryfikowane przez system',
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-          ],
+        Expanded(
+          child: title,
         ),
         Container(
           decoration: BoxDecoration(
