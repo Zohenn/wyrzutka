@@ -8,7 +8,7 @@ import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'auth_provider_test.mocks.dart';
+import '../providers/auth_provider_test.mocks.dart';
 
 @GenerateMocks([UserRepository])
 void main() {
