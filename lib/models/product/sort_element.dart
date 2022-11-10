@@ -86,4 +86,10 @@ class SortElement with _$SortElement {
   }) = _SortElement;
 
   factory SortElement.fromJson(Map<String, dynamic> json) => _$SortElementFromJson(json);
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is SortElement && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => 0;
 }

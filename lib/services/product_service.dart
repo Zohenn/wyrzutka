@@ -15,6 +15,8 @@ import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 
 final productServiceProvider = Provider(ProductService.new);
 
+class EmptySortProposalException implements Exception {}
+
 class ProductService {
   ProductService(this.ref);
 
@@ -153,16 +155,22 @@ class ProductService {
   }
 
   Future<void> addSortProposal(Product product, SortElements elements) async {
+    final flatElements = elements.values.flattened.toList();
+    if (flatElements.isEmpty) {
+      throw EmptySortProposalException();
+    }
+
     final productRepository = ref.read(productRepositoryProvider);
     final user = ref.read(authUserProvider)!.id;
     final sortProposalId = productRepository.collection.doc().id;
     final sort = Sort(
       id: sortProposalId,
       user: user,
-      elements: elements.values.flattened.toList(),
+      elements: flatElements,
       voteBalance: 0,
       votes: {},
     );
+
     final newProduct = product.copyWith(sortProposals: {...product.sortProposals, sortProposalId: sort});
     final updateData = {'sortProposals.$sortProposalId': sort.toJson()};
     await productRepository.update(product.id, updateData, newProduct);
@@ -170,8 +178,10 @@ class ProductService {
 
   Future<void> deleteSortProposal(Product product, String sortProposalId) async {
     final productRepository = ref.read(productRepositoryProvider);
+
     final newProduct = product.copyWith(sortProposals: {...product.sortProposals}..remove(sortProposalId));
     final updateData = {'sortProposals.$sortProposalId': FieldValue.delete()};
+
     await productRepository.update(product.id, updateData, newProduct);
   }
 }
