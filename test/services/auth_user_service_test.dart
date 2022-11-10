@@ -43,6 +43,10 @@ void main() {
     authUserService = container.read(authUserServiceProvider);
   });
 
+  tearDown(() {
+    container.dispose();
+  });
+
   group('updateSavedProduct', () {
     const newProduct = '3';
     const deletedProduct = '1';

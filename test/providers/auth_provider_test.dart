@@ -47,6 +47,10 @@ void main() {
     createContainer();
   });
 
+  tearDown(() {
+    container.dispose();
+  });
+
   test('Auth user should be null by default', () {
     expect(container.read(authUserProvider), isNull);
   });
@@ -69,9 +73,5 @@ void main() {
       verifyNever(userRepository.fetchId(any, any));
       expect(container.read(authUserProvider), isNull);
     });
-  });
-
-  tearDown(() {
-    container.dispose();
   });
 }

@@ -25,6 +25,10 @@ void main() {
     repository = container.read(userRepositoryProvider);
   });
 
+  tearDown(() {
+    container.dispose();
+  });
+
   group('createAndGet', () {
     late AppUser user;
 

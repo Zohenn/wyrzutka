@@ -80,6 +80,10 @@ void main() {
     repository = container.read(_testRepositoryProvider);
   });
 
+  tearDown(() {
+    container.dispose();
+  });
+
   group('create', () {
     test('Should create new with random id if not supplied', () async {
       final item = _Test('', 1, 'b');

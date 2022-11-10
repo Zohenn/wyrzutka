@@ -66,6 +66,10 @@ void main() {
     createContainer();
   });
 
+  tearDown(() {
+    container.dispose();
+  });
+
   group('signUp', () {
     test('Should create user doc', () async {
       when(userRepository.createAndGet(any))
