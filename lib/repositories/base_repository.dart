@@ -67,15 +67,19 @@ abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V>
         .toList();
   }
 
+  Query<V> _applyFilters(Query<V> query, List<QueryFilter> filters) {
+    for (var filter in filters) {
+      query = filter.apply(query);
+    }
+    return query;
+  }
+
   Future<List<V>> fetchNext({
     List<QueryFilter> filters = const [],
     DocumentSnapshot? startAfterDocument,
     int batchSize = BaseRepository.batchSize,
   }) async {
-    Query<V> query = collection.limit(batchSize);
-    for (var filter in filters) {
-      query = filter.apply(query);
-    }
+    Query<V> query = _applyFilters(collection.limit(batchSize), filters);
 
     if (startAfterDocument != null) {
       query = query.startAfterDocument(startAfterDocument);
@@ -89,6 +93,12 @@ abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V>
     value = value.toLowerCase();
     final querySnapshot = await collection.orderBy(searchKey).startAt([value]).endAt(['$value\uf8ff']).limit(5).get();
     return mapDocs(querySnapshot);
+  }
+
+  Future<int> count({List<QueryFilter> filters = const []}) async {
+    Query<V> query = _applyFilters(collection, filters);
+    final querySnapshot = await query.count().get();
+    return querySnapshot.count;
   }
 
   Future<void> delete(String id) async {
