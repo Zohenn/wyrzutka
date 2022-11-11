@@ -10,6 +10,7 @@ import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
+import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 import 'package:inzynierka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
@@ -17,7 +18,7 @@ import 'package:mockito/mockito.dart';
 
 import 'product_service_test.mocks.dart';
 
-@GenerateMocks([ProductRepository])
+@GenerateNiceMocks([MockSpec<ProductRepository>()])
 void main() {
   late AppUser authUser;
   late Product product;
@@ -45,13 +46,46 @@ void main() {
     );
     product = Product(id: 'foo', name: 'Produkt', user: 'id', addedDate: FirestoreDateTime.serverTimestamp());
     mockProductRepository = MockProductRepository();
-    when(mockProductRepository.update(any, any, any)).thenAnswer((realInvocation) => Future.value());
     createContainer();
     productService = container.read(productServiceProvider);
   });
 
   tearDown(() {
     container.dispose();
+  });
+
+  group('findVariant', () {
+    late List<String> keywords;
+
+    setUp(() {
+      keywords = ['a', 'b'];
+    });
+
+    test('Should find product by keywords', () async {
+      await productService.findVariant(keywords);
+
+      final filters = verify(mockProductRepository.fetchNext(filters: captureAnyNamed('filters'), batchSize: 1))
+          .captured
+          .first as List<QueryFilter>;
+      final filter = filters.first;
+      expect(filters, hasLength(1));
+      expect(
+        filter,
+        isA<QueryFilter>()
+            .having((o) => o.field, 'field', 'keywords')
+            .having((o) => o.operator, 'operator', FilterOperator.arrayContainsAny)
+            .having((o) => o.value, 'value', keywords),
+      );
+    });
+  });
+
+  group('search', () {
+    test('Should call search from repository', () async {
+      const value = 'search';
+      await productService.search(value);
+
+      verify(mockProductRepository.search('searchName', value)).called(1);
+    });
   });
 
   group('addSortProposal', () {
@@ -171,7 +205,8 @@ void main() {
     test('Should mark sort proposal for deletion in update data', () async {
       await productService.deleteSortProposal(productWithProposals, sortProposalId);
 
-      final updateData = verify(mockProductRepository.update(any, captureAny, any)).captured.first as Map<String, dynamic>;
+      final updateData =
+          verify(mockProductRepository.update(any, captureAny, any)).captured.first as Map<String, dynamic>;
       final sortProposalKey = 'sortProposals.$sortProposalId';
 
       expect(updateData.keys.toList(), [sortProposalKey]);

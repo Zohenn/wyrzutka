@@ -104,9 +104,11 @@ class ProductService {
 
   Future<Product?> findVariant(List<String> keywords) async {
     final productRepository = ref.read(productRepositoryProvider);
-    final query = productRepository.collection.where('keywords', arrayContainsAny: keywords).limit(1);
-    final snapshot = await query.get();
-    return snapshot.docs.firstOrNull?.data();
+    final result = await productRepository.fetchNext(
+      filters: [QueryFilter('keywords', FilterOperator.arrayContainsAny, keywords)],
+      batchSize: 1,
+    );
+    return result.firstOrNull;
   }
 
   List<QueryFilter> _mapFilters(List<dynamic> filters) {
