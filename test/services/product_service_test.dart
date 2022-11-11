@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
@@ -11,18 +13,21 @@ import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/repositories/query_filter.dart';
+import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
+import 'package:inzynierka/services/image_upload_service.dart';
 import 'package:inzynierka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'product_service_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<ProductRepository>()])
+@GenerateNiceMocks([MockSpec<ProductRepository>(), MockSpec<ImageUploadService>(), MockSpec<File>()])
 void main() {
   late AppUser authUser;
   late Product product;
   late MockProductRepository mockProductRepository;
+  late MockImageUploadService mockImageUploadService;
   late ProviderContainer container;
   late ProductService productService;
 
@@ -31,6 +36,7 @@ void main() {
       overrides: [
         authUserProvider.overrideWith((ref) => authUser),
         productRepositoryProvider.overrideWithValue(mockProductRepository),
+        imageUploadServiceProvider.overrideWithValue(mockImageUploadService),
       ],
     );
   }
@@ -46,12 +52,134 @@ void main() {
     );
     product = Product(id: 'foo', name: 'Produkt', user: 'id', addedDate: FirestoreDateTime.serverTimestamp());
     mockProductRepository = MockProductRepository();
+    mockImageUploadService = MockImageUploadService();
+    when(mockImageUploadService.uploadWithFile(any, any))
+        .thenAnswer((realInvocation) => Future.value(realInvocation.positionalArguments[1]));
     createContainer();
     productService = container.read(productServiceProvider);
   });
 
   tearDown(() {
     container.dispose();
+  });
+
+  group('updateFromModel', () {
+    late ProductFormModel model;
+
+    setUp(() {
+      model =
+          ProductFormModel(id: 'foo', name: 'Produkt2', keywords: ['keyword'], symbols: ['symbol'], product: product);
+    });
+
+    test('Should not upload image if photo is null', () async {
+      await productService.updateFromModel(model);
+
+      verifyNever(mockImageUploadService.uploadWithFile(any, any));
+    });
+
+    test('Should upload image if photo is not null', () async {
+      model = model.copyWith(photo: MockFile());
+      await productService.updateFromModel(model);
+
+      verify(mockImageUploadService.uploadWithFile(model.photo, any, width: 500, height: 500)).called(1);
+      verify(mockImageUploadService.uploadWithFile(model.photo, any, width: 80, height: 80)).called(1);
+    });
+
+    test('Should call update for correct product id', () async {
+      await productService.updateFromModel(model);
+
+      verify(mockProductRepository.update(model.id, any, any)).called(1);
+    });
+
+    test('Should not update photo urls if photo is null', () async {
+      await productService.updateFromModel(model);
+
+      final updateData =
+          verify(mockProductRepository.update(any, captureAny, any)).captured.first as Map<String, dynamic>;
+      expect(updateData.keys.toList(), isNot(containsAll(['photo', 'photoSmall'])));
+    });
+
+    test('Should update photo urls if photo is not null', () async {
+      model = model.copyWith(photo: MockFile());
+      await productService.updateFromModel(model);
+
+      final updateData =
+          verify(mockProductRepository.update(any, captureAny, any)).captured.first as Map<String, dynamic>;
+      expect(updateData.keys.toList(), containsAll(['photo', 'photoSmall']));
+    });
+
+    test('Should update all base fields', () async {
+      await productService.updateFromModel(model);
+
+      final updateData =
+          verify(mockProductRepository.update(any, captureAny, any)).captured.first as Map<String, dynamic>;
+      expect(
+        updateData,
+        isA<Map<String, dynamic>>()
+            .having((o) => o['name'], 'name', model.name)
+            .having((o) => o['keywords'], 'keywords', model.keywords)
+            .having((o) => o['symbols'], 'symbols', model.symbols),
+      );
+    });
+
+    test('Should not update photo urls in product if photo is null', () async {
+      await productService.updateFromModel(model);
+
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first as Product;
+      expect(
+        newProduct,
+        isA<Product>()
+            .having((o) => o.photo, 'photo', product.photo)
+            .having((o) => o.photoSmall, 'photoSmall', product.photoSmall),
+      );
+    });
+
+    test('Should update photo urls in product if photo is not null', () async {
+      model = model.copyWith(photo: MockFile());
+      await productService.updateFromModel(model);
+
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first as Product;
+      expect(
+        newProduct,
+        isA<Product>()
+            .having((o) => o.photo, 'photo', isNot(product.photo))
+            .having((o) => o.photoSmall, 'photoSmall', isNot(product.photoSmall)),
+      );
+    });
+
+    test('Should update all base fields in product', () async {
+      await productService.updateFromModel(model);
+
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first as Product;
+      expect(
+        newProduct,
+        isA<Product>()
+            .having((o) => o.name, 'name', model.name)
+            .having((o) => o.keywords, 'keywords', model.keywords)
+            .having((o) => o.symbols, 'symbols', model.symbols),
+      );
+    });
+
+    test('Should not update sort if was not verified', () async {
+      await productService.updateFromModel(model);
+
+      final updateData =
+          verify(mockProductRepository.update(any, captureAny, any)).captured.first as Map<String, dynamic>;
+      expect(updateData.keys.toList(), isNot(contains('sort')));
+    });
+
+    test('Should not update sort in product if was not verified', () async {
+      await productService.updateFromModel(model);
+
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first as Product;
+      expect(
+        newProduct,
+        isA<Product>()
+            .having((o) => o.sort, 'sort', product.sort),
+      );
+    });
+
+    // todo: test if sort is also updated
   });
 
   group('findVariant', () {
