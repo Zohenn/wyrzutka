@@ -6,15 +6,16 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/screens/profile/profile_features_screen.dart';
 import 'package:inzynierka/screens/profile/profile_page.dart';
-import 'package:inzynierka/screens/profile/profile_list_page.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products.dart';
 import 'package:inzynierka/screens/profile/profile_sort_proposals.dart';
+import 'package:inzynierka/screens/profile/profile_user_products.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
 enum ProfileScreenPages {
   profile,
   savedProducts,
   sortProposals,
+  userProducts,
 }
 
 class ProfileScreen extends HookConsumerWidget {
@@ -89,14 +90,9 @@ class ProfileScreenContent extends HookConsumerWidget {
               user: user,
               onPageChanged: (page) => visiblePage.value = page,
             ),
-            ProfileScreenPages.savedProducts: ProfileListPage(
-              productsIds: user.savedProducts,
-              title: const SavedProductsTitle(),
-            ),
-            ProfileScreenPages.sortProposals: ProfileListPage(
-              productsIds: user.verifiedSortProposals,
-              title: const SortProposalsTitle(),
-            ),
+            ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: user),
+            ProfileScreenPages.sortProposals: ProfileVerifiedSortProposalsPage(user: user),
+            ProfileScreenPages.userProducts: ProfileUserProductsPage(user: user),
           }[visiblePage.value],
         ),
     );

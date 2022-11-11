@@ -11,8 +11,8 @@ import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 
-class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
-  const ProfileVerifiedSortProposalsPage({
+class ProfileUserProductsPage extends HookConsumerWidget {
+  const ProfileUserProductsPage({
     required this.user,
     Key? key,
   }) : super(key: key);
@@ -23,7 +23,7 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productService = ref.read(productServiceProvider);
 
-    final verifiedSortProposalsCount = useState(0);
+    final userProductsCount = useState(0);
 
     final visibleProducts = useState<List<String>>([]);
     final products = ref.watch(productsProvider(visibleProducts.value));
@@ -31,23 +31,23 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
     final fetchedAll = useState(false);
 
     final future = useInitFuture(() => Future.wait([
-          productService.countVerifiedSortProposals(user).then((value) => verifiedSortProposalsCount.value = value),
+          productService.countAddedProducts(user).then((value) => userProductsCount.value = value),
           productService
-              .verifiedSortProposals(user: user)
+              .addedProducts(user: user)
               .then((value) => visibleProducts.value = value.map((product) => product.id).toList()),
-        ]).then((value) => fetchedAll.value = products.length >= verifiedSortProposalsCount.value));
+        ]).then((value) => fetchedAll.value = products.length >= userProductsCount.value));
 
     return FutureHandler(
       future: future,
       data: () => ProductList(
         products: products,
-        title: const SortProposalsTitle(),
-        productsCount: verifiedSortProposalsCount.value,
+        title: const UserProductsTitle(),
+        productsCount: userProductsCount.value,
         onScroll: () => asyncCall(
           context,
           () async {
             final fetchedProducts = await productService
-                .verifiedSortProposals(user: user, startAfterDocument: products.last.snapshot!)
+                .addedProducts(user: user, startAfterDocument: products.last.snapshot!)
                 .then((value) {
               visibleProducts.value = [...visibleProducts.value, ...value.map((product) => product.id)];
               return value;
@@ -63,31 +63,19 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
   }
 }
 
-class SortProposalsTitle extends StatelessWidget {
-  const SortProposalsTitle({
+class UserProductsTitle extends StatelessWidget {
+  const UserProductsTitle({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Propozycje segregacji',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        Text(
-          'Zweryfikowane przez system',
-          style: Theme.of(context).textTheme.labelSmall,
-        ),
-      ],
-    );
+    return Text('Dodane produkty', style: Theme.of(context).textTheme.titleMedium);
   }
 }
 
-class SortProposalsError extends StatelessWidget {
-  const SortProposalsError({
+class UserProductsError extends StatelessWidget {
+  const UserProductsError({
     Key? key,
   }) : super(key: key);
 
@@ -106,7 +94,7 @@ class SortProposalsError extends StatelessWidget {
               ),
               const SizedBox(width: 16.0),
               Text(
-                'Brak zweryfikowanych propozycji',
+                'Brak dodanych produktów',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],

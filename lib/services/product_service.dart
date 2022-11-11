@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
+import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/services/image_upload_service.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/repositories/query_filter.dart';
@@ -150,6 +152,42 @@ class ProductService {
   Future<List<Product>> search(String value) {
     final productRepository = ref.read(productRepositoryProvider);
     return productRepository.search('searchName', value);
+  }
+
+  Future<List<Product>> verifiedSortProposals({
+    required AppUser user,
+    DocumentSnapshot? startAfterDocument,
+    int? batchSize,
+  }) {
+    final productRepository = ref.read(productRepositoryProvider);
+    return productRepository.fetchNext(
+        filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)],
+        batchSize: batchSize ?? BaseRepository.batchSize,
+        startAfterDocument: startAfterDocument);
+  }
+
+  Future<int> countVerifiedSortProposals(
+    AppUser user,
+  ) {
+    final productRepository = ref.read(productRepositoryProvider);
+    return productRepository.count(filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)]);
+  }
+
+  Future<List<Product>> addedProducts({
+    required AppUser user,
+    DocumentSnapshot? startAfterDocument,
+    int? batchSize,
+  }) {
+    final productRepository = ref.read(productRepositoryProvider);
+    return productRepository.fetchNext(
+        filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)],
+        batchSize: batchSize ?? BaseRepository.batchSize,
+        startAfterDocument: startAfterDocument);
+  }
+
+  Future<int> countAddedProducts(AppUser user, [DocumentSnapshot? startAfterDocument, int? batchSize]) {
+    final productRepository = ref.read(productRepositoryProvider);
+    return productRepository.count(filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)]);
   }
 
   Future<void> addSortProposal(Product product, SortElements elements) async {

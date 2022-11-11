@@ -15,74 +15,57 @@ import 'package:inzynierka/widgets/gutter_column.dart';
 class ProductList extends HookConsumerWidget {
   const ProductList({
     Key? key,
-    required this.productsIds,
-    this.productsCount = 10,
+    required this.products,
+    required this.productsCount,
     required this.title,
+    required this.onScroll,
+    required this.fetchedAll,
   }) : super(key: key);
 
-  final List<String> productsIds;
+  final List<Product> products;
   final int productsCount;
   final Widget title;
+  final Future Function() onScroll;
+  final bool fetchedAll;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final visibleProductsCount = useState(productsCount);
-    final visibleProductIds = useMemoized(
-      () => productsIds.take(visibleProductsCount.value).toList(),
-      [productsIds, visibleProductsCount.value],
-    );
-    final products = ref.watch(productsProvider(visibleProductIds));
-
-    final future = useInitFuture(() => ref.read(productRepositoryProvider).fetchIds(visibleProductIds));
-
     final isFetchingMore = useState(false);
-    final fetchedAll = products.length == productsIds.length;
 
-    return FutureHandler(
-      future: future,
-      data: () => Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-        child: GutterColumn(
-          gutterSize: 4,
-          children: [
-            ProductListTitle(products: products, title: title),
-            NotificationListener<ScrollNotification>(
-              onNotification: (notification) {
-                if (notification.metrics.extentAfter < 50.0 &&
-                    products.length >= productsCount &&
-                    !fetchedAll &&
-                    !isFetchingMore.value) {
-                  (() async {
-                    isFetchingMore.value = true;
-                    await asyncCall(
-                      context,
-                      () async {
-                        final productRepository = ref.read(productRepositoryProvider);
-                        final fetchedProducts = await productRepository
-                            .fetchIds(productsIds.skip(visibleProductsCount.value).take(productsCount).toList());
-                        visibleProductsCount.value += fetchedProducts.length;
-                      },
-                    );
-                    isFetchingMore.value = false;
-                  })();
-                }
-                return false;
-              },
-              child: Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                  itemCount: isFetchingMore.value ? products.length + 1 : products.length,
-                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-                  itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                    condition: index < products.length,
-                    ifTrue: () => ProductItem(product: products[index]),
-                    ifFalse: () => const Center(child: CircularProgressIndicator()),
-                  ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+      child: GutterColumn(
+        gutterSize: 4,
+        children: [
+          ProductListTitle(productCount: productsCount, title: title),
+          NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if (notification.metrics.extentAfter < 50.0 &&
+                  !fetchedAll &&
+                  products.length < productsCount &&
+                  !isFetchingMore.value) {
+                (() async {
+                  isFetchingMore.value = true;
+                  await onScroll();
+                  isFetchingMore.value = false;
+                })();
+              }
+              return false;
+            },
+            child: Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                itemCount: isFetchingMore.value ? products.length + 1 : products.length,
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
+                itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
+                  condition: index < products.length,
+                  ifTrue: () => ProductItem(product: products[index]),
+                  ifFalse: () => const Center(child: CircularProgressIndicator()),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -90,12 +73,12 @@ class ProductList extends HookConsumerWidget {
 
 class ProductListTitle extends HookConsumerWidget {
   const ProductListTitle({
-    required this.products,
+    required this.productCount,
     required this.title,
     Key? key,
   }) : super(key: key);
 
-  final List products;
+  final int productCount;
   final Widget title;
 
   @override
@@ -112,7 +95,7 @@ class ProductListTitle extends HookConsumerWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
           child: Text(
-            products.length.toString(),
+            productCount.toString(),
             style: const TextStyle(color: AppColors.primaryDarker),
           ),
         ),
