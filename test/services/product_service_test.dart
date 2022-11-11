@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,11 +45,6 @@ void main() {
     );
     product = Product(id: 'foo', name: 'Produkt', user: 'id', addedDate: FirestoreDateTime.serverTimestamp());
     mockProductRepository = MockProductRepository();
-    when(mockProductRepository.collection).thenReturn(
-      FakeFirebaseFirestore()
-          .collection('test')
-          .withConverter(fromFirestore: Product.fromFirestore, toFirestore: Product.toFirestore),
-    );
     when(mockProductRepository.update(any, any, any)).thenAnswer((realInvocation) => Future.value());
     createContainer();
     productService = container.read(productServiceProvider);
@@ -63,6 +59,11 @@ void main() {
     late List<SortElement> flatElements;
 
     setUp(() {
+      when(mockProductRepository.collection).thenReturn(
+        FakeFirebaseFirestore()
+            .collection('test')
+            .withConverter(fromFirestore: Product.fromFirestore, toFirestore: Product.toFirestore),
+      );
       elements = {
         ElementContainer.plastic: [
           SortElement(container: ElementContainer.plastic, name: 'Butelka'),
@@ -76,7 +77,7 @@ void main() {
     test('Should call update for correct product id', () async {
       await productService.addSortProposal(product, elements);
 
-      verify(mockProductRepository.update(product.id, any, any));
+      verify(mockProductRepository.update(product.id, any, any)).called(1);
     });
 
     test('Should have new sort proposal in update data', () async {
@@ -134,6 +135,55 @@ void main() {
         ElementContainer.paper: [],
       };
       await expectLater(productService.addSortProposal(product, _elements), throwsA(isA<EmptySortProposalException>()));
+    });
+  });
+
+  group('deleteSortProposal', () {
+    late Product productWithProposals;
+    late String sortProposalId;
+
+    setUp(() {
+      sortProposalId = '1';
+      productWithProposals = product.copyWith(sortProposals: {
+        '1': Sort(
+          id: '1',
+          user: authUser.id,
+          elements: [SortElement(container: ElementContainer.plastic, name: 'Butelka')],
+          voteBalance: 1,
+          votes: {},
+        ),
+        '2': Sort(
+          id: '2',
+          user: authUser.id,
+          elements: [SortElement(container: ElementContainer.paper, name: 'Opakowanie')],
+          voteBalance: 0,
+          votes: {},
+        ),
+      });
+    });
+
+    test('Should call update for correct product id', () async {
+      await productService.deleteSortProposal(productWithProposals, sortProposalId);
+
+      verify(mockProductRepository.update(productWithProposals.id, any, any)).called(1);
+    });
+
+    test('Should mark sort proposal for deletion in update data', () async {
+      await productService.deleteSortProposal(productWithProposals, sortProposalId);
+
+      final updateData = verify(mockProductRepository.update(any, captureAny, any)).captured.first as Map<String, dynamic>;
+      final sortProposalKey = 'sortProposals.$sortProposalId';
+
+      expect(updateData.keys.toList(), [sortProposalKey]);
+      expect(updateData[sortProposalKey], FieldValue.delete());
+    });
+
+    test('Should remove sort proposal from product', () async {
+      await productService.deleteSortProposal(productWithProposals, sortProposalId);
+
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first as Product;
+
+      expect(newProduct.sortProposals, {...productWithProposals.sortProposals}..remove(sortProposalId));
     });
   });
 }
