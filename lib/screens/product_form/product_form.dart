@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:animations/animations.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -46,6 +47,7 @@ class ProductFormModel with _$ProductFormModel {
         name: product.name,
         keywords: [...product.keywords],
         symbols: [...product.symbols],
+        elements: product.sort?.elements.groupListsBy((element) => element.container) ?? {},
         product: product,
       );
 }

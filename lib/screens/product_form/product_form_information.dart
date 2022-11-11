@@ -8,6 +8,7 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/screens/image_crop_modal.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/utils/image_error_builder.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/utils/text_overflow_ellipsis_fix.dart';
 import 'package:inzynierka/utils/validators.dart';
@@ -74,7 +75,7 @@ class ProductFormInformation extends HookWidget {
             Column(
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 250),
+                  constraints: const BoxConstraints(maxHeight: 250),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Container(
@@ -102,7 +103,10 @@ class ProductFormInformation extends HookWidget {
                             ifFalse: () => ConditionalBuilder(
                               condition: model.photo != null,
                               ifTrue: () => Image.file(File(model.photo!.path)),
-                              ifFalse: () => Image.network(model.product!.photo!),
+                              ifFalse: () => Image.network(
+                                model.product!.photo ?? 'localhost',
+                                errorBuilder: imageErrorBuilder,
+                              ),
                             ),
                           ),
                           Positioned.fill(

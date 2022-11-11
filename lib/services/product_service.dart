@@ -90,6 +90,7 @@ class ProductService {
         'photo': photoUrls[0],
         'photoSmall': photoUrls[1],
       },
+      if(model.product?.sort != null) 'sort': model.elements.values.flattened.toList(),
       'symbols': [...model.symbols],
     };
     final newProduct = model.product!.copyWith(
@@ -97,6 +98,7 @@ class ProductService {
       keywords: [...model.keywords],
       photo: photoUrls?[0] ?? model.product!.photo,
       photoSmall: photoUrls?[1] ?? model.product!.photoSmall,
+      sort: model.product!.sort?.copyWith(elements: model.elements.values.flattened.toList()),
       symbols: [...model.symbols],
     );
     await productRepository.update(model.id, updateData, newProduct);
