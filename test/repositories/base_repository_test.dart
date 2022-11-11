@@ -322,6 +322,33 @@ void main() {
     });
   });
 
+  group('count', () {
+    late List<_Test> items;
+
+    setUp(() async {
+      items = [
+        _Test('1', 1, 'aaa'),
+        _Test('2', 2, 'aab'),
+        _Test('3', 3, 'ccd'),
+      ];
+      for (var item in items) {
+        await repository.collection.doc(item.id).set(item);
+      }
+    });
+
+    test('Should count all items when no filters were passed', () async {
+      final count = await repository.count();
+
+      expect(count, equals(items.length));
+    });
+
+    test('Should count filtered items', () async {
+      final count = await repository.count(filters: [QueryFilter('b', FilterOperator.whereIn, ['aaa', 'aab'])]);
+
+      expect(count, equals(2));
+    });
+  });
+
   group('delete', () {
     late _Test item;
 
