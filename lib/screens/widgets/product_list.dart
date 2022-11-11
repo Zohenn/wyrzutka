@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/hooks/init_future.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
 class ProductList extends HookConsumerWidget {
@@ -44,11 +39,12 @@ class ProductList extends HookConsumerWidget {
                   !fetchedAll &&
                   products.length < productsCount &&
                   !isFetchingMore.value) {
-                (() async {
-                  isFetchingMore.value = true;
-                  await onScroll();
-                  isFetchingMore.value = false;
-                })();
+                isFetchingMore.value = true;
+                onScroll().then(
+                  (value) => WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    isFetchingMore.value = false;
+                  }),
+                );
               }
               return false;
             },

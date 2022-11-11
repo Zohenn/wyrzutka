@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
-import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/screens/profile/profile_list_container.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products.dart';
 import 'package:inzynierka/screens/profile/profile_screen.dart';

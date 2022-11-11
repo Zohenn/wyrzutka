@@ -5,7 +5,6 @@ import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
-import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/screens/widgets/product_list.dart';
 import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/utils/async_call.dart';
