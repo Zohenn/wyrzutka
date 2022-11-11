@@ -53,11 +53,11 @@ class ProductService {
       variants: variant != null ? [...(variant.variants), variant.id] : [],
     );
     final batch = ref.read(firebaseFirestoreProvider).batch();
-    batch.set(productRepository.collection.doc(product.id), product);
+    batch.set(productRepository.getDoc(product.id), product);
     if (variant != null) {
       for (var id in product.variants) {
         batch.update(
-          productRepository.collection.doc(id),
+          productRepository.getDoc(id),
           {
             'variants': FieldValue.arrayUnion([product.id])
           },

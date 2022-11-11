@@ -15,14 +15,16 @@ abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V>
 
   bool _fetchedAll = false;
 
+  DocumentReference<V> getDoc(String? id) => collection.doc(id);
+
   Future<String> create(V item) async {
-    final doc = collection.doc(item.id.isNotEmpty ? item.id : null);
+    final doc = getDoc(item.id.isNotEmpty ? item.id : null);
     await doc.set(item);
     return doc.id;
   }
 
   Future<void> update(String id, Map<String, dynamic> data, [V? item]) async {
-    final doc = collection.doc(id);
+    final doc = getDoc(id);
     await doc.update(data);
     if (item != null) {
       addToCache(id, item);
@@ -44,7 +46,7 @@ abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V>
     if (!skipCache && cache[id] != null) {
       return cache[id];
     }
-    final snapshot = await collection.doc(id).get();
+    final snapshot = await getDoc(id).get();
     final data = snapshot.data();
     addToCache(snapshot.id, data);
     return data;
@@ -92,7 +94,7 @@ abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V>
   }
 
   Future<void> delete(String id) async {
-    await collection.doc(id).delete();
+    await getDoc(id).delete();
     removeFromCache(id);
   }
 }
