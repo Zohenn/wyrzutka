@@ -8,14 +8,15 @@ import 'package:inzynierka/screens/profile/profile_features_screen.dart';
 import 'package:inzynierka/screens/profile/profile_page.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products.dart';
 import 'package:inzynierka/screens/profile/profile_sort_proposals.dart';
-import 'package:inzynierka/screens/profile/profile_user_products.dart';
+import 'package:inzynierka/screens/profile/profile_added_products.dart';
+import 'package:inzynierka/utils/shared_axis_transition_builder.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
 enum ProfileScreenPages {
   profile,
   savedProducts,
   sortProposals,
-  userProducts,
+  addedProducts,
 }
 
 class ProfileScreen extends HookConsumerWidget {
@@ -62,24 +63,16 @@ class ProfileScreenContent extends HookConsumerWidget {
     final visiblePage = useState(ProfileScreenPages.profile);
     final previousPage = usePrevious(visiblePage.value);
 
-    Future<bool> returnToProfile() async {
-      if (visiblePage.value != ProfileScreenPages.profile) {
-        visiblePage.value = ProfileScreenPages.profile;
-        return false;
-      }
-      return true;
-    }
-
     return WillPopScope(
-        onWillPop: returnToProfile,
+        onWillPop: () async {
+          if (visiblePage.value != ProfileScreenPages.profile) {
+            visiblePage.value = ProfileScreenPages.profile;
+            return false;
+          }
+          return true;
+        },
         child: PageTransitionSwitcher(
-          transitionBuilder: (child, primaryAnimation, secondaryAnimation) => SharedAxisTransition(
-            animation: primaryAnimation,
-            secondaryAnimation: secondaryAnimation,
-            transitionType: SharedAxisTransitionType.horizontal,
-            fillColor: Colors.white,
-            child: child,
-          ),
+          transitionBuilder: sharedAxisTransitionBuilder,
           layoutBuilder: (entries) => Stack(
             alignment: Alignment.topCenter,
             children: entries,
@@ -92,7 +85,7 @@ class ProfileScreenContent extends HookConsumerWidget {
             ),
             ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: user),
             ProfileScreenPages.sortProposals: ProfileVerifiedSortProposalsPage(user: user),
-            ProfileScreenPages.userProducts: ProfileUserProductsPage(user: user),
+            ProfileScreenPages.addedProducts: ProfileAddedProductsPage(user: user),
           }[visiblePage.value],
         ),
     );

@@ -85,8 +85,8 @@ class SortProposalsTitle extends StatelessWidget {
   }
 }
 
-class SortProposalsError extends StatelessWidget {
-  const SortProposalsError({
+class SortProposalsEmpty extends StatelessWidget {
+  const SortProposalsEmpty({
     Key? key,
   }) : super(key: key);
 

@@ -36,16 +36,14 @@ class ProfileSavedProductsPage extends HookConsumerWidget {
         products: products,
         title: const SavedProductsTitle(),
         productsCount: savedProductCount,
-        onScroll: () {
-          return asyncCall(
-            context,
-                () async {
-              final fetchedProducts = await productRepository
-                  .fetchIds(user.savedProducts.skip(visibleProductsCount.value).take(10).toList());
-              visibleProductsCount.value += fetchedProducts.length;
-            },
-          );
-        },
+        onScroll: () => asyncCall(
+          context,
+          () async {
+            final fetchedProducts =
+                await productRepository.fetchIds(user.savedProducts.skip(visibleProductsCount.value).take(10).toList());
+            visibleProductsCount.value += fetchedProducts.length;
+          },
+        ),
         fetchedAll: fetchedAll,
       ),
     );
@@ -63,8 +61,8 @@ class SavedProductsTitle extends StatelessWidget {
   }
 }
 
-class SavedProductsError extends StatelessWidget {
-  const SavedProductsError({
+class SavedProductsEmpty extends StatelessWidget {
+  const SavedProductsEmpty({
     Key? key,
   }) : super(key: key);
 

@@ -15,19 +15,10 @@ import 'package:inzynierka/screens/product_form/product_form_information.dart';
 import 'package:inzynierka/screens/product_form/product_form_save.dart';
 import 'package:inzynierka/screens/product_form/product_form_sort.dart';
 import 'package:inzynierka/screens/product_form/product_form_symbols.dart';
+import 'package:inzynierka/utils/shared_axis_transition_builder.dart';
 import 'package:inzynierka/widgets/custom_stepper.dart';
 
 part 'product_form.freezed.dart';
-
-Widget sharedAxisTransitionBuilder(
-        Widget child, Animation<double> primaryAnimation, Animation<double> secondaryAnimation) =>
-    SharedAxisTransition(
-      animation: primaryAnimation,
-      secondaryAnimation: secondaryAnimation,
-      transitionType: SharedAxisTransitionType.horizontal,
-      fillColor: Colors.white,
-      child: child,
-    );
 
 @freezed
 class ProductFormModel with _$ProductFormModel {

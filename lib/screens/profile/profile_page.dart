@@ -4,12 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
-import 'package:inzynierka/screens/profile/profile_list_container.dart';
+import 'package:inzynierka/screens/profile/profile_product_list_section.dart';
 import 'package:inzynierka/screens/profile/profile_saved_products.dart';
 import 'package:inzynierka/screens/profile/profile_screen.dart';
 import 'package:inzynierka/screens/profile/profile_sort_proposals.dart';
 import 'package:inzynierka/screens/profile/profile_user.dart';
-import 'package:inzynierka/screens/profile/profile_user_products.dart';
+import 'package:inzynierka/screens/profile/profile_added_products.dart';
 import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
@@ -61,29 +61,29 @@ class ProfilePage extends HookConsumerWidget {
           child: GutterColumn(
             children: [
               ProfileUser(user: user),
-              ProfileListContainer(
+              ProfileProductListSection(
                 productsCount: savedProductsCount,
                 products: savedProducts,
                 onPageChanged: onPageChanged,
                 destination: ProfileScreenPages.savedProducts,
                 title: const SavedProductsTitle(),
-                error: const SavedProductsError(),
+                emptyContent: const SavedProductsEmpty(),
               ),
-              ProfileListContainer(
+              ProfileProductListSection(
                 productsCount: verifiedSortProposalsCount.value,
                 products: verifiedSortProposalsProducts,
                 onPageChanged: onPageChanged,
                 destination: ProfileScreenPages.sortProposals,
                 title: const SortProposalsTitle(),
-                error: const SortProposalsError(),
+                emptyContent: const SortProposalsEmpty(),
               ),
-              ProfileListContainer(
+              ProfileProductListSection(
                 productsCount: userProductsCount.value,
                 products: userProducts,
                 onPageChanged: onPageChanged,
-                destination: ProfileScreenPages.userProducts,
+                destination: ProfileScreenPages.addedProducts,
                 title: const UserProductsTitle(),
-                error: const UserProductsError(),
+                emptyContent: const UserProductsEmpty(),
               ),
             ],
           ),

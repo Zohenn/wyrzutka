@@ -87,13 +87,10 @@ class ProductListTitle extends HookConsumerWidget {
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColorLight,
-            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+            borderRadius: BorderRadius.circular(16.0),
           ),
           padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
-          child: Text(
-            productCount.toString(),
-            style: const TextStyle(color: AppColors.primaryDarker),
-          ),
+          child: Text(productCount.toString(), style: const TextStyle(color: AppColors.primaryDarker)),
         ),
       ],
     );

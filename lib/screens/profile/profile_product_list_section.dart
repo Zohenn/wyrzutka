@@ -8,15 +8,15 @@ import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
-class ProfileListContainer extends HookConsumerWidget {
-  const ProfileListContainer({
+class ProfileProductListSection extends HookConsumerWidget {
+  const ProfileProductListSection({
     Key? key,
     required this.products,
     required this.productsCount,
     required this.onPageChanged,
     required this.destination,
     required this.title,
-    required this.error,
+    required this.emptyContent,
   }) : super(key: key);
 
   final List<Product> products;
@@ -24,24 +24,10 @@ class ProfileListContainer extends HookConsumerWidget {
   final void Function(ProfileScreenPages) onPageChanged;
   final ProfileScreenPages destination;
   final Widget title;
-  final Widget error;
+  final Widget emptyContent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // const numberOfProducts = 2;
-    //
-    // final savedProductsIds = useRef(productsIds.take(numberOfProducts).toList());
-    // final products = ref.watch(productsProvider(savedProductsIds.value));
-    //
-    // final future = useInitFuture<List<Product>>(
-    //   () => ref.read(productRepositoryProvider).fetchIds(savedProductsIds.value).then(
-    //     (value) {
-    //       savedProductsIds.value = value.map((product) => product.id).toList();
-    //       return value;
-    //     },
-    //   ),
-    // );
-
     return GutterColumn(
       crossAxisAlignment: CrossAxisAlignment.end,
       gutterSize: 4,
@@ -49,15 +35,13 @@ class ProfileListContainer extends HookConsumerWidget {
         ProductListTitle(productCount: productsCount, title: title),
         ConditionalBuilder(
           condition: products.isNotEmpty,
-          ifTrue: () => ListView.separated(
-            padding: EdgeInsets.zero,
-            primary: false,
-            shrinkWrap: true,
-            itemCount: products.length,
-            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-            itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
+          ifTrue: () => GutterColumn(
+            children: [
+              for(var product in products)
+                ProductItem(product: product),
+            ],
           ),
-          ifFalse: () => error,
+          ifFalse: () => emptyContent,
         ),
         ConditionalBuilder(
           condition: products.length < productsCount,

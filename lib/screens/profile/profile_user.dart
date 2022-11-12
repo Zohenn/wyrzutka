@@ -20,55 +20,46 @@ class ProfileUser extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
 
-    return Column(
-      children: [
-        Card(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
-          ),
-          color: Theme.of(context).primaryColorLight,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            child: Row(
-              children: [
-                AvatarIcon(user: user, radius: 24),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.displayName,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(user.role.desc,
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: user.role.descColor)),
-                    ],
+    return Card(
+      child: Column(
+        children: [
+          Material(
+            color: Theme.of(context).primaryColorLight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  AvatarIcon(user: user, radius: 24),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(user.displayName, style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          user.role.desc,
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: user.role.descColor),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                ConditionalBuilder(
-                  condition: authUser?.role != Role.user || authUser?.id == user.id,
-                  ifTrue: () => IconButton(
-                    onPressed: () {
-                      showDefaultBottomSheet(
+                  ConditionalBuilder(
+                    condition: authUser?.role != Role.user || authUser?.id == user.id,
+                    ifTrue: () => IconButton(
+                      onPressed: () => showDefaultBottomSheet(
                         popModals: false,
                         context: context,
                         builder: (context) => ProfileActionsSheet(user: user),
-                      );
-                    },
-                    icon: const Icon(Icons.settings_outlined),
+                      ),
+                      icon: const Icon(Icons.settings_outlined),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        Card(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
                 const CircleAvatar(
@@ -78,10 +69,7 @@ class ProfileUser extends HookConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Data dołączenia',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
+                    Text('Data dołączenia', style: Theme.of(context).textTheme.labelSmall),
                     Text(
                       '${DateFormat('dd.MM.yyyy').format(user.signUpDate)} r.',
                       style: Theme.of(context).textTheme.bodyLarge,
@@ -91,8 +79,8 @@ class ProfileUser extends HookConsumerWidget {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

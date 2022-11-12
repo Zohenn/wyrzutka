@@ -10,8 +10,8 @@ import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 
-class ProfileUserProductsPage extends HookConsumerWidget {
-  const ProfileUserProductsPage({
+class ProfileAddedProductsPage extends HookConsumerWidget {
+  const ProfileAddedProductsPage({
     required this.user,
     Key? key,
   }) : super(key: key);
@@ -73,8 +73,8 @@ class UserProductsTitle extends StatelessWidget {
   }
 }
 
-class UserProductsError extends StatelessWidget {
-  const UserProductsError({
+class UserProductsEmpty extends StatelessWidget {
+  const UserProductsEmpty({
     Key? key,
   }) : super(key: key);
 
