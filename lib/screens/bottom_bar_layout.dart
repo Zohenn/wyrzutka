@@ -16,6 +16,7 @@ class BottomBarLayout extends HookConsumerWidget {
       body: Beamer(
         key: _innerBeamerKey,
         routerDelegate: RouterWrapper.bottomNavigationRouterDelegate,
+        backButtonDispatcher: BeamerBackButtonDispatcher(delegate: RouterWrapper.bottomNavigationRouterDelegate),
       ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Theme.of(context).primaryColorLight,
