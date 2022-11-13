@@ -17,6 +17,8 @@ import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
 
 final productServiceProvider = Provider(ProductService.new);
 
+class EmptySortProposalException implements Exception {}
+
 class ProductService {
   ProductService(this.ref);
 
@@ -53,11 +55,11 @@ class ProductService {
       variants: variant != null ? [...(variant.variants), variant.id] : [],
     );
     final batch = ref.read(firebaseFirestoreProvider).batch();
-    batch.set(productRepository.collection.doc(product.id), product);
+    batch.set(productRepository.getDoc(product.id), product);
     if (variant != null) {
       for (var id in product.variants) {
         batch.update(
-          productRepository.collection.doc(id),
+          productRepository.getDoc(id),
           {
             'variants': FieldValue.arrayUnion([product.id])
           },
@@ -90,6 +92,7 @@ class ProductService {
         'photo': photoUrls[0],
         'photoSmall': photoUrls[1],
       },
+      if(model.product?.sort != null) 'sort': model.product!.sort!.copyWith(elements: model.elements.values.flattened.toList()).toJson(),
       'symbols': [...model.symbols],
     };
     final newProduct = model.product!.copyWith(
@@ -97,6 +100,7 @@ class ProductService {
       keywords: [...model.keywords],
       photo: photoUrls?[0] ?? model.product!.photo,
       photoSmall: photoUrls?[1] ?? model.product!.photoSmall,
+      sort: model.product!.sort?.copyWith(elements: model.elements.values.flattened.toList()),
       symbols: [...model.symbols],
     );
     await productRepository.update(model.id, updateData, newProduct);
@@ -104,9 +108,11 @@ class ProductService {
 
   Future<Product?> findVariant(List<String> keywords) async {
     final productRepository = ref.read(productRepositoryProvider);
-    final query = productRepository.collection.where('keywords', arrayContainsAny: keywords).limit(1);
-    final snapshot = await query.get();
-    return snapshot.docs.firstOrNull?.data();
+    final result = await productRepository.fetchNext(
+      filters: [QueryFilter('keywords', FilterOperator.arrayContainsAny, keywords)],
+      batchSize: 1,
+    );
+    return result.firstOrNull;
   }
 
   List<QueryFilter> _mapFilters(List<dynamic> filters) {
@@ -191,16 +197,22 @@ class ProductService {
   }
 
   Future<void> addSortProposal(Product product, SortElements elements) async {
+    final flatElements = elements.values.flattened.toList();
+    if (flatElements.isEmpty) {
+      throw EmptySortProposalException();
+    }
+
     final productRepository = ref.read(productRepositoryProvider);
     final user = ref.read(authUserProvider)!.id;
     final sortProposalId = productRepository.collection.doc().id;
     final sort = Sort(
       id: sortProposalId,
       user: user,
-      elements: elements.values.flattened.toList(),
+      elements: flatElements,
       voteBalance: 0,
       votes: {},
     );
+
     final newProduct = product.copyWith(sortProposals: {...product.sortProposals, sortProposalId: sort});
     final updateData = {'sortProposals.$sortProposalId': sort.toJson()};
     await productRepository.update(product.id, updateData, newProduct);
@@ -208,8 +220,10 @@ class ProductService {
 
   Future<void> deleteSortProposal(Product product, String sortProposalId) async {
     final productRepository = ref.read(productRepositoryProvider);
+
     final newProduct = product.copyWith(sortProposals: {...product.sortProposals}..remove(sortProposalId));
     final updateData = {'sortProposals.$sortProposalId': FieldValue.delete()};
+
     await productRepository.update(product.id, updateData, newProduct);
   }
 }

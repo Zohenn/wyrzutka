@@ -9,7 +9,7 @@ import 'package:inzynierka/repositories/user_repository.dart';
 
 final authServiceProvider = Provider((ref) => AuthService(ref));
 
-class UserNotFoundException extends Error {}
+class UserNotFoundException implements Exception {}
 
 class AuthService {
   const AuthService(this.ref);
