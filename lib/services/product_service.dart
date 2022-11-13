@@ -90,7 +90,7 @@ class ProductService {
         'photo': photoUrls[0],
         'photoSmall': photoUrls[1],
       },
-      if(model.product?.sort != null) 'sort': model.elements.values.flattened.toList(),
+      if(model.product?.sort != null) 'sort': model.product!.sort!.copyWith(elements: model.elements.values.flattened.toList()).toJson(),
       'symbols': [...model.symbols],
     };
     final newProduct = model.product!.copyWith(

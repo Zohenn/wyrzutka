@@ -11,6 +11,7 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/providers/firebase_provider.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
@@ -26,6 +27,7 @@ import 'product_service_test.mocks.dart';
 void main() {
   late AppUser authUser;
   late Product product;
+  late FakeFirebaseFirestore firestore;
   late MockProductRepository mockProductRepository;
   late MockImageUploadService mockImageUploadService;
   late ProviderContainer container;
@@ -35,6 +37,7 @@ void main() {
     container = ProviderContainer(
       overrides: [
         authUserProvider.overrideWith((ref) => authUser),
+        firebaseFirestoreProvider.overrideWithValue(firestore),
         productRepositoryProvider.overrideWithValue(mockProductRepository),
         imageUploadServiceProvider.overrideWithValue(mockImageUploadService),
       ],
@@ -51,7 +54,16 @@ void main() {
       signUpDate: FirestoreDateTime.serverTimestamp(),
     );
     product = Product(id: 'foo', name: 'Produkt', user: 'id', addedDate: FirestoreDateTime.serverTimestamp());
+    firestore = FakeFirebaseFirestore();
     mockProductRepository = MockProductRepository();
+    when(mockProductRepository.collection).thenReturn(
+      firestore
+          .collection('test')
+          .withConverter(fromFirestore: Product.fromFirestore, toFirestore: Product.toFirestore),
+    );
+    when(mockProductRepository.getDoc(any)).thenAnswer(
+      (realInvocation) => mockProductRepository.collection.doc(realInvocation.positionalArguments.first),
+    );
     mockImageUploadService = MockImageUploadService();
     when(mockImageUploadService.uploadWithFile(any, any))
         .thenAnswer((realInvocation) => Future.value(realInvocation.positionalArguments[1]));
@@ -63,12 +75,49 @@ void main() {
     container.dispose();
   });
 
+  group('createFromModel', () {
+    late ProductFormModel model;
+
+    setUp(() {
+      model = ProductFormModel(
+        id: 'foo',
+        name: 'Produkt2',
+        photo: MockFile(),
+        keywords: ['keyword'],
+        symbols: ['symbol'],
+      );
+    });
+
+    test('Should upload photos', () async {
+      await productService.createFromModel(model);
+
+      verify(mockImageUploadService.uploadWithFile(model.photo, any, width: 500, height: 500)).called(1);
+      verify(mockImageUploadService.uploadWithFile(model.photo, any, width: 80, height: 80)).called(1);
+    });
+  });
+
   group('updateFromModel', () {
     late ProductFormModel model;
+    late Product verifiedProduct;
+    late ProductFormModel verifiedModel;
+    late List<SortElement> flatElements;
 
     setUp(() {
       model =
           ProductFormModel(id: 'foo', name: 'Produkt2', keywords: ['keyword'], symbols: ['symbol'], product: product);
+      verifiedProduct = product.copyWith(
+        sort: Sort.verified(
+          user: 'id',
+          elements: [SortElement(container: ElementContainer.plastic, name: 'Butelka')],
+        ),
+      );
+      verifiedModel = model.copyWith(
+        product: verifiedProduct,
+        elements: {
+          ElementContainer.paper: [SortElement(container: ElementContainer.paper, name: 'Opakowanie')]
+        },
+      );
+      flatElements = verifiedModel.elements.values.flattened.toList();
     });
 
     test('Should not upload image if photo is null', () async {
@@ -171,15 +220,33 @@ void main() {
     test('Should not update sort in product if was not verified', () async {
       await productService.updateFromModel(model);
 
-      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first as Product;
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first;
       expect(
         newProduct,
-        isA<Product>()
-            .having((o) => o.sort, 'sort', product.sort),
+        isA<Product>().having((o) => o.sort, 'sort', product.sort),
       );
     });
 
-    // todo: test if sort is also updated
+    test('Should update sort if was verified', () async {
+      await productService.updateFromModel(verifiedModel);
+
+      final updateData = verify(mockProductRepository.update(any, captureAny, any)).captured.first;
+      expect(
+        updateData,
+        isA<Map<String, dynamic>>()
+            .having((o) => o['sort'], 'sort', verifiedProduct.sort!.copyWith(elements: flatElements).toJson()),
+      );
+    });
+
+    test('Should update sort in product if was verified', () async {
+      await productService.updateFromModel(verifiedModel);
+
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first;
+      expect(
+        newProduct,
+        isA<Product>().having((o) => o.sort, 'sort', verifiedProduct.sort!.copyWith(elements: flatElements)),
+      );
+    });
   });
 
   group('findVariant', () {
@@ -221,11 +288,6 @@ void main() {
     late List<SortElement> flatElements;
 
     setUp(() {
-      when(mockProductRepository.collection).thenReturn(
-        FakeFirebaseFirestore()
-            .collection('test')
-            .withConverter(fromFirestore: Product.fromFirestore, toFirestore: Product.toFirestore),
-      );
       elements = {
         ElementContainer.plastic: [
           SortElement(container: ElementContainer.plastic, name: 'Butelka'),
@@ -339,7 +401,7 @@ void main() {
 
       expect(updateData.keys.toList(), [sortProposalKey]);
       expect(updateData[sortProposalKey], FieldValue.delete());
-    });
+    }, skip: 'FakeFirebaseFirestore ruins FieldValue equality');
 
     test('Should remove sort proposal from product', () async {
       await productService.deleteSortProposal(productWithProposals, sortProposalId);
