@@ -16,6 +16,7 @@ import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
 import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
+import 'package:inzynierka/widgets/load_more_list_view.dart';
 
 final _filterGroups = [
   FilterGroup(
@@ -112,68 +113,49 @@ class ProductsScreen extends HookConsumerWidget {
           ],
           body: FutureHandler(
             future: innerFuture.value,
-            data: () => NotificationListener<ScrollNotification>(
-              onNotification: (notification) {
-                if (notification.metrics.extentAfter < 50.0 &&
-                    productIds.value.length >= 10 &&
-                    !fetchedAll.value &&
-                    !isFetchingMore.value) {
-                  (() async {
-                    isFetchingMore.value = true;
-                    await asyncCall(
-                      context,
-                      () => productService
-                          .fetchNext(
-                              filters: selectedFilters.value.values.toList(),
-                              startAfterDocument: products.last.snapshot!)
-                          .then((value) {
-                        if (isMounted()) {
-                          productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-                          fetchedAll.value = value.length < BaseRepository.batchSize;
-                        }
-                      }),
-                    );
-                    isFetchingMore.value = false;
-                  })();
-                }
-
-                return false;
-              },
-              child: ConditionalBuilder(
-                condition: products.isNotEmpty,
-                ifTrue: () => ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  itemCount:
-                      isFetchingMore.value || searchText.value.isNotEmpty ? products.length + 1 : products.length,
-                  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-                  itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                    condition: index < products.length,
-                    ifTrue: () => ProductItem(product: products[index]),
-                    ifFalse: () => ConditionalBuilder(
-                      condition: searchText.value.isEmpty,
-                      ifTrue: () => const Center(child: CircularProgressIndicator()),
-                      ifFalse: () => Center(
-                        child: Text(
-                          'W przypadku wyszukiwania po nazwie wyświetlanych jest 5 najbardziej trafnych wyników.',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
+            data: () => ConditionalBuilder(
+              condition: products.isNotEmpty,
+              ifTrue: () => LoadMoreListView(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                itemCount: products.length,
+                showLoading: searchText.value.isNotEmpty,
+                canLoad: productIds.value.length >= 10 && !fetchedAll.value,
+                onLoad: () => asyncCall(
+                  context,
+                  () => productService
+                      .fetchNext(
+                          filters: selectedFilters.value.values.toList(), startAfterDocument: products.last.snapshot!)
+                      .then((value) {
+                    if (isMounted()) {
+                      productIds.value = [...productIds.value, ...value.map((product) => product.id)];
+                      fetchedAll.value = value.length < BaseRepository.batchSize;
+                    }
+                  }),
+                ),
+                itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
+                loadingBuilder: (context) => ConditionalBuilder(
+                  condition: searchText.value.isEmpty,
+                  ifTrue: () => const Center(child: CircularProgressIndicator()),
+                  ifFalse: () => Center(
+                    child: Text(
+                      'W przypadku wyszukiwania po nazwie wyświetlanych jest 5 najbardziej trafnych wyników.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ),
-                ifFalse: () => Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/images/empty_cart.svg',
-                        width: MediaQuery.of(context).size.width * 0.5,
-                      ),
-                      const SizedBox(height: 24.0),
-                      Text('Nie znaleziono produktów', style: Theme.of(context).textTheme.bodyLarge),
-                    ],
-                  ),
+              ),
+              ifFalse: () => Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/empty_cart.svg',
+                      width: MediaQuery.of(context).size.width * 0.5,
+                    ),
+                    const SizedBox(height: 24.0),
+                    Text('Nie znaleziono produktów', style: Theme.of(context).textTheme.bodyLarge),
+                  ],
                 ),
               ),
             ),

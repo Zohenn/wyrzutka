@@ -6,8 +6,9 @@ import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:inzynierka/widgets/load_more_list_view.dart';
 
-class ProductList extends HookConsumerWidget {
+class ProductList extends StatelessWidget {
   const ProductList({
     Key? key,
     required this.products,
@@ -24,41 +25,21 @@ class ProductList extends HookConsumerWidget {
   final bool fetchedAll;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isFetchingMore = useState(false);
-
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
       child: GutterColumn(
         gutterSize: 4,
         children: [
           ProductListTitle(productCount: productsCount, title: title),
-          NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification.metrics.extentAfter < 50.0 &&
-                  !fetchedAll &&
-                  products.length < productsCount &&
-                  !isFetchingMore.value) {
-                isFetchingMore.value = true;
-                onScroll().then(
-                  (value) => WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    isFetchingMore.value = false;
-                  }),
-                );
-              }
-              return false;
-            },
-            child: Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                itemCount: isFetchingMore.value ? products.length + 1 : products.length,
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 16),
-                itemBuilder: (BuildContext context, int index) => ConditionalBuilder(
-                  condition: index < products.length,
-                  ifTrue: () => ProductItem(product: products[index]),
-                  ifFalse: () => const Center(child: CircularProgressIndicator()),
-                ),
-              ),
+          Expanded(
+            child: LoadMoreListView(
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+              itemCount: products.length,
+              onLoad: onScroll,
+              canLoad: !fetchedAll && products.length < productsCount,
+              itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
+              loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
             ),
           ),
         ],
@@ -67,7 +48,7 @@ class ProductList extends HookConsumerWidget {
   }
 }
 
-class ProductListTitle extends HookConsumerWidget {
+class ProductListTitle extends StatelessWidget {
   const ProductListTitle({
     required this.productCount,
     required this.title,
@@ -78,7 +59,7 @@ class ProductListTitle extends HookConsumerWidget {
   final Widget title;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
