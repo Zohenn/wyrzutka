@@ -39,7 +39,6 @@ class ProductList extends StatelessWidget {
               onLoad: onScroll,
               canLoad: !fetchedAll && products.length < productsCount,
               itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
-              loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
             ),
           ),
         ],

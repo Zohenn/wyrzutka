@@ -7,8 +7,8 @@ class LoadMoreListView extends HookWidget {
     Key? key,
     required this.itemCount,
     required this.itemBuilder,
-    required this.loadingBuilder,
     required this.onLoad,
+    this.loadingBuilder = _defaultLoadingBuilder,
     this.padding = EdgeInsets.zero,
     this.showLoading = false,
     this.canLoad = true,
@@ -25,6 +25,8 @@ class LoadMoreListView extends HookWidget {
   final bool canLoad;
   final double targetExtent;
   final double gutterSize;
+
+  static Widget _defaultLoadingBuilder(BuildContext context) => const Center(child: CircularProgressIndicator());
 
   @override
   Widget build(BuildContext context) {
