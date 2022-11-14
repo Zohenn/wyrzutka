@@ -30,9 +30,9 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
     final fetchedAll = useState(false);
 
     final future = useInitFuture(() => Future.wait([
-          productService.countVerifiedSortProposals(user).then((value) => verifiedSortProposalsCount.value = value),
+          productService.countVerifiedSortProposalsForUser(user).then((value) => verifiedSortProposalsCount.value = value),
           productService
-              .verifiedSortProposals(user: user)
+              .fetchNextVerifiedSortProposalsForUser(user: user)
               .then((value) => visibleProducts.value = value.map((product) => product.id).toList()),
         ]).then((value) => fetchedAll.value = products.length >= verifiedSortProposalsCount.value));
 
@@ -46,7 +46,7 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
           context,
           () async {
             final fetchedProducts = await productService
-                .verifiedSortProposals(user: user, startAfterDocument: products.last.snapshot!)
+                .fetchNextVerifiedSortProposalsForUser(user: user, startAfterDocument: products.last.snapshot!)
                 .then((value) {
               visibleProducts.value = [...visibleProducts.value, ...value.map((product) => product.id)];
               return value;

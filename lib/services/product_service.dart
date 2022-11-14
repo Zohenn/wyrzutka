@@ -92,7 +92,8 @@ class ProductService {
         'photo': photoUrls[0],
         'photoSmall': photoUrls[1],
       },
-      if(model.product?.sort != null) 'sort': model.product!.sort!.copyWith(elements: model.elements.values.flattened.toList()).toJson(),
+      if (model.product?.sort != null)
+        'sort': model.product!.sort!.copyWith(elements: model.elements.values.flattened.toList()).toJson(),
       'symbols': [...model.symbols],
     };
     final newProduct = model.product!.copyWith(
@@ -160,38 +161,38 @@ class ProductService {
     return productRepository.search('searchName', value);
   }
 
-  Future<List<Product>> verifiedSortProposals({
+  Future<List<Product>> fetchNextVerifiedSortProposalsForUser({
     required AppUser user,
     DocumentSnapshot? startAfterDocument,
     int? batchSize,
   }) {
     final productRepository = ref.read(productRepositoryProvider);
     return productRepository.fetchNext(
-        filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)],
-        batchSize: batchSize ?? BaseRepository.batchSize,
-        startAfterDocument: startAfterDocument);
+      filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)],
+      startAfterDocument: startAfterDocument,
+      batchSize: batchSize ?? BaseRepository.batchSize,
+    );
   }
 
-  Future<int> countVerifiedSortProposals(
-    AppUser user,
-  ) {
+  Future<int> countVerifiedSortProposalsForUser(AppUser user) {
     final productRepository = ref.read(productRepositoryProvider);
     return productRepository.count(filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)]);
   }
 
-  Future<List<Product>> addedProducts({
+  Future<List<Product>> fetchNextProductsAddedByUser({
     required AppUser user,
     DocumentSnapshot? startAfterDocument,
     int? batchSize,
   }) {
     final productRepository = ref.read(productRepositoryProvider);
     return productRepository.fetchNext(
-        filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)],
-        batchSize: batchSize ?? BaseRepository.batchSize,
-        startAfterDocument: startAfterDocument);
+      filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)],
+      startAfterDocument: startAfterDocument,
+      batchSize: batchSize ?? BaseRepository.batchSize,
+    );
   }
 
-  Future<int> countAddedProducts(AppUser user, [DocumentSnapshot? startAfterDocument, int? batchSize]) {
+  Future<int> countProductsAddedByUser(AppUser user) {
     final productRepository = ref.read(productRepositoryProvider);
     return productRepository.count(filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)]);
   }
