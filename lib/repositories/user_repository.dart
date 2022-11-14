@@ -33,20 +33,4 @@ class UserRepository extends BaseRepository<AppUser> {
     final docId = await create(user);
     return user.copyWith(id: docId);
   }
-
-  Future<AppUser> saveProduct(AppUser user, String product) async {
-    final userDoc = collection.doc(user.id);
-    await userDoc.update({
-      'savedProducts': FieldValue.arrayUnion([product]),
-    });
-    return user.copyWith(savedProducts: [...user.savedProducts, product]);
-  }
-
-  Future<AppUser> removeProduct(AppUser user, String product) async {
-    final userDoc = collection.doc(user.id);
-    await userDoc.update({
-      'savedProducts': FieldValue.arrayRemove([product]),
-    });
-    return user.copyWith(savedProducts: [...user.savedProducts]..remove(product));
-  }
 }
