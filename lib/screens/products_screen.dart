@@ -57,7 +57,6 @@ class ProductsScreen extends HookConsumerWidget {
     final searchText = useState('');
     final selectedFilters = useState<Filters>({});
     final innerFuture = useState<Future?>(null);
-    final isFetchingMore = useState(false);
     final fetchedAll = useState(false);
 
     useEffect(() {
@@ -119,7 +118,7 @@ class ProductsScreen extends HookConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                 itemCount: products.length,
                 showLoading: searchText.value.isNotEmpty,
-                canLoad: productIds.value.length >= 10 && !fetchedAll.value,
+                canLoad: productIds.value.length >= BaseRepository.batchSize && !fetchedAll.value,
                 onLoad: () => asyncCall(
                   context,
                   () => productService
@@ -190,73 +189,67 @@ class _FilterSection extends HookWidget {
               selectionColor: Colors.black26,
             ),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              readOnly: selectedFilters.isNotEmpty,
-              controller: searchController,
-              cursorColor: Colors.black,
-              onChanged: (value) {
-                debounce.onChanged(value);
-                searchText.value = value;
-              },
-              decoration: InputDecoration(
-                hintText: 'Wyszukaj',
-                hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).hintColor),
-                // fillColor: Theme.of(context).primaryColorLight,
-                fillColor:
-                    selectedFilters.isEmpty ? Theme.of(context).primaryColorLight : Theme.of(context).dividerColor,
-                enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
-                      borderSide: BorderSide.none,
-                    ),
-                focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder!.copyWith(
-                      borderSide: BorderSide.none,
-                    ),
-                prefixIcon: const Icon(Icons.search, color: Colors.black),
-                suffixIcon: ConditionalBuilder(
-                  condition: searchText.value.isEmpty,
-                  ifTrue: () => IconButton(
-                    style: selectedFilters.isEmpty
-                        ? null
-                        : ButtonStyle(
-                            backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                            side: MaterialStatePropertyAll(
-                              BorderSide(color: Theme.of(context).primaryColorLight, width: 2.0),
-                            ),
-                          ),
-                    onPressed: () async {
-                      final result = await showDefaultBottomSheet<Filters>(
-                        context: context,
-                        builder: (context) => FilterBottomSheet(
-                          groups: _filterGroups,
-                          selectedFilters: selectedFilters,
-                          single: true,
-                        ),
-                      );
-
-                      if (result != null) {
-                        onFiltersChanged(result);
-                      }
-                    },
-                    icon: const Icon(Icons.filter_list),
-                  ),
-                  ifFalse: () => IconButton(
-                    onPressed: () {
-                      debounce.cancel();
-                      searchText.value = '';
-                      searchController.text = '';
-                      onSearch('');
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                    icon: const Icon(Icons.close),
-                  ),
-                ),
+      child: TextField(
+        readOnly: selectedFilters.isNotEmpty,
+        controller: searchController,
+        cursorColor: Colors.black,
+        onChanged: (value) {
+          debounce.onChanged(value);
+          searchText.value = value;
+        },
+        decoration: InputDecoration(
+          hintText: 'Wyszukaj',
+          hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).hintColor),
+          // fillColor: Theme.of(context).primaryColorLight,
+          fillColor:
+              selectedFilters.isEmpty ? Theme.of(context).primaryColorLight : Theme.of(context).dividerColor,
+          enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
+                borderSide: BorderSide.none,
               ),
-              selectionControls: CustomColorSelectionHandle(Colors.black),
+          focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder!.copyWith(
+                borderSide: BorderSide.none,
+              ),
+          prefixIcon: const Icon(Icons.search, color: Colors.black),
+          suffixIcon: ConditionalBuilder(
+            condition: searchText.value.isEmpty,
+            ifTrue: () => IconButton(
+              style: selectedFilters.isEmpty
+                  ? null
+                  : ButtonStyle(
+                      backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                      side: MaterialStatePropertyAll(
+                        BorderSide(color: Theme.of(context).primaryColorLight, width: 2.0),
+                      ),
+                    ),
+              onPressed: () async {
+                final result = await showDefaultBottomSheet<Filters>(
+                  context: context,
+                  builder: (context) => FilterBottomSheet(
+                    groups: _filterGroups,
+                    selectedFilters: selectedFilters,
+                    single: true,
+                  ),
+                );
+
+                if (result != null) {
+                  onFiltersChanged(result);
+                }
+              },
+              icon: const Icon(Icons.filter_list),
+            ),
+            ifFalse: () => IconButton(
+              onPressed: () {
+                debounce.cancel();
+                searchText.value = '';
+                searchController.text = '';
+                onSearch('');
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              icon: const Icon(Icons.close),
             ),
           ),
-        ],
+        ),
+        selectionControls: CustomColorSelectionHandle(Colors.black),
       ),
     );
   }

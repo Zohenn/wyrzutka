@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/query_filter.dart';
@@ -18,5 +21,16 @@ class UserService {
       filters: [QueryFilter('role', FilterOperator.whereIn, roles)],
       startAfterDocument: startAfterDocument,
     );
+  }
+
+  Future<List<AppUser>> search(String value) async {
+    final userRepository = ref.read(userRepositoryProvider);
+    return userRepository.search('searchNameSurname', value);
+    // final results = await Future.wait([
+    //   userRepository.search('searchNS', value),
+    //   userRepository.search('searchSN', value),
+    // ]);
+    // final uniqueResults = LinkedHashSet(equals: (AppUser user1, AppUser user2) => user1.id == user2.id)..addAll(results.flattened);
+    // return uniqueResults.toList();
   }
 }
