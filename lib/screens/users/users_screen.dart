@@ -10,6 +10,7 @@ import 'package:inzynierka/screens/widgets/search_input.dart';
 import 'package:inzynierka/services/user_service.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
+import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/load_more_list_view.dart';
 
@@ -61,27 +62,43 @@ class UsersScreen extends HookConsumerWidget {
           ],
           body: FutureHandler(
             future: searchFuture.value,
-            data: () => LoadMoreListView(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-              itemCount: users.length,
-              itemBuilder: (context, index) => UserItem(
-                key: Key(users[index].id),
-                user: users[index],
-                onTap: () => showDefaultBottomSheet(
-                  context: context,
-                  builder: (context) => ProfileScreenContent(user: users[index]),
+            data: () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ConditionalBuilder(
+                  condition: searchText.value.isEmpty,
+                  ifTrue: () => Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                    child: Text('Moderacja', style: Theme.of(context).textTheme.titleLarge),
+                  ),
                 ),
-              ),
-              canLoad: moderationIds.value.length >= BaseRepository.batchSize && searchText.value.isEmpty && !fetchedAll.value,
-              onLoad: () => asyncCall(
-                context,
-                () => userService.fetchNextModeration(users.last.snapshot).then((value) {
-                  if (isMounted()) {
-                    moderationIds.value = [...moderationIds.value, ...value.map((user) => user.id)];
-                    fetchedAll.value = value.length < BaseRepository.batchSize;
-                  }
-                }),
-              ),
+                Expanded(
+                  child: LoadMoreListView(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    itemCount: users.length,
+                    itemBuilder: (context, index) => UserItem(
+                      key: Key(users[index].id),
+                      user: users[index],
+                      onTap: () => showDefaultBottomSheet(
+                        context: context,
+                        builder: (context) => ProfileScreenContent(user: users[index]),
+                      ),
+                    ),
+                    canLoad: moderationIds.value.length >= BaseRepository.batchSize &&
+                        searchText.value.isEmpty &&
+                        !fetchedAll.value,
+                    onLoad: () => asyncCall(
+                      context,
+                      () => userService.fetchNextModeration(users.last.snapshot).then((value) {
+                        if (isMounted()) {
+                          moderationIds.value = [...moderationIds.value, ...value.map((user) => user.id)];
+                          fetchedAll.value = value.length < BaseRepository.batchSize;
+                        }
+                      }),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

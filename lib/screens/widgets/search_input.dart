@@ -48,6 +48,7 @@ class SearchInput extends HookWidget {
           condition: searchText.value.isEmpty,
           ifTrue: () => trailingBuilder?.call(context) ?? const SizedBox.shrink(),
           ifFalse: () => IconButton(
+            key: const Key('close_search'),
             onPressed: () {
               debounce.cancel();
               searchText.value = '';

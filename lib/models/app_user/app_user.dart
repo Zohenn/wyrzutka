@@ -75,7 +75,8 @@ class AppUser with _$AppUser, Identifiable {
   static Map<String, Object?> toFirestore(AppUser user, SetOptions? options) {
     return {
       ...user.toJson(),
-      'searchNameSurname': '${user.name} ${user.surname} ${user.name}'.toLowerCase(),
+      'searchNS': '${user.name} ${user.surname}'.toLowerCase(),
+      'searchSN': '${user.surname} ${user.name}'.toLowerCase(),
     };
   }
 }

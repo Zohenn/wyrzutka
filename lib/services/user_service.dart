@@ -25,6 +25,14 @@ class UserService {
 
   Future<List<AppUser>> search(String value) async {
     final userRepository = ref.read(userRepositoryProvider);
-    return userRepository.search('searchNameSurname', value);
+    final results = await Future.wait([
+      userRepository.search('searchNS', value),
+      userRepository.search('searchSN', value),
+    ]);
+    final uniqueResults = LinkedHashSet(
+      equals: (AppUser user1, AppUser user2) => user1.id == user2.id,
+      hashCode: (AppUser user) => Object.hash(user.id, user.id),
+    )..addAll(results.flattened);
+    return uniqueResults.toList();
   }
 }
