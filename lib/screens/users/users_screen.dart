@@ -24,13 +24,14 @@ class UsersScreen extends HookConsumerWidget {
     final moderationIds = useState<List<String>>([]);
     final searchIds = useState<List<String>>([]);
     final users = ref.read(usersProvider(searchText.value.isEmpty ? moderationIds.value : searchIds.value));
+
     final initFuture = useInitFuture(
       () => userService.fetchNextModeration().then((value) => moderationIds.value = value.map((e) => e.id).toList()),
     );
+    final searchFuture = useState<Future?>(null);
+    final fetchedAll = useState(false);
 
     final isMounted = useIsMounted();
-    final fetchedAll = useState(false);
-    final searchFuture = useState<Future?>(null);
 
     useEffect(() {
       if (searchText.value.isNotEmpty) {

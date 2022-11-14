@@ -23,7 +23,7 @@ class ProductUser extends StatelessWidget {
             children: [
               AvatarIcon(
                 user: user!,
-                profileLoading: true,
+                openProfileOnTap: true,
               ),
               const SizedBox(width: 16),
               Column(

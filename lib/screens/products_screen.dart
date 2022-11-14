@@ -8,6 +8,7 @@ import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
+import 'package:inzynierka/screens/widgets/search_input.dart';
 import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/utils/async_call.dart';
@@ -165,7 +166,7 @@ class ProductsScreen extends HookConsumerWidget {
   }
 }
 
-class _FilterSection extends HookWidget {
+class _FilterSection extends StatelessWidget {
   const _FilterSection({
     Key? key,
     required this.selectedFilters,
@@ -179,77 +180,41 @@ class _FilterSection extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchController = useTextEditingController();
-    final searchText = useState('');
-    final debounce = useDebounceHook<String>(onEmit: (value) => onSearch(value));
-
     return Theme(
       data: Theme.of(context).copyWith(
         textSelectionTheme: Theme.of(context).textSelectionTheme.copyWith(
               selectionColor: Colors.black26,
             ),
       ),
-      child: TextField(
+      child: SearchInput(
         readOnly: selectedFilters.isNotEmpty,
-        controller: searchController,
-        cursorColor: Colors.black,
-        onChanged: (value) {
-          debounce.onChanged(value);
-          searchText.value = value;
-        },
-        decoration: InputDecoration(
-          hintText: 'Wyszukaj',
-          hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).hintColor),
-          // fillColor: Theme.of(context).primaryColorLight,
-          fillColor:
-              selectedFilters.isEmpty ? Theme.of(context).primaryColorLight : Theme.of(context).dividerColor,
-          enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
-                borderSide: BorderSide.none,
-              ),
-          focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder!.copyWith(
-                borderSide: BorderSide.none,
-              ),
-          prefixIcon: const Icon(Icons.search, color: Colors.black),
-          suffixIcon: ConditionalBuilder(
-            condition: searchText.value.isEmpty,
-            ifTrue: () => IconButton(
-              style: selectedFilters.isEmpty
-                  ? null
-                  : ButtonStyle(
-                      backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                      side: MaterialStatePropertyAll(
-                        BorderSide(color: Theme.of(context).primaryColorLight, width: 2.0),
-                      ),
-                    ),
-              onPressed: () async {
-                final result = await showDefaultBottomSheet<Filters>(
-                  context: context,
-                  builder: (context) => FilterBottomSheet(
-                    groups: _filterGroups,
-                    selectedFilters: selectedFilters,
-                    single: true,
+        onSearch: onSearch,
+        hintText: 'Wyszukaj produkty',
+        trailingBuilder: (context) => IconButton(
+          style: selectedFilters.isEmpty
+              ? null
+              : ButtonStyle(
+                  backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                  side: MaterialStatePropertyAll(
+                    BorderSide(color: Theme.of(context).primaryColorLight, width: 2.0),
                   ),
-                );
+                ),
+          onPressed: () async {
+            final result = await showDefaultBottomSheet<Filters>(
+              context: context,
+              builder: (context) => FilterBottomSheet(
+                groups: _filterGroups,
+                selectedFilters: selectedFilters,
+                single: true,
+              ),
+            );
 
-                if (result != null) {
-                  onFiltersChanged(result);
-                }
-              },
-              icon: const Icon(Icons.filter_list),
-            ),
-            ifFalse: () => IconButton(
-              onPressed: () {
-                debounce.cancel();
-                searchText.value = '';
-                searchController.text = '';
-                onSearch('');
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
-              icon: const Icon(Icons.close),
-            ),
-          ),
+            if (result != null) {
+              onFiltersChanged(result);
+            }
+          },
+          icon: const Icon(Icons.filter_list),
         ),
-        selectionControls: CustomColorSelectionHandle(Colors.black),
       ),
     );
   }

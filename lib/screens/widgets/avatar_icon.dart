@@ -16,12 +16,12 @@ class AvatarIcon extends StatelessWidget {
     Key? key,
     required this.user,
     this.radius = 20.0,
-    this.profileLoading = false,
+    this.openProfileOnTap = false,
   }) : super(key: key);
 
   final AppUser? user;
   final double radius;
-  final bool profileLoading;
+  final bool openProfileOnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +36,9 @@ class AvatarIcon extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           color: Colors.transparent,
           child: InkWell(
-            onTap: profileLoading
+            onTap: openProfileOnTap
                 ? () {
-                    if (profileLoading) {
+                    if (openProfileOnTap) {
                       showDefaultBottomSheet(
                         context: context,
                         builder: (context) => DefaultBottomSheet(
@@ -58,7 +58,7 @@ class AvatarIcon extends StatelessWidget {
         ),
       ),
       ifFalse: () => Tooltip(
-        message: "Nie udało się załadować użytkownika",
+        message: 'Nie udało się załadować użytkownika',
         child: CircleAvatar(
           radius: radius,
           backgroundColor: Colors.white,
