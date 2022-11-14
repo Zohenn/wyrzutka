@@ -48,9 +48,12 @@ class AppUser with _$AppUser, Identifiable {
     required String name,
     required String surname,
     required Role role,
-    @JsonKey(fromJson: FirestoreDateTime.fromFirestore, toJson: FirestoreDateTime.toFirestore) required FirestoreDateTime signUpDate,
+    @JsonKey(fromJson: FirestoreDateTime.fromFirestore, toJson: FirestoreDateTime.toFirestore)
+        required FirestoreDateTime signUpDate,
     @Default([]) List<String> savedProducts,
     @Default([]) List<String> verifiedSortProposals,
+    @JsonKey(fromJson: snapshotFromJson, toJson: toJsonNull, includeIfNull: false)
+        DocumentSnapshot<Map<String, dynamic>>? snapshot,
   }) = _AppUser;
 
   factory AppUser.fromFirestore(
@@ -60,6 +63,7 @@ class AppUser with _$AppUser, Identifiable {
     final data = snapshot.data()!;
     return AppUser.fromJson({
       'id': snapshot.id,
+      'snapshot': snapshot,
       ...data,
     });
   }
@@ -69,6 +73,10 @@ class AppUser with _$AppUser, Identifiable {
   String get displayName => '$name $surname';
 
   static Map<String, Object?> toFirestore(AppUser user, SetOptions? options) {
-    return user.toJson();
+    return {
+      ...user.toJson(),
+      'searchNS': '${user.name} ${user.surname}'.toLowerCase(),
+      'searchSN': '${user.surname} ${user.name}'.toLowerCase(),
+    };
   }
 }

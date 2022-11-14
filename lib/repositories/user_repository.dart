@@ -10,6 +10,7 @@ const userCollectionPath = 'users';
 final _userCacheProvider = createCacheProvider<AppUser>();
 
 final userProvider = createCacheItemProvider(_userCacheProvider);
+final usersProvider = createCacheItemsProvider(_userCacheProvider);
 
 final userRepositoryProvider = Provider((ref) => UserRepository(ref));
 
