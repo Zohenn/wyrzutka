@@ -33,6 +33,6 @@ class UserService {
       equals: (AppUser user1, AppUser user2) => user1.id == user2.id,
       hashCode: (AppUser user) => Object.hash(user.id, user.id),
     )..addAll(results.flattened);
-    return uniqueResults.toList();
+    return uniqueResults.take(5).toList();
   }
 }
