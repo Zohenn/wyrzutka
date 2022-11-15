@@ -78,7 +78,7 @@ class ProductsScreen extends HookConsumerWidget {
     }, [searchText.value]);
 
     useEffect(() {
-      innerFuture.value = productService.fetchNext(filters: selectedFilters.value.values.toList()).then((value) {
+      innerFuture.value = productService.fetchNextForCustomFilters(filters: selectedFilters.value.values.toList()).then((value) {
         productIds.value = value.map((product) => product.id).toList();
         fetchedAll.value = false;
       });
@@ -123,7 +123,7 @@ class ProductsScreen extends HookConsumerWidget {
                 onLoad: () => asyncCall(
                   context,
                   () => productService
-                      .fetchNext(
+                      .fetchNextForCustomFilters(
                           filters: selectedFilters.value.values.toList(), startAfterDocument: products.last.snapshot!)
                       .then((value) {
                     if (isMounted()) {

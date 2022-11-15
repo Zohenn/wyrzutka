@@ -147,7 +147,7 @@ class ProductService {
     return nestedFilterList.flattened.toList();
   }
 
-  Future<List<Product>> fetchNext({
+  Future<List<Product>> fetchNextForCustomFilters({
     List<dynamic> filters = const [],
     DocumentSnapshot? startAfterDocument,
   }) async {
