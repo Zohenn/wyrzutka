@@ -81,7 +81,7 @@ class UsersScreen extends HookConsumerWidget {
                       user: users[index],
                       onTap: () => showDefaultBottomSheet(
                         context: context,
-                        builder: (context) => ProfileScreenContent(user: users[index]),
+                        builder: (context) => ProfileScreenContent(userId: users[index].id),
                       ),
                     ),
                     canLoad: moderationIds.value.length >= BaseRepository.batchSize &&

@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:inzynierka/theme/app_theme.dart';
 import 'package:inzynierka/routing/router.dart';
 
+final scaffoldKey = GlobalKey<ScaffoldState>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = 'pl';
@@ -30,15 +32,18 @@ class MyApp extends ConsumerWidget {
       routeInformationParser: BeamerParser(),
       routerDelegate: RouterWrapper.routerDelegate,
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: RouterWrapper.routerDelegate),
-      builder: (context, child) => GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
+      builder: (context, child) => Scaffold(
+        key: scaffoldKey,
+        body: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
 
-          if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-            FocusManager.instance.primaryFocus!.unfocus();
-          }
-        },
-        child: child,
+            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+              FocusManager.instance.primaryFocus!.unfocus();
+            }
+          },
+          child: child,
+        ),
       ),
       localizationsDelegates: const [...GlobalMaterialLocalizations.delegates],
       locale: const Locale('pl'),

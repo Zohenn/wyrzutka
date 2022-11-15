@@ -7,6 +7,7 @@ import 'package:inzynierka/screens/profile/profile_actions_sheet.dart';
 import 'package:inzynierka/screens/widgets/avatar_icon.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ProfileUser extends HookConsumerWidget {
   const ProfileUser({
@@ -19,6 +20,10 @@ class ProfileUser extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
+
+    final bool isRole = (authUser?.role != Role.user || authUser?.role == Role.admin);
+    final bool isProfile = ModalRoute.of(context).runtimeType != ModalBottomSheetRoute && authUser?.id == user.id;
+    final bool isUserProfile = ModalRoute.of(context).runtimeType == ModalBottomSheetRoute && authUser?.id != user.id;
 
     return Card(
       child: Column(
@@ -44,13 +49,15 @@ class ProfileUser extends HookConsumerWidget {
                     ),
                   ),
                   ConditionalBuilder(
-                    condition: authUser?.role != Role.user || authUser?.id == user.id,
+                    condition: (isRole && isUserProfile) || isProfile,
                     ifTrue: () => IconButton(
-                      onPressed: () => showDefaultBottomSheet(
-                        popModals: false,
-                        context: context,
-                        builder: (context) => ProfileActionsSheet(user: user),
-                      ),
+                      onPressed: () {
+                        showDefaultBottomSheet(
+                          popModals: false,
+                          context: context,
+                          builder: (context) => ProfileActionsSheet(userId: user.id),
+                        );
+                      },
                       icon: const Icon(Icons.settings_outlined),
                     ),
                   ),

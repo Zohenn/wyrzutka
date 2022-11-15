@@ -42,7 +42,7 @@ class AvatarIcon extends StatelessWidget {
                       showDefaultBottomSheet(
                         context: context,
                         builder: (context) => DefaultBottomSheet(
-                          child: ProfileScreenContent(user: user!),
+                          child: ProfileScreenContent(userId: user!.id),
                         ),
                       );
                     }

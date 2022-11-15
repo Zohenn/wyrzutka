@@ -1,9 +1,8 @@
-import 'dart:collection';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
+import 'dart:collection';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
 
@@ -12,9 +11,15 @@ final userServiceProvider = Provider(UserService.new);
 class UserService {
   UserService(this.ref);
 
-  Ref ref;
+  final Ref ref;
 
   UserRepository get userRepository => ref.read(userRepositoryProvider);
+
+  Future<void> changeRole(AppUser user, Role role) async {
+    final newUser = user.copyWith(role: role);
+    final updateData = {'role': role.name};
+    await userRepository.update(user.id, updateData, newUser);
+  }
 
   Future<List<AppUser>> fetchNextModeration([DocumentSnapshot? startAfterDocument]) {
     final roles = [Role.mod, Role.admin].map((e) => e.name).toList();

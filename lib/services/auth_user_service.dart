@@ -15,6 +15,16 @@ class AuthUserService {
 
   UserRepository get userRepository => ref.read(userRepositoryProvider);
 
+  Future<void> changeInfo(String name, String surname) async {
+    final newUser = authUser.copyWith(name: name, surname: surname);
+
+    final userData = AppUser.toFirestore(newUser, SetOptions(merge: true))
+      ..removeWhere((key, value) => !['name', 'surname', 'searchNS', 'searchSN'].contains(key));
+
+    await userRepository.update(authUser.id, userData, newUser);
+    ref.read(authUserProvider.notifier).state = newUser;
+  }
+
   Future<void> updateSavedProduct(String productId) async {
     final isSaved = authUser.savedProducts.contains(productId);
     late AppUser newUser;
