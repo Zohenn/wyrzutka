@@ -14,8 +14,9 @@ class UserService {
 
   Ref ref;
 
+  UserRepository get userRepository => ref.read(userRepositoryProvider);
+
   Future<List<AppUser>> fetchNextModeration([DocumentSnapshot? startAfterDocument]) {
-    final userRepository = ref.read(userRepositoryProvider);
     final roles = [Role.mod, Role.admin].map((e) => e.name).toList();
     return userRepository.fetchNext(
       filters: [QueryFilter('role', FilterOperator.whereIn, roles)],
@@ -24,7 +25,6 @@ class UserService {
   }
 
   Future<List<AppUser>> search(String value) async {
-    final userRepository = ref.read(userRepositoryProvider);
     final results = await Future.wait([
       userRepository.search('searchNS', value),
       userRepository.search('searchSN', value),

@@ -13,6 +13,8 @@ class AuthUserService {
 
   AppUser get authUser => ref.read(authUserProvider)!;
 
+  UserRepository get userRepository => ref.read(userRepositoryProvider);
+
   Future<void> updateSavedProduct(String productId) async {
     final isSaved = authUser.savedProducts.contains(productId);
     late AppUser newUser;
@@ -25,7 +27,6 @@ class AuthUserService {
   }
 
   Future<AppUser> _saveProduct(String productId) async {
-    final userRepository = ref.read(userRepositoryProvider);
     final newUser = authUser.copyWith(savedProducts: [...authUser.savedProducts, productId]);
     await userRepository.update(
       authUser.id,
@@ -38,7 +39,6 @@ class AuthUserService {
   }
 
   Future<AppUser> _removeSavedProduct(String productId) async {
-    final userRepository = ref.read(userRepositoryProvider);
     final newUser = authUser.copyWith(savedProducts: [...authUser.savedProducts]..remove(productId));
     await userRepository.update(
       authUser.id,
