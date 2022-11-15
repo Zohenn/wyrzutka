@@ -32,43 +32,28 @@ class ProfileActionsSheet extends HookConsumerWidget {
             ListTile(
               leading: const Icon(Icons.edit),
               title: const Text('Edytuj dane konta'),
-              onTap: () async {
-                final res = await showDialog(
+              onTap: () => showDialog(
                   context: context,
-                  builder: (context) => ScaffoldMessenger(child: ProfileUserDialog(user: user)),
-                );
-                if(res == true) {
-                  Navigator.of(context).pop();
-                }
-              },
+                  builder: (context) => ProfileUserDialog(user: user),
+                ),
             ),
             ListTile(
               leading: const Icon(Icons.lock_outlined),
               title: const Text('Zmień hasło'),
-              onTap: () async {
-                final res = await showDialog(
+              onTap: () => showDialog(
                   context: context,
-                  builder: (context) => ScaffoldMessenger(child: ProfilePasswordDialog(user: user)),
-                );
-                if(res == true) {
-                  Navigator.of(context).pop();
-                }
-              },
+                  builder: (context) => ProfilePasswordDialog(user: user),
+                ),
             ),
           ],
           if (authUser?.id != user.id && (authUser?.role == Role.mod || authUser?.role == Role.admin)) ...[
             ListTile(
               leading: const Icon(Icons.verified_outlined),
               title: const Text('Zmień rolę'),
-              onTap: () async {
-                final res = await showDialog(
+              onTap: () => showDialog(
                   context: context,
-                  builder: (context) => ScaffoldMessenger(child: ProfileRoleDialog(user: user)),
-                );
-                if(res == true) {
-                  Navigator.of(context).pop();
-                }
-              },
+                  builder: (context) => ProfileRoleDialog(user: user),
+                ),
             ),
           ],
           ConditionalBuilder(

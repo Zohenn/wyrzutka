@@ -11,15 +11,8 @@ class UserService {
 
   Future<void> changeRole(AppUser user, Role role) async {
     final userRepository = ref.read(userRepositoryProvider);
-
-    Map<Role, String> roleMap = {
-      Role.user: 'user',
-      Role.mod: 'mod',
-      Role.admin: 'admin',
-    };
-
     final newUser = user.copyWith(role: role);
-    final updateData = {'role': roleMap[role]};
+    final updateData = {'role': role.name};
     await userRepository.update(user.id, updateData, newUser);
   }
 }

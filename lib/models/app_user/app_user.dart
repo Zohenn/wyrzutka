@@ -69,6 +69,10 @@ class AppUser with _$AppUser, Identifiable {
   String get displayName => '$name $surname';
 
   static Map<String, Object?> toFirestore(AppUser user, SetOptions? options) {
-    return user.toJson();
+    return {
+      ...user.toJson(),
+      'searchNS': '${user.name} ${user.surname}'.toLowerCase(),
+      'searchSN': '${user.surname} ${user.name}'.toLowerCase(),
+    };
   }
 }

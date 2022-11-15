@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/main.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
@@ -43,9 +44,7 @@ class ProfileUserDialog extends HookConsumerWidget {
     final model = useRef(UserModel.fromUser(user));
     final isSaving = useState(false);
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Dialog(
+    return Dialog(
         clipBehavior: Clip.hardEdge,
         child: SingleChildScrollView(
           child: Column(
@@ -81,7 +80,6 @@ class ProfileUserDialog extends HookConsumerWidget {
                         decoration: const InputDecoration(
                           label: Text('Nazwisko'),
                         ),
-                        textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.name,
                         onChanged: (value) => model.value.surname = value,
                         validator: Validators.required('Uzupełnij nazwisko'),
@@ -119,9 +117,10 @@ class ProfileUserDialog extends HookConsumerWidget {
                           isSaving.value = true;
                           await asyncCall(context, () async {
                             await authUserService.changeInfo(model.value.name, model.value.surname);
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
                               successSnackBar(context: context, message: 'Dane zostały zmienione'),
                             );
+                            Navigator.of(context).pop();
                           });
                           isSaving.value = false;
                         },
@@ -136,7 +135,6 @@ class ProfileUserDialog extends HookConsumerWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }

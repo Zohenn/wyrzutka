@@ -70,30 +70,30 @@ class ProfileScreenContent extends HookConsumerWidget {
     final _user = authUser != user ? ref.watch(userProvider(user.id)) : user;
 
     return WillPopScope(
-        onWillPop: () async {
-          if (visiblePage.value != ProfileScreenPages.profile) {
-            visiblePage.value = ProfileScreenPages.profile;
-            return false;
-          }
-          return true;
-        },
-        child: PageTransitionSwitcher(
-          transitionBuilder: sharedAxisTransitionBuilder,
-          layoutBuilder: (entries) => Stack(
-            alignment: Alignment.topCenter,
-            children: entries,
-          ),
-          reverse: previousPage != null && previousPage != ProfileScreenPages.profile,
-          child: {
-            ProfileScreenPages.profile: ProfilePage(
-              user: _user!,
-              onPageChanged: (page) => visiblePage.value = page,
-            ),
-            ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: _user),
-            ProfileScreenPages.sortProposals: ProfileVerifiedSortProposalsPage(user: _user),
-            ProfileScreenPages.addedProducts: ProfileAddedProductsPage(user: _user),
-          }[visiblePage.value],
+      onWillPop: () async {
+        if (visiblePage.value != ProfileScreenPages.profile) {
+          visiblePage.value = ProfileScreenPages.profile;
+          return false;
+        }
+        return true;
+      },
+      child: PageTransitionSwitcher(
+        transitionBuilder: sharedAxisTransitionBuilder,
+        layoutBuilder: (entries) => Stack(
+          alignment: Alignment.topCenter,
+          children: entries,
         ),
+        reverse: previousPage != null && previousPage != ProfileScreenPages.profile,
+        child: {
+          ProfileScreenPages.profile: ProfilePage(
+            user: _user!,
+            onPageChanged: (page) => visiblePage.value = page,
+          ),
+          ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: _user),
+          ProfileScreenPages.sortProposals: ProfileVerifiedSortProposalsPage(user: _user),
+          ProfileScreenPages.addedProducts: ProfileAddedProductsPage(user: _user),
+        }[visiblePage.value],
+      ),
     );
   }
 }

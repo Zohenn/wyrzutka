@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:inzynierka/main.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
@@ -36,9 +37,7 @@ class ProfilePasswordDialog extends HookConsumerWidget {
 
     final isSaving = useState(false);
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Dialog(
+    return Dialog(
         clipBehavior: Clip.hardEdge,
         child: SingleChildScrollView(
           child: Column(
@@ -75,6 +74,7 @@ class ProfilePasswordDialog extends HookConsumerWidget {
                         ),
                         onChanged: (value) => model.value.password = value,
                         validator: Validators.required('Uzupełnij hasło'),
+                        textInputAction: TextInputAction.next,
                       ),
                       TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -128,14 +128,15 @@ class ProfilePasswordDialog extends HookConsumerWidget {
                           isSaving.value = true;
                           await asyncCall(context, () async {
                             await authService.updatePassword(model.value.password, model.value.newPassword);
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
                               successSnackBar(context: context, message: 'Hasło zostało zmienione'),
                             );
+                            Navigator.of(context).pop();
                           });
                           isSaving.value = false;
                         },
-                        style: TextButton.styleFrom(
-                            foregroundColor: Colors.white, backgroundColor: AppColors.primaryDarker),
+                        style:
+                            TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: AppColors.primaryDarker),
                         child: const Text('Zapisz'),
                       ),
                     ),
@@ -144,7 +145,6 @@ class ProfilePasswordDialog extends HookConsumerWidget {
               ),
             ],
           ),
-        ),
       ),
     );
   }
