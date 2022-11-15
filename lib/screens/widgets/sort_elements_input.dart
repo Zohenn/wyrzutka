@@ -134,6 +134,7 @@ class SortElementsInput extends StatelessWidget {
                           onPressed: () async {
                             final element = await showDefaultBottomSheet<_ElementModel>(
                               context: context,
+                              popModals: false,
                               builder: (context) => const _ElementSheet(),
                             );
 
