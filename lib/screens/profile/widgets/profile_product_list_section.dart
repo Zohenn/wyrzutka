@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/screens/profile/profile_screen.dart';
 import 'package:inzynierka/screens/widgets/product_item.dart';
-import 'package:inzynierka/screens/profile/product_list.dart';
+import 'package:inzynierka/screens/profile/widgets/product_list.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';

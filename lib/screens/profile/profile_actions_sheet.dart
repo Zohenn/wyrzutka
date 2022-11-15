@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/repositories/user_repository.dart';
+import 'package:inzynierka/screens/profile/dialog/prodile_password_dialog.dart';
+import 'package:inzynierka/screens/profile/dialog/profile_role_dialog.dart';
+import 'package:inzynierka/screens/profile/dialog/profile_user_dialog.dart';
 import 'package:inzynierka/services/auth_service.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
 
@@ -27,19 +32,43 @@ class ProfileActionsSheet extends HookConsumerWidget {
             ListTile(
               leading: const Icon(Icons.edit),
               title: const Text('Edytuj dane konta'),
-              onTap: () {},
+              onTap: () async {
+                final res = await showDialog(
+                  context: context,
+                  builder: (context) => ScaffoldMessenger(child: ProfileUserDialog(user: user)),
+                );
+                if(res == true) {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
             ListTile(
               leading: const Icon(Icons.lock_outlined),
               title: const Text('Zmień hasło'),
-              onTap: () {},
+              onTap: () async {
+                final res = await showDialog(
+                  context: context,
+                  builder: (context) => ScaffoldMessenger(child: ProfilePasswordDialog(user: user)),
+                );
+                if(res == true) {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
           ],
-          if (authUser?.role == Role.mod || authUser?.role == Role.admin) ...[
+          if (authUser?.id != user.id && (authUser?.role == Role.mod || authUser?.role == Role.admin)) ...[
             ListTile(
               leading: const Icon(Icons.verified_outlined),
               title: const Text('Zmień rolę'),
-              onTap: () {},
+              onTap: () async {
+                final res = await showDialog(
+                  context: context,
+                  builder: (context) => ScaffoldMessenger(child: ProfileRoleDialog(user: user)),
+                );
+                if(res == true) {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
           ],
           ConditionalBuilder(

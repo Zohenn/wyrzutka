@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
-import 'package:inzynierka/screens/profile/product_list.dart';
+import 'package:inzynierka/screens/profile/widgets/product_list.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 

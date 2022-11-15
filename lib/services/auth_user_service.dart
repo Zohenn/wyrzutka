@@ -9,6 +9,16 @@ class AuthUserService {
 
   Ref ref;
 
+  Future<void> changeInfo(String name, String surname) async {
+    final authUser = ref.watch(authUserProvider)!;
+    final userRepository = ref.read(userRepositoryProvider);
+
+    final newUser = authUser.copyWith(name: name, surname: surname);
+
+    await userRepository.update(authUser.id, {'name': name, 'surname': surname}, newUser);
+    ref.read(authUserProvider.notifier).state = newUser;
+  }
+
   Future<void> updateSavedProduct(String productId) async {
     final authUser = ref.read(authUserProvider)!;
     final userRepository = ref.read(userRepositoryProvider);

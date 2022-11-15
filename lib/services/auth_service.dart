@@ -20,6 +20,15 @@ class AuthService {
 
   UserRepository get userRepository => ref.watch(userRepositoryProvider);
 
+  Future<void> updatePassword(String password, String newPassword) async {
+    final user = auth.currentUser;
+    if(user == null) throw Exception();
+
+    AuthCredential credential = EmailAuthProvider.credential(email: user.email!, password: password);
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPassword);
+  }
+
   // todo: what if somebody tries to register with email that is already tied to some google account? will it be merged?
   Future<AppUser> signUp({
     required String name,
