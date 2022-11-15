@@ -2,7 +2,6 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
@@ -13,7 +12,6 @@ import 'package:inzynierka/screens/profile/page/profile_sort_proposals.dart';
 import 'package:inzynierka/screens/profile/profile_features_screen.dart';
 import 'package:inzynierka/utils/shared_axis_transition_builder.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/future_handler.dart';
 
 enum ProfileScreenPages {
   profile,
@@ -46,7 +44,7 @@ class ProfileScreen extends HookConsumerWidget {
     return SafeArea(
       child: ConditionalBuilder(
         condition: authUser != null,
-        ifTrue: () => ProfileScreenContent(user: authUser!),
+        ifTrue: () => ProfileScreenContent(userId: authUser!.id),
         ifFalse: () => const ProfileFeaturesScreen(),
       ),
     );
@@ -56,18 +54,17 @@ class ProfileScreen extends HookConsumerWidget {
 class ProfileScreenContent extends HookConsumerWidget {
   const ProfileScreenContent({
     Key? key,
-    required this.user,
+    required this.userId,
   }) : super(key: key);
 
-  final AppUser user;
+  final String userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final visiblePage = useState(ProfileScreenPages.profile);
     final previousPage = usePrevious(visiblePage.value);
 
-    final authUser = ref.watch(authUserProvider);
-    final _user = authUser != user ? ref.watch(userProvider(user.id)) : user;
+    final user = ref.watch(userProvider(userId));
 
     return WillPopScope(
       onWillPop: () async {
@@ -86,12 +83,12 @@ class ProfileScreenContent extends HookConsumerWidget {
         reverse: previousPage != null && previousPage != ProfileScreenPages.profile,
         child: {
           ProfileScreenPages.profile: ProfilePage(
-            user: _user!,
+            user: user!,
             onPageChanged: (page) => visiblePage.value = page,
           ),
-          ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: _user),
-          ProfileScreenPages.sortProposals: ProfileVerifiedSortProposalsPage(user: _user),
-          ProfileScreenPages.addedProducts: ProfileAddedProductsPage(user: _user),
+          ProfileScreenPages.savedProducts: ProfileSavedProductsPage(user: user),
+          ProfileScreenPages.sortProposals: ProfileVerifiedSortProposalsPage(user: user),
+          ProfileScreenPages.addedProducts: ProfileAddedProductsPage(user: user),
         }[visiblePage.value],
       ),
     );

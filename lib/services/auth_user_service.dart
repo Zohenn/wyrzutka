@@ -11,27 +11,52 @@ class AuthUserService {
 
   Ref ref;
 
-  Future<void> changeInfo(String name, String surname) async {
-    final authUser = ref.watch(authUserProvider)!;
-    final userRepository = ref.read(userRepositoryProvider);
+  AppUser get authUser => ref.read(authUserProvider)!;
 
+  UserRepository get userRepository => ref.read(userRepositoryProvider);
+
+  Future<void> changeInfo(String name, String surname) async {
     final newUser = authUser.copyWith(name: name, surname: surname);
 
-    await userRepository.update(authUser.id, AppUser.toFirestore(newUser, SetOptions(merge: true))..removeWhere((key, value) => !['name', 'surname', 'searchNS', 'searchSN'].contains(key)), newUser);
+    final userData = AppUser.toFirestore(newUser, SetOptions(merge: true))
+      ..removeWhere((key, value) => !['name', 'surname', 'searchNS', 'searchSN'].contains(key));
+
+    await userRepository.update(authUser.id, userData, newUser);
     ref.read(authUserProvider.notifier).state = newUser;
   }
 
   Future<void> updateSavedProduct(String productId) async {
-    final authUser = ref.read(authUserProvider)!;
-    final userRepository = ref.read(userRepositoryProvider);
-
     final isSaved = authUser.savedProducts.contains(productId);
+    late AppUser newUser;
     if (!isSaved) {
-      final user = await userRepository.saveProduct(authUser, productId);
-      ref.read(authUserProvider.notifier).state = user;
+      newUser = await _saveProduct(productId);
     } else {
-      final user = await userRepository.removeProduct(authUser, productId);
-      ref.read(authUserProvider.notifier).state = user;
+      newUser = await _removeSavedProduct(productId);
     }
+    ref.read(authUserProvider.notifier).state = newUser;
+  }
+
+  Future<AppUser> _saveProduct(String productId) async {
+    final newUser = authUser.copyWith(savedProducts: [...authUser.savedProducts, productId]);
+    await userRepository.update(
+      authUser.id,
+      {
+        'savedProducts': FieldValue.arrayUnion([productId])
+      },
+      newUser,
+    );
+    return newUser;
+  }
+
+  Future<AppUser> _removeSavedProduct(String productId) async {
+    final newUser = authUser.copyWith(savedProducts: [...authUser.savedProducts]..remove(productId));
+    await userRepository.update(
+      authUser.id,
+      {
+        'savedProducts': FieldValue.arrayRemove([productId])
+      },
+      newUser,
+    );
+    return newUser;
   }
 }

@@ -6,6 +6,7 @@ import 'package:inzynierka/screens/init_screen.dart';
 import 'package:inzynierka/screens/scanner_screen.dart';
 import 'package:inzynierka/screens/products_screen.dart';
 import 'package:inzynierka/screens/profile/profile_screen.dart';
+import 'package:inzynierka/screens/users/users_screen.dart';
 
 wrapPage(Widget child, ValueKey key) => BeamPage(
       key: key,
@@ -37,7 +38,7 @@ class RouterWrapper {
     '/scan': (context, state, data) => wrapPage(const ScannerScreen(), const ValueKey('/scan')),
     '/products': (context, state, data) => wrapPage(const ProductsScreen(), const ValueKey('/products')),
     '/profile': (context, state, data) => wrapPage(const ProfileScreen(), const ValueKey('/profile')),
-    '/menu': (context, state, data) => wrapPage(const Center(child: Text('Menu')), const ValueKey('/menu')),
+    '/users': (context, state, data) => wrapPage(const UsersScreen(), const ValueKey('/users')),
   };
 
   static final bottomNavigationRouterDelegate = BeamerDelegate(

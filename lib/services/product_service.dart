@@ -24,8 +24,9 @@ class ProductService {
 
   final Ref ref;
 
+  ProductRepository get productRepository => ref.read(productRepositoryProvider);
+
   Future<Product> createFromModel(ProductFormModel model, [Product? variant]) async {
-    final productRepository = ref.read(productRepositoryProvider);
     final photoUrls = await _uploadPhotos(model);
     final user = ref.read(authUserProvider)!.id;
     final sortProposalId = productRepository.collection.doc().id;
@@ -83,7 +84,6 @@ class ProductService {
   }
 
   Future<void> updateFromModel(ProductFormModel model) async {
-    final productRepository = ref.read(productRepositoryProvider);
     final photoUrls = model.photo != null ? await _uploadPhotos(model) : null;
     final updateData = {
       'name': model.name,
@@ -92,7 +92,8 @@ class ProductService {
         'photo': photoUrls[0],
         'photoSmall': photoUrls[1],
       },
-      if(model.product?.sort != null) 'sort': model.product!.sort!.copyWith(elements: model.elements.values.flattened.toList()).toJson(),
+      if (model.product?.sort != null)
+        'sort': model.product!.sort!.copyWith(elements: model.elements.values.flattened.toList()).toJson(),
       'symbols': [...model.symbols],
     };
     final newProduct = model.product!.copyWith(
@@ -107,7 +108,6 @@ class ProductService {
   }
 
   Future<Product?> findVariant(List<String> keywords) async {
-    final productRepository = ref.read(productRepositoryProvider);
     final result = await productRepository.fetchNext(
       filters: [QueryFilter('keywords', FilterOperator.arrayContainsAny, keywords)],
       batchSize: 1,
@@ -147,52 +147,46 @@ class ProductService {
     return nestedFilterList.flattened.toList();
   }
 
-  Future<List<Product>> fetchNext({
+  Future<List<Product>> fetchNextForCustomFilters({
     List<dynamic> filters = const [],
     DocumentSnapshot? startAfterDocument,
   }) async {
-    final productRepository = ref.read(productRepositoryProvider);
     return productRepository.fetchNext(filters: _mapFilters(filters), startAfterDocument: startAfterDocument);
   }
 
   Future<List<Product>> search(String value) {
-    final productRepository = ref.read(productRepositoryProvider);
     return productRepository.search('searchName', value);
   }
 
-  Future<List<Product>> verifiedSortProposals({
+  Future<List<Product>> fetchNextVerifiedSortProposalsForUser({
     required AppUser user,
     DocumentSnapshot? startAfterDocument,
     int? batchSize,
   }) {
-    final productRepository = ref.read(productRepositoryProvider);
     return productRepository.fetchNext(
-        filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)],
-        batchSize: batchSize ?? BaseRepository.batchSize,
-        startAfterDocument: startAfterDocument);
+      filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)],
+      startAfterDocument: startAfterDocument,
+      batchSize: batchSize ?? BaseRepository.batchSize,
+    );
   }
 
-  Future<int> countVerifiedSortProposals(
-    AppUser user,
-  ) {
-    final productRepository = ref.read(productRepositoryProvider);
+  Future<int> countVerifiedSortProposalsForUser(AppUser user) {
     return productRepository.count(filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)]);
   }
 
-  Future<List<Product>> addedProducts({
+  Future<List<Product>> fetchNextProductsAddedByUser({
     required AppUser user,
     DocumentSnapshot? startAfterDocument,
     int? batchSize,
   }) {
-    final productRepository = ref.read(productRepositoryProvider);
     return productRepository.fetchNext(
-        filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)],
-        batchSize: batchSize ?? BaseRepository.batchSize,
-        startAfterDocument: startAfterDocument);
+      filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)],
+      startAfterDocument: startAfterDocument,
+      batchSize: batchSize ?? BaseRepository.batchSize,
+    );
   }
 
-  Future<int> countAddedProducts(AppUser user, [DocumentSnapshot? startAfterDocument, int? batchSize]) {
-    final productRepository = ref.read(productRepositoryProvider);
+  Future<int> countProductsAddedByUser(AppUser user) {
     return productRepository.count(filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)]);
   }
 
@@ -202,7 +196,6 @@ class ProductService {
       throw EmptySortProposalException();
     }
 
-    final productRepository = ref.read(productRepositoryProvider);
     final user = ref.read(authUserProvider)!.id;
     final sortProposalId = productRepository.collection.doc().id;
     final sort = Sort(
@@ -219,8 +212,6 @@ class ProductService {
   }
 
   Future<void> deleteSortProposal(Product product, String sortProposalId) async {
-    final productRepository = ref.read(productRepositoryProvider);
-
     final newProduct = product.copyWith(sortProposals: {...product.sortProposals}..remove(sortProposalId));
     final updateData = {'sortProposals.$sortProposalId': FieldValue.delete()};
 

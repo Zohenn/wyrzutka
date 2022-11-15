@@ -44,12 +44,12 @@ class ProfilePage extends HookConsumerWidget {
     final future = useInitFuture(
           () =>
           Future.wait([
-            productService.countVerifiedSortProposals(user).then((value) => verifiedSortProposalsCount.value = value),
-            productService.countAddedProducts(user).then((value) => userProductsCount.value = value),
+            productService.countVerifiedSortProposalsForUser(user).then((value) => verifiedSortProposalsCount.value = value),
+            productService.countProductsAddedByUser(user).then((value) => userProductsCount.value = value),
 
             productRepository.fetchIds(savedProductsIds),
-            productService.verifiedSortProposals(user: user, batchSize: 2).then((value) => verifiedSortProposalsIds.value = value.map((product) => product.id).toList()),
-            productService.addedProducts(user: user, batchSize: 2).then((value) => userProductsIds.value = value.map((product) => product.id).toList()),
+            productService.fetchNextVerifiedSortProposalsForUser(user: user, batchSize: 2).then((value) => verifiedSortProposalsIds.value = value.map((product) => product.id).toList()),
+            productService.fetchNextProductsAddedByUser(user: user, batchSize: 2).then((value) => userProductsIds.value = value.map((product) => product.id).toList()),
           ]),
     );
 

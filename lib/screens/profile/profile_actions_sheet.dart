@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
@@ -13,14 +12,16 @@ import 'package:inzynierka/widgets/conditional_builder.dart';
 class ProfileActionsSheet extends HookConsumerWidget {
   const ProfileActionsSheet({
     Key? key,
-    required this.user,
+    required this.userId,
   }) : super(key: key);
 
-  final AppUser user;
+  final String userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
+
+    final user = ref.watch(userProvider(userId))!;
 
     // todo: perhaps show info if logged with google or email
     return ListTileTheme(

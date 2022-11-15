@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -25,7 +24,6 @@ class ProfileUser extends HookConsumerWidget {
     final bool isRole = (authUser?.role != Role.user || authUser?.role == Role.admin);
     final bool isProfile = ModalRoute.of(context).runtimeType != ModalBottomSheetRoute && authUser?.id == user.id;
     final bool isUserProfile = ModalRoute.of(context).runtimeType == ModalBottomSheetRoute && authUser?.id != user.id;
-
 
     return Card(
       child: Column(
@@ -57,7 +55,7 @@ class ProfileUser extends HookConsumerWidget {
                         showDefaultBottomSheet(
                           popModals: false,
                           context: context,
-                          builder: (context) => ProfileActionsSheet(user: user),
+                          builder: (context) => ProfileActionsSheet(userId: user.id),
                         );
                       },
                       icon: const Icon(Icons.settings_outlined),

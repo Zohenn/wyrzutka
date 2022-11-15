@@ -41,8 +41,8 @@ class BottomBarLayout extends HookConsumerWidget {
             label: 'Profil',
           ),
           NavigationDestination(
-            icon: Icon(Icons.menu),
-            label: 'Menu',
+            icon: Icon(Icons.groups_outlined),
+            label: 'Użytkownicy',
           ),
         ],
       ),
