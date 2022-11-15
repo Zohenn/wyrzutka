@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 
 enum FilterOperator {
   isEqualTo,
@@ -53,4 +54,16 @@ class QueryFilter {
         return _query;
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QueryFilter &&
+          runtimeType == other.runtimeType &&
+          field == other.field &&
+          operator == other.operator &&
+          const DeepCollectionEquality().equals(value, other.value);
+
+  @override
+  int get hashCode => field.hashCode ^ operator.hashCode ^ value.hashCode;
 }

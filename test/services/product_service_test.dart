@@ -12,6 +12,7 @@ import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
+import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
@@ -23,7 +24,12 @@ import 'package:mockito/mockito.dart';
 
 import 'product_service_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<ProductRepository>(), MockSpec<ImageUploadService>(), MockSpec<File>()])
+@GenerateNiceMocks([
+  MockSpec<ProductRepository>(),
+  MockSpec<ImageUploadService>(),
+  MockSpec<File>(),
+  MockSpec<DocumentSnapshot>(),
+])
 void main() {
   late AppUser authUser;
   late Product product;
@@ -280,6 +286,108 @@ void main() {
       await productService.search(value);
 
       verify(mockProductRepository.search('searchName', value)).called(1);
+    });
+  });
+
+  group('fetchNextVerifiedSortProposalsForUser', () {
+    const batchSize = 5;
+    late DocumentSnapshot snapshot;
+
+    setUp(() async {
+      snapshot = MockDocumentSnapshot();
+    });
+
+    test('Should call fetchNext from repository', () async {
+      await productService.fetchNextVerifiedSortProposalsForUser(
+        user: authUser,
+        startAfterDocument: snapshot,
+        batchSize: batchSize,
+      );
+
+      verify(
+        mockProductRepository.fetchNext(
+          filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, authUser.id)],
+          startAfterDocument: snapshot,
+          batchSize: batchSize,
+        ),
+      ).called(1);
+    });
+
+    test('Should set batchSize to BaseRepository.batchSize if null', () async {
+      await productService.fetchNextVerifiedSortProposalsForUser(
+        user: authUser,
+        startAfterDocument: snapshot,
+        batchSize: null,
+      );
+
+      verify(
+        mockProductRepository.fetchNext(
+          filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, authUser.id)],
+          startAfterDocument: snapshot,
+          batchSize: BaseRepository.batchSize,
+        ),
+      ).called(1);
+    });
+  });
+
+  group('countVerifiedSortProposalsForUser', () {
+    test('Should call count from repository', () async {
+      await productService.countVerifiedSortProposalsForUser(authUser);
+
+      verify(
+        mockProductRepository.count(filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, authUser.id)]),
+      ).called(1);
+    });
+  });
+
+  group('fetchNextProductsAddedByUser', () {
+    const batchSize = 5;
+    late DocumentSnapshot snapshot;
+
+    setUp(() async {
+      snapshot = MockDocumentSnapshot();
+    });
+
+    test('Should call fetchNext from repository', () async {
+      await productService.fetchNextProductsAddedByUser(
+        user: authUser,
+        startAfterDocument: snapshot,
+        batchSize: batchSize,
+      );
+
+      verify(
+        mockProductRepository.fetchNext(
+          filters: [QueryFilter('user', FilterOperator.isEqualTo, authUser.id)],
+          startAfterDocument: snapshot,
+          batchSize: batchSize,
+        ),
+      ).called(1);
+    });
+
+    test('Should set batchSize to BaseRepository.batchSize if null', () async {
+      await productService.fetchNextProductsAddedByUser(
+        user: authUser,
+        startAfterDocument: snapshot,
+        batchSize: null,
+      );
+
+      verify(
+        mockProductRepository.fetchNext(
+          filters: [QueryFilter('user', FilterOperator.isEqualTo, authUser.id)],
+          startAfterDocument: snapshot,
+          batchSize: BaseRepository.batchSize,
+        ),
+      ).called(1);
+    });
+  });
+
+  group('countProductsAddedByUser', () {
+    test('Should call count from repository', () async {
+      await productService.countProductsAddedByUser(authUser);
+
+      verify(
+        mockProductRepository.count(filters: [QueryFilter('user', FilterOperator.isEqualTo, authUser.id)]),
+      ).called(1);
     });
   });
 
