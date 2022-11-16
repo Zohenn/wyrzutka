@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:inzynierka/theme/app_theme.dart';
 import 'package:inzynierka/routing/router.dart';
 
-final scaffoldKey = GlobalKey<ScaffoldState>();
+final rootScaffoldKey = GlobalKey<ScaffoldState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ class MyApp extends ConsumerWidget {
       routerDelegate: RouterWrapper.routerDelegate,
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: RouterWrapper.routerDelegate),
       builder: (context, child) => Scaffold(
-        key: scaffoldKey,
+        key: rootScaffoldKey,
         body: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
