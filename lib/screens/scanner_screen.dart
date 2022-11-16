@@ -8,7 +8,6 @@ import 'package:inzynierka/screens/scanner_product_modal.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
@@ -25,9 +24,6 @@ class ScannerAreaPainter extends CustomPainter {
       size.height * 0.15,
       size.width * 0.7,
       size.height * 0.2,
-      // center: Offset(size.width / 2, size.height / 4),
-      // width: size.width * 0.7,
-      // height: size.width * 0.3,
     );
     var boxPaint = Paint()..blendMode = BlendMode.clear;
     canvas
@@ -66,7 +62,7 @@ class ScannerScreen extends HookWidget {
                   color: Colors.white,
                 ),
                 Flexible(
-                  child: Text("Nie znaleziono kodu kreskowego"),
+                  child: Text('Nie znaleziono kodu kreskowego'),
                 ),
               ],
             ),
@@ -96,6 +92,7 @@ class ScannerScreen extends HookWidget {
       child: FutureHandler(
         future: camera.initFuture,
         data: () => Stack(
+          fit: StackFit.expand,
           children: [
             Positioned.fill(child: CameraPreview(camera.controller!)),
             Positioned.fill(
@@ -103,35 +100,27 @@ class ScannerScreen extends HookWidget {
                 painter: ScannerAreaPainter(),
               ),
             ),
-            GutterColumn(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GutterRow(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ProgressIndicatorButton(
-                      isLoading: isScanning.value,
-                      onPressed: () {
-                        isScanning.value = true;
-                        // camera.cropTest().then((value) async {
-                        //   isScanning.value = false;
-                        //   showDefaultBottomSheet(
-                        //     context: context,
-                        //     builder: (context) => Image.memory(value),
-                        //   );
-                        // });
-                        camera.scan().then((value) async {
-                          isScanning.value = false;
-                          await showProductModal(context, value?.rawValue ?? '');
-                          camera.controller!.resumePreview();
-                        });
-                      },
-                      child: const Text('Skanuj'),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.07),
-              ],
+            Align(
+              alignment: const Alignment(0.0, 0.80),
+              child: ProgressIndicatorButton(
+                isLoading: isScanning.value,
+                onPressed: () {
+                  isScanning.value = true;
+                  // camera.cropTest().then((value) async {
+                  //   isScanning.value = false;
+                  //   showDefaultBottomSheet(
+                  //     context: context,
+                  //     builder: (context) => Image.memory(value),
+                  //   );
+                  // });
+                  camera.scan().then((value) async {
+                    isScanning.value = false;
+                    await showProductModal(context, value?.rawValue ?? '');
+                    camera.controller!.resumePreview();
+                  });
+                },
+                child: const Text('Skanuj'),
+              ),
             ),
           ],
         ),
