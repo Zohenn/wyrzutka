@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:inzynierka/providers/image_picker_provider.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/screens/image_crop_modal.dart';
@@ -16,7 +18,7 @@ import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/gutter_row.dart';
 
-class ProductFormInformation extends HookWidget {
+class ProductFormInformation extends HookConsumerWidget {
   const ProductFormInformation({
     Key? key,
     required this.model,
@@ -48,7 +50,7 @@ class ProductFormInformation extends HookWidget {
       model.name.isNotEmpty && model.keywords.isNotEmpty && (model.photo != null || model.product != null);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
@@ -114,7 +116,7 @@ class ProductFormInformation extends HookWidget {
                               type: MaterialType.transparency,
                               child: InkWell(
                                 onTap: () async {
-                                  final picker = ImagePicker();
+                                  final picker = ref.read(imagePickerProvider);
                                   final XFile? image = await picker.pickImage(source: ImageSource.camera);
                                   if (image != null) {
                                     final croppedImage = await showDefaultBottomSheet<File>(
@@ -161,7 +163,7 @@ class ProductFormInformation extends HookWidget {
                   decoration: const InputDecoration(
                     labelText: 'Nazwa produktu',
                   ),
-                  onChanged: onNameChanged,
+                  onChanged: (value) => onNameChanged(value.trim()),
                   validator: Validators.required('Uzupełnij nazwę produktu'),
                   textInputAction: TextInputAction.next,
                 ),
@@ -172,7 +174,8 @@ class ProductFormInformation extends HookWidget {
                     labelText: 'Słowa kluczowe',
                   ),
                   onChanged: (value) => onKeywordsChanged(
-                    value.split(' ').map((e) => e.toLowerCase()).toList()..removeWhere((element) => element.isEmpty),
+                    value.split(' ').map((e) => e.toLowerCase().trim()).toList()
+                      ..removeWhere((element) => element.isEmpty),
                   ),
                 ),
               ],
@@ -181,7 +184,7 @@ class ProductFormInformation extends HookWidget {
               condition: confirmedVariant != null || variant != null,
               ifTrue: () => Column(
                 children: [
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   _VariantItem(
                     variant: confirmedVariant ?? variant!,
                     onVariantDismissed: onVariantDismissed,
@@ -254,7 +257,7 @@ class _VariantItem extends StatelessWidget {
             Row(
               children: [
                 ProductPhoto(product: variant),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 Expanded(
                   child: Text(
                     variant.name.overflowFix,
@@ -270,20 +273,20 @@ class _VariantItem extends StatelessWidget {
               children: [
                 if (confirmed)
                   OutlinedButton(
-                    key: Key('variant_cancel'),
+                    key: const Key('variant_cancel'),
                     onPressed: onVariantCanceled,
-                    child: Text('Cofnij'),
+                    child: const Text('Cofnij'),
                   ),
                 if (!confirmed) ...[
                   OutlinedButton(
-                    key: Key('variant_dismiss'),
+                    key: const Key('variant_dismiss'),
                     onPressed: onVariantDismissed,
-                    child: Text('Nie'),
+                    child: const Text('Nie'),
                   ),
                   ElevatedButton(
-                    key: Key('variant_confirm'),
+                    key: const Key('variant_confirm'),
                     onPressed: onVariantConfirmed,
-                    child: Text('Tak'),
+                    child: const Text('Tak'),
                   ),
                 ],
               ],

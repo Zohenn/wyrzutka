@@ -29,6 +29,12 @@ Widget wrapForTesting(
   );
 }
 
+Future<void> scrollToAndTap(WidgetTester tester, Finder buttonFinder) async {
+  await tester.ensureVisible(buttonFinder);
+  await tester.pumpAndSettle();
+  await tester.tap(buttonFinder);
+}
+
 void textSpanOnTap(Finder finder, String text) {
   final Element element = finder.evaluate().single;
   final RenderParagraph paragraph = element.renderObject as RenderParagraph;
