@@ -7,9 +7,9 @@ Future<T?> showDefaultBottomSheet<T>({
   required WidgetBuilder builder,
   bool fullScreen = false,
   Duration? duration,
-  bool popModals = true,
+  bool closeModals = true,
 }) {
-  if (popModals) {
+  if (closeModals) {
     Navigator.of(context).popUntil((route) => route is! ModalBottomSheetRoute);
   }
   return showMaterialModalBottomSheet<T>(

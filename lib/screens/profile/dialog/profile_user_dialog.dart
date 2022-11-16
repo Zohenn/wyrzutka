@@ -117,7 +117,7 @@ class ProfileUserDialog extends HookConsumerWidget {
                           isSaving.value = true;
                           await asyncCall(context, () async {
                             await authUserService.changeInfo(model.value.name, model.value.surname);
-                            ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
+                            ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
                               successSnackBar(context: context, message: 'Dane zostały zmienione'),
                             );
                             Navigator.of(context).pop();

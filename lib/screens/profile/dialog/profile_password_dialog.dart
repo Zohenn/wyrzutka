@@ -128,7 +128,7 @@ class ProfilePasswordDialog extends HookConsumerWidget {
                           isSaving.value = true;
                           await asyncCall(context, () async {
                             await authService.updatePassword(model.value.password, model.value.newPassword);
-                            ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
+                            ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
                               successSnackBar(context: context, message: 'Hasło zostało zmienione'),
                             );
                             Navigator.of(context).pop();

@@ -15,7 +15,7 @@ Future<void> asyncCall(
     debugPrint(err.toString());
     debugPrintStack(stackTrace: stack);
     final code = err is FirebaseException ? err.code : '';
-    ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
+    ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
     //ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
       errorSnackBar(context: context, message: firebaseErrors[code] ?? message ?? 'W trakcie przetwarzania wystąpił błąd.'),
     );

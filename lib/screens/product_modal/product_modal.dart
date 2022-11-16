@@ -101,7 +101,7 @@ class ProductModal extends HookConsumerWidget {
                                 final shouldClose = await showDefaultBottomSheet(
                                   context: context,
                                   duration: const Duration(milliseconds: 300),
-                                  popModals: false,
+                                  closeModals: false,
                                   builder: (context) => ProductActionsSheet(product: product),
                                 );
                                 if (shouldClose == true) {

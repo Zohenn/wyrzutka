@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/screens/profile/dialog/prodile_password_dialog.dart';
+import 'package:inzynierka/screens/profile/dialog/profile_password_dialog.dart';
 import 'package:inzynierka/screens/profile/dialog/profile_role_dialog.dart';
 import 'package:inzynierka/screens/profile/dialog/profile_user_dialog.dart';
 import 'package:inzynierka/services/auth_service.dart';

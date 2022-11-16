@@ -120,7 +120,7 @@ class ProductFormInformation extends HookWidget {
                                     final croppedImage = await showDefaultBottomSheet<File>(
                                       context: context,
                                       fullScreen: true,
-                                      popModals: false,
+                                      closeModals: false,
                                       builder: (context) => ImageCropModal(image: File(image.path)),
                                     );
                                     if (croppedImage != null) {

@@ -53,7 +53,7 @@ class ProfileUser extends HookConsumerWidget {
                     ifTrue: () => IconButton(
                       onPressed: () {
                         showDefaultBottomSheet(
-                          popModals: false,
+                          closeModals: false,
                           context: context,
                           builder: (context) => ProfileActionsSheet(userId: user.id),
                         );

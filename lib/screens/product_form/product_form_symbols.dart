@@ -94,7 +94,7 @@ class ProductFormSymbols extends HookConsumerWidget {
               onPressed: () async {
                 final newSymbols = await showDefaultBottomSheet(
                   context: context,
-                  popModals: false,
+                  closeModals: false,
                   builder: (context) => ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 300),
                     child: ProductSymbolsSheet(symbols: model.symbols),
