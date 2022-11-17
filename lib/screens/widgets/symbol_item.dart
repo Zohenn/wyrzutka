@@ -58,6 +58,7 @@ class SymbolItem extends StatelessWidget {
               IconButton(
                 onPressed: onDeletePressed,
                 icon: const Icon(Icons.close),
+                tooltip: 'Usuń oznaczenie ${symbol.name}',
                 style: IconButton.styleFrom(foregroundColor: AppColors.negative),
               ),
             ],

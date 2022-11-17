@@ -73,8 +73,7 @@ void main() {
 
   fillPhoto(WidgetTester tester) async {
     await tester.tap(find.textContaining('Dodaj zdjęcie'), warnIfMissed: false);
-    final context = tester.element(find.byType(Scaffold).first);
-    Navigator.of(context).pop(FakeFile(photoPath));
+    Navigator.of(getContext(tester)).pop(FakeFile(photoPath));
   }
 
   fillName(WidgetTester tester, [String? _name]) =>
@@ -284,8 +283,7 @@ void main() {
       await tester.pumpWidget(buildEditWidget());
 
       await tester.tap(find.image(NetworkImage(editedProduct.photo!)), warnIfMissed: false);
-      final context = tester.element(find.byType(Scaffold).first);
-      Navigator.of(context).pop(FakeFile(photoPath));
+      Navigator.of(getContext(tester)).pop(FakeFile(photoPath));
       await tester.pumpAndSettle();
 
       expect(find.image(FileImage(FakeFile(photoPath))), findsOneWidget);
