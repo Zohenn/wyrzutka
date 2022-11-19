@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,27 +11,7 @@ import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
 import 'product_form_information_test.mocks.dart';
-
-class FakeXFile extends Fake implements XFile {
-  FakeXFile(this.path);
-
-  @override
-  final String path;
-}
-
-class FakeFile extends Fake implements File {
-  FakeFile(this.path);
-
-  @override
-  final String path;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is FakeFile && runtimeType == other.runtimeType && path == other.path;
-
-  @override
-  int get hashCode => path.hashCode;
-}
+import 'utils.dart';
 
 @GenerateNiceMocks([MockSpec<ProductService>(), MockSpec<ImagePicker>()])
 void main() {
@@ -70,26 +48,6 @@ void main() {
           imagePickerProvider.overrideWithValue(mockImagePicker),
         ],
       );
-
-  fillPhoto(WidgetTester tester) async {
-    await tester.tap(find.textContaining('Dodaj zdjęcie'), warnIfMissed: false);
-    Navigator.of(getContext(tester)).pop(FakeFile(photoPath));
-  }
-
-  fillName(WidgetTester tester, [String? _name]) =>
-      tester.enterText(find.bySemanticsLabel('Nazwa produktu'), _name ?? name);
-  fillKeywords(WidgetTester tester, [String? _keywords]) =>
-      tester.enterText(find.bySemanticsLabel('Słowa kluczowe'), _keywords ?? keywords);
-  fillAll(WidgetTester tester) async {
-    await fillPhoto(tester);
-    await fillName(tester);
-    await fillKeywords(tester);
-  }
-
-  tapNextStep(WidgetTester tester) async {
-    final buttonFinder = find.text('Następny krok');
-    await scrollToAndTap(tester, buttonFinder);
-  }
 
   setUp(() {
     mockProductService = MockProductService();

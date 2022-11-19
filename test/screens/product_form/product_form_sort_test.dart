@@ -14,8 +14,8 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
-import 'product_form_information_test.dart';
 import 'product_form_sort_test.mocks.dart';
+import 'utils.dart';
 
 @GenerateNiceMocks([
   MockSpec<ProductService>(),
@@ -24,10 +24,7 @@ import 'product_form_sort_test.mocks.dart';
   MockSpec<SortElementTemplateRepository>(),
 ])
 void main() {
-  const productId = '584937539';
-  const photoPath = 'photo.png';
-  const name = 'Produkt';
-  const keywords = 'woda gazowana';
+  const defaultPhotoPath = 'photo.png';
   final Product partialProduct = Product(
     id: '478594',
     name: 'Edytowany produkt',
@@ -43,26 +40,6 @@ void main() {
   late MockProductService mockProductService;
   late MockImagePicker mockImagePicker;
   late MockSortElementTemplateRepository mockSortElementTemplateRepository;
-
-  tapNextStep(WidgetTester tester) async {
-    final buttonFinder = find.text('Następny krok');
-    await scrollToAndTap(tester, buttonFinder);
-  }
-
-  fillPhoto(WidgetTester tester) async {
-    await tester.tap(find.textContaining('Dodaj zdjęcie'), warnIfMissed: false);
-    Navigator.of(getContext(tester)).pop(FakeFile(photoPath));
-  }
-
-  fillName(WidgetTester tester, [String? _name]) =>
-      tester.enterText(find.bySemanticsLabel('Nazwa produktu'), _name ?? name);
-  fillKeywords(WidgetTester tester, [String? _keywords]) =>
-      tester.enterText(find.bySemanticsLabel('Słowa kluczowe'), _keywords ?? keywords);
-  fillAll(WidgetTester tester) async {
-    await fillPhoto(tester);
-    await fillName(tester);
-    await fillKeywords(tester);
-  }
 
   selectContainer(WidgetTester tester) async {
     await scrollToAndTap(tester, find.bySemanticsLabel(selectedContainer.containerName).first);
@@ -97,7 +74,7 @@ void main() {
     mockProductService = MockProductService();
     mockImagePicker = MockImagePicker();
     when(mockImagePicker.pickImage(source: ImageSource.camera))
-        .thenAnswer((realInvocation) => Future.value(FakeXFile(photoPath)));
+        .thenAnswer((realInvocation) => Future.value(FakeXFile(defaultPhotoPath)));
     when(mockProductService.findVariant(any)).thenAnswer((realInvocation) => Future.value(null));
     mockSortElementTemplateRepository = MockSortElementTemplateRepository();
   });

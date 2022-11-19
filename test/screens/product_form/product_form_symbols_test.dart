@@ -11,6 +11,7 @@ import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
 import 'product_form_symbols_test.mocks.dart';
+import 'utils.dart';
 
 @GenerateNiceMocks([MockSpec<ProductService>(), MockSpec<ProductSymbolRepository>()])
 void main() {
@@ -44,11 +45,6 @@ void main() {
   pickSymbols(tester) async {
     await scrollToAndTap(tester, find.text('Lista symboli'));
     Navigator.of(getContext(tester)).pop([...pickedIds]);
-  }
-
-  tapNextStep(WidgetTester tester) async {
-    final buttonFinder = find.text('Następny krok');
-    await scrollToAndTap(tester, buttonFinder);
   }
 
   openSymbolsStep(WidgetTester tester) async {
