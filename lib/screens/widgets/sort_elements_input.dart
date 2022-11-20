@@ -48,6 +48,13 @@ class SortElementsInput extends StatelessWidget {
     onElementsChanged(elementsCopy);
   }
 
+  void editElement(ElementContainer container, SortElement previousElement, SortElement newElement) {
+    final elementsCopy = copyElements(elements);
+    final index = elementsCopy[container]!.indexWhere((element) => element == previousElement);
+    elementsCopy[container]![index] = newElement;
+    onElementsChanged(elementsCopy);
+  }
+
   void deleteElement(ElementContainer container, SortElement element) {
     final elementsCopy = copyElements(elements);
     elementsCopy[container]!.remove(element);
@@ -121,6 +128,25 @@ class SortElementsInput extends StatelessWidget {
                               for (var element in elements[container]!) ...[
                                 _ElementItem(
                                   element: element,
+                                  onEditPressed: () async {
+                                    final newElement = await showDefaultBottomSheet<ElementModel>(
+                                      context: context,
+                                      closeModals: false,
+                                      builder: (context) => _ElementSheet(container: container, editedElement: element),
+                                    );
+
+                                    if (newElement != null) {
+                                      editElement(
+                                        container,
+                                        element,
+                                        SortElement(
+                                          container: container,
+                                          name: newElement.name,
+                                          description: newElement.desc.isEmpty ? null : newElement.desc,
+                                        ),
+                                      );
+                                    }
+                                  },
                                   onDeletePressed: () => deleteElement(container, element),
                                 ),
                                 if (element != elements[container]!.last)
@@ -132,19 +158,19 @@ class SortElementsInput extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            final element = await showDefaultBottomSheet<ElementModel>(
+                            final newElement = await showDefaultBottomSheet<ElementModel>(
                               context: context,
                               closeModals: false,
                               builder: (context) => _ElementSheet(container: container),
                             );
 
-                            if (element != null) {
+                            if (newElement != null) {
                               addElement(
                                 container,
                                 SortElement(
                                   container: container,
-                                  name: element.name,
-                                  description: element.desc.isEmpty ? null : element.desc,
+                                  name: newElement.name,
+                                  description: newElement.desc.isEmpty ? null : newElement.desc,
                                 ),
                               );
                             }
@@ -172,10 +198,12 @@ class _ElementItem extends StatelessWidget {
   const _ElementItem({
     Key? key,
     required this.element,
+    required this.onEditPressed,
     required this.onDeletePressed,
   }) : super(key: key);
 
   final SortElement element;
+  final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
 
   @override
@@ -205,6 +233,14 @@ class _ElementItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16.0),
+            IconButton(
+              onPressed: onEditPressed,
+              style: IconButton.styleFrom(foregroundColor: Colors.black).copyWith(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              tooltip: 'Edytuj element',
+              icon: const Icon(Icons.edit),
+            ),
             IconButton(
               onPressed: onDeletePressed,
               style: IconButton.styleFrom(foregroundColor: AppColors.negative).copyWith(
@@ -320,9 +356,11 @@ class _ElementSheet extends HookConsumerWidget {
   const _ElementSheet({
     Key? key,
     required this.container,
+    this.editedElement,
   }) : super(key: key);
 
   final ElementContainer container;
+  final SortElement? editedElement;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -339,7 +377,7 @@ class _ElementSheet extends HookConsumerWidget {
       () => templates.map((e) => DropdownMenuItem(value: e, child: Text(e.name))).toList(),
       [templates],
     );
-    final element = useState(ElementModel('', ''));
+    final element = useState(ElementModel(editedElement?.name ?? '', editedElement?.description ?? ''));
     final isValid = element.value.name.isNotEmpty;
 
     return SingleChildScrollView(
@@ -351,13 +389,14 @@ class _ElementSheet extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Nowy element',
+              editedElement == null ? 'Nowy element' : 'Edycja elementu',
               style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 16.0),
             GutterColumn(
               children: [
                 TextFormField(
+                  initialValue: element.value.name,
                   decoration: const InputDecoration(
                     labelText: 'Nazwa',
                   ),
@@ -367,26 +406,29 @@ class _ElementSheet extends HookConsumerWidget {
                   onChanged: (value) => element.value = ElementModel(value.trim(), element.value.desc),
                 ),
                 TextFormField(
+                  initialValue: element.value.desc,
                   decoration: const InputDecoration(
                     labelText: 'Dodatkowe informacje',
                   ),
                   onChanged: (value) => element.value = ElementModel(element.value.name, value.trim()),
                 ),
-                Center(
-                  child: Text(
-                    'Lub',
-                    style: Theme.of(context).textTheme.labelLarge,
+                if (editedElement == null) ...[
+                  Center(
+                    child: Text(
+                      'Lub',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
                   ),
-                ),
-                DropdownButtonFormField<SortElementTemplate>(
-                  hint: const Text('Wybierz z listy'),
-                  items: templateItems,
-                  onChanged: (v) {
-                    if (v != null) {
-                      Navigator.of(context).pop(ElementModel(v.name, v.description ?? ''));
-                    }
-                  },
-                ),
+                  DropdownButtonFormField<SortElementTemplate>(
+                    hint: const Text('Wybierz z listy'),
+                    items: templateItems,
+                    onChanged: (v) {
+                      if (v != null) {
+                        Navigator.of(context).pop(ElementModel(v.name, v.description ?? ''));
+                      }
+                    },
+                  ),
+                ],
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
