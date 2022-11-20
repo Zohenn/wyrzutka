@@ -135,7 +135,7 @@ class SortElementsInput extends StatelessWidget {
                             final element = await showDefaultBottomSheet<ElementModel>(
                               context: context,
                               closeModals: false,
-                              builder: (context) => const _ElementSheet(),
+                              builder: (context) => _ElementSheet(container: container),
                             );
 
                             if (element != null) {
@@ -317,15 +317,28 @@ class ElementModel {
 }
 
 class _ElementSheet extends HookConsumerWidget {
-  const _ElementSheet({Key? key}) : super(key: key);
+  const _ElementSheet({
+    Key? key,
+    required this.container,
+  }) : super(key: key);
+
+  final ElementContainer container;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sortElementTemplateRepository = ref.watch(sortElementTemplateRepositoryProvider);
     final initFuture = useInitFuture(() => sortElementTemplateRepository.fetchAll());
-    final templates = ref.watch(allSortElementTemplatesProvider);
-    final templateItems =
-        useMemoized(() => templates.map((e) => DropdownMenuItem(value: e, child: Text(e.name))).toList(), [templates]);
+    final templates = ref.watch(
+      allSortElementTemplatesProvider.select(
+        (value) => value.where(
+          (element) => element.container == container,
+        ),
+      ),
+    );
+    final templateItems = useMemoized(
+      () => templates.map((e) => DropdownMenuItem(value: e, child: Text(e.name))).toList(),
+      [templates],
+    );
     final element = useState(ElementModel('', ''));
     final isValid = element.value.name.isNotEmpty;
 
