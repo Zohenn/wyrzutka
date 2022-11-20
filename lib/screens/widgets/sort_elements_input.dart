@@ -387,7 +387,7 @@ class _ElementSheet extends HookConsumerWidget {
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.primaryDarker,
                       ),
-                      child: const Text('Zapisz'),
+                      child: const Text('Zapisz element'),
                     ),
                   ],
                 ),
