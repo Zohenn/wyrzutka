@@ -132,7 +132,7 @@ class SortElementsInput extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            final element = await showDefaultBottomSheet<_ElementModel>(
+                            final element = await showDefaultBottomSheet<ElementModel>(
                               context: context,
                               closeModals: false,
                               builder: (context) => const _ElementSheet(),
@@ -210,6 +210,7 @@ class _ElementItem extends StatelessWidget {
               style: IconButton.styleFrom(foregroundColor: AppColors.negative).copyWith(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
+              tooltip: 'Usuń element',
               icon: const Icon(Icons.close),
             ),
           ],
@@ -233,28 +234,35 @@ class _ContainerChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: selected ? Theme.of(context).primaryColor.withOpacity(0.2) : Colors.white,
-      shape: StadiumBorder(
-        side: BorderSide(color: selected ? AppColors.primaryDarker : Colors.black),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: InkWell(
-        onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedSwitcher(
-                duration: kThemeChangeDuration,
-                child: !selected
-                    ? Icon(container.icon, key: ValueKey(container), size: 20)
-                    : const Icon(Icons.check, key: Key('selected'), size: 20, color: AppColors.primaryDarker),
+    return Semantics(
+      container: true,
+      selected: selected,
+      label: container.containerName,
+      child: ExcludeSemantics(
+        child: Material(
+          color: selected ? Theme.of(context).primaryColor.withOpacity(0.2) : Colors.white,
+          shape: StadiumBorder(
+            side: BorderSide(color: selected ? AppColors.primaryDarker : Colors.black),
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+            onTap: onPressed,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedSwitcher(
+                    duration: kThemeChangeDuration,
+                    child: !selected
+                        ? Icon(container.icon, key: ValueKey(container), size: 20)
+                        : const Icon(Icons.check, key: Key('selected'), size: 20, color: AppColors.primaryDarker),
+                  ),
+                  const SizedBox(width: 12.0),
+                  Text(container.containerName, style: Theme.of(context).textTheme.labelLarge),
+                ],
               ),
-              const SizedBox(width: 12.0),
-              Text(container.containerName, style: Theme.of(context).textTheme.labelLarge),
-            ],
+            ),
           ),
         ),
       ),
@@ -301,8 +309,8 @@ class _EmptySortCard extends StatelessWidget {
   }
 }
 
-class _ElementModel {
-  _ElementModel(this.name, this.desc);
+class ElementModel {
+  ElementModel(this.name, this.desc);
 
   String name;
   String desc;
@@ -318,7 +326,7 @@ class _ElementSheet extends HookConsumerWidget {
     final templates = ref.watch(allSortElementTemplatesProvider);
     final templateItems =
         useMemoized(() => templates.map((e) => DropdownMenuItem(value: e, child: Text(e.name))).toList(), [templates]);
-    final element = useRef(_ElementModel('', ''));
+    final element = useRef(ElementModel('', ''));
 
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0 + MediaQuery.of(context).viewInsets.bottom),
@@ -360,7 +368,7 @@ class _ElementSheet extends HookConsumerWidget {
                   items: templateItems,
                   onChanged: (v) {
                     if (v != null) {
-                      Navigator.of(context).pop(_ElementModel(v.name, v.description ?? ''));
+                      Navigator.of(context).pop(ElementModel(v.name, v.description ?? ''));
                     }
                   },
                 ),
@@ -379,7 +387,7 @@ class _ElementSheet extends HookConsumerWidget {
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.primaryDarker,
                       ),
-                      child: const Text('Zapisz'),
+                      child: const Text('Zapisz element'),
                     ),
                   ],
                 ),
