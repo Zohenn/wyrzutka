@@ -326,7 +326,8 @@ class _ElementSheet extends HookConsumerWidget {
     final templates = ref.watch(allSortElementTemplatesProvider);
     final templateItems =
         useMemoized(() => templates.map((e) => DropdownMenuItem(value: e, child: Text(e.name))).toList(), [templates]);
-    final element = useRef(ElementModel('', ''));
+    final element = useState(ElementModel('', ''));
+    final isValid = element.value.name.isNotEmpty;
 
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0 + MediaQuery.of(context).viewInsets.bottom),
@@ -348,14 +349,15 @@ class _ElementSheet extends HookConsumerWidget {
                     labelText: 'Nazwa',
                   ),
                   textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: Validators.required('Uzupełnij nazwę'),
-                  onChanged: (value) => element.value.name = value,
+                  onChanged: (value) => element.value = ElementModel(value.trim(), element.value.desc),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Dodatkowe informacje',
                   ),
-                  onChanged: (value) => element.value.desc = value,
+                  onChanged: (value) => element.value = ElementModel(element.value.name, value.trim()),
                 ),
                 Center(
                   child: Text(
@@ -383,7 +385,7 @@ class _ElementSheet extends HookConsumerWidget {
                       child: const Text('Cofnij'),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.of(context).pop(element.value),
+                      onPressed: isValid ? () => Navigator.of(context).pop(element.value) : null,
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.primaryDarker,
                       ),
