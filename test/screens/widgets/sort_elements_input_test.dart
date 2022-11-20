@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/product/sort_element_template.dart';
@@ -22,6 +23,7 @@ void main() {
     SortElementTemplate(id: '2', container: ElementContainer.paper, name: 'Opakowanie')
   ];
   final selectedContainerTemplates = templates.where((element) => element.container == selectedContainer).toList();
+  final element = SortElement(container: selectedContainer, name: 'Element name', description: 'Desc');
   late MockSortElementTemplateRepository mockSortElementTemplateRepository;
   late MockOnElementsChanged mockOnElementsChanged;
 
@@ -30,7 +32,10 @@ void main() {
       wrapForTesting(
         SingleChildScrollView(
           child: SortElementsInput(
-              elements: const {selectedContainer: []}, onElementsChanged: mockOnElementsChanged, required: true),
+            elements: const {selectedContainer: []},
+            onElementsChanged: mockOnElementsChanged,
+            required: true,
+          ),
         ),
         overrides: [
           sortElementTemplateRepositoryProvider.overrideWithValue(mockSortElementTemplateRepository),
@@ -43,9 +48,63 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  buildEditElementWidget(WidgetTester tester) async {
+    await tester.pumpWidget(
+      wrapForTesting(
+        SingleChildScrollView(
+          child: SortElementsInput(
+            elements: {
+              selectedContainer: [element]
+            },
+            onElementsChanged: mockOnElementsChanged,
+            required: true,
+          ),
+        ),
+        overrides: [
+          sortElementTemplateRepositoryProvider.overrideWithValue(mockSortElementTemplateRepository),
+          allSortElementTemplatesProvider.overrideWithValue(templates),
+        ],
+      ),
+    );
+
+    await scrollToAndTap(tester, find.byTooltip('Edytuj element'));
+    await tester.pumpAndSettle();
+  }
+
   setUp(() {
     mockSortElementTemplateRepository = MockSortElementTemplateRepository();
     mockOnElementsChanged = MockOnElementsChanged();
+  });
+
+  testWidgets('Should show templates for selected container only', (tester) async {
+    await buildNewElementWidget(tester);
+
+    await scrollToAndTap(tester, find.bySemanticsLabel('Wybierz z listy'));
+    await tester.pumpAndSettle();
+
+    for (var template in templates) {
+      final matcher = selectedContainerTemplates.contains(template) ? findsNWidgets(2) : findsNothing;
+      expect(find.text(template.name), matcher);
+    }
+  });
+
+  testWidgets('Should fill inputs when editing', (tester) async {
+    await buildEditElementWidget(tester);
+
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Nazwa')),
+      matchesSemantics(value: element.name, hasTapAction: true, isTextField: true),
+    );
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Dodatkowe informacje')),
+      matchesSemantics(value: element.description, hasTapAction: true, isTextField: true),
+    );
+  });
+
+  testWidgets('Should not show templates when editing', (tester) async {
+    await buildEditElementWidget(tester);
+
+    expect(find.text('Wybierz z listy'), findsNothing);
   });
 
   testWidgets('Should not save when name is empty', (tester) async {
@@ -110,7 +169,9 @@ void main() {
     expect(find.text('Nowy element'), findsNothing);
     verify(
       mockOnElementsChanged.call({
-        selectedContainer: [SortElement(container: selectedContainer, name: template.name, description: template.description)],
+        selectedContainer: [
+          SortElement(container: selectedContainer, name: template.name, description: template.description)
+        ],
       }),
     );
   });
