@@ -25,31 +25,28 @@ class AppTheme extends StatelessWidget {
           fillColor: Colors.white,
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: Color(0xffE0E0E0)),
+            borderSide: const BorderSide(color: Color(0xffE0E0E0)),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: AppColors.primary),
+            borderSide: const BorderSide(color: AppColors.primary),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: AppColors.primary),
+            borderSide: const BorderSide(color: AppColors.primary),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: AppColors.negative),
+            borderSide: const BorderSide(color: AppColors.negative),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: AppColors.primary),
+            borderSide: const BorderSide(color: AppColors.primary),
           ),
-          floatingLabelStyle: TextStyle(color: Colors.black),
+          floatingLabelStyle: const TextStyle(color: Colors.black),
           contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
           // contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
         ),
-        // textTheme: GoogleFonts.notoSansTextTheme(
-        //   TextTheme(labelSmall: TextStyle(color: lightColorScheme.outline)),
-        // ),
         textTheme: TextTheme(
           labelSmall: TextStyle(color: lightColorScheme.outline),
           bodySmall: TextStyle(color: lightColorScheme.outline),
@@ -72,10 +69,9 @@ class AppTheme extends StatelessWidget {
             disabledForegroundColor: Colors.black45,
             backgroundColor: AppColors.primary,
             disabledBackgroundColor: AppColors.gray,
-            elevation: 0,
             side: BorderSide.none,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
-          ),
+          ).copyWith(elevation: const MaterialStatePropertyAll(0)),
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
@@ -100,11 +96,11 @@ class AppTheme extends StatelessWidget {
             side: BorderSide.none,
           ),
         ),
-        dividerTheme: DividerThemeData(
+        dividerTheme: const DividerThemeData(
           thickness: 1,
           color: Color(0xffE0E0E0),
         ),
-        disabledColor: Color(0xffE0E0E0),
+        disabledColor: const Color(0xffE0E0E0),
       ),
       child: child,
     );
