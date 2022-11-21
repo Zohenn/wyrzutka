@@ -16,13 +16,22 @@ class AuthService {
 
   final Ref ref;
 
-  FirebaseAuth get auth => ref.watch(firebaseAuthProvider);
+  FirebaseAuth get auth => ref.read(firebaseAuthProvider);
 
-  UserRepository get userRepository => ref.watch(userRepositoryProvider);
+  UserRepository get userRepository => ref.read(userRepositoryProvider);
+
+  List<UserInfo> get providerList => auth.currentUser?.providerData ?? [];
+
+  bool get usedPasswordProvider => providerList.any((element) => element.providerId == EmailAuthProvider.PROVIDER_ID);
+
+  bool get usedGoogleProvider => providerList.any((element) => element.providerId == GoogleAuthProvider.PROVIDER_ID);
 
   Future<void> updatePassword(String password, String newPassword) async {
     final user = auth.currentUser;
-    if(user == null) throw Exception();
+    if(user == null) {
+      // todo: throw more meaningful exception
+      throw Exception();
+    }
 
     AuthCredential credential = EmailAuthProvider.credential(email: user.email!, password: password);
     await user.reauthenticateWithCredential(credential);

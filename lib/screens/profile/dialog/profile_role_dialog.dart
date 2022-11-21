@@ -4,14 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/main.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/services/auth_user_service.dart';
 import 'package:inzynierka/services/user_service.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/snackbars.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 class ProfileRoleDialog extends HookConsumerWidget {
@@ -26,7 +22,8 @@ class ProfileRoleDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
 
-    final role = useState(user.role);
+    final availableRoles = Role.values.where((element) => element.index <= authUser!.role.index);
+    final selectedRole = useState(user.role);
     final isSaving = useState(false);
 
     return Dialog(
@@ -37,28 +34,32 @@ class ProfileRoleDialog extends HookConsumerWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: GutterColumn(
+              child: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Rola użytkownika',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
+                  Text('Zmiana roli', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 16.0),
+                  Column(
+                    children: [
+                      Text(user.displayName, style: Theme.of(context).textTheme.titleMedium),
+                      Text(
+                        user.role.desc,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: user.role.descColor),
+                      ),
+                    ],
                   ),
-                  DropdownButton(
-                    isExpanded: true,
-                    icon: const Icon(Icons.arrow_drop_down),
-                    iconSize: 42,
+                  const SizedBox(height: 24.0),
+                  DropdownButtonFormField<Role>(
+                    value: selectedRole.value,
                     borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-                    value: role.value,
-                    items: Role.values.map((value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value.desc, style: TextStyle(color: value.descColor)),
-                      );
-                    }).toList(),
-                    onChanged: (Role? newRole) => role.value = newRole!,
+                    decoration: const InputDecoration(labelText: 'Nowa rola'),
+                    items: [
+                      for (var role in availableRoles)
+                        DropdownMenuItem(
+                          value: role,
+                          child: Text(role.desc, style: TextStyle(color: role.descColor)),
+                        ),
+                    ],
+                    onChanged: (newRole) => selectedRole.value = newRole!,
                   ),
                 ],
               ),
@@ -86,15 +87,17 @@ class ProfileRoleDialog extends HookConsumerWidget {
                         ScaffoldMessenger.of(context).clearSnackBars();
 
                         isSaving.value = true;
-                        await asyncCall(context, () => userService.changeRole(user, role.value));
+                        await asyncCall(context, () => userService.changeRole(user, selectedRole.value));
                         ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
                           successSnackBar(context: context, message: 'Rola została zmieniona'),
                         );
                         Navigator.of(context).pop();
                         isSaving.value = false;
                       },
-                      style:
-                          TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: AppColors.primaryDarker),
+                      style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                        foregroundColor: const MaterialStatePropertyAll(Colors.white),
+                        backgroundColor: const MaterialStatePropertyAll(AppColors.primaryDarker),
+                      ),
                       child: const Text('Zapisz'),
                     ),
                   ),

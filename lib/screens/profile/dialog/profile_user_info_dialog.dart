@@ -1,36 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/main.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:inzynierka/services/auth_user_service.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/snackbars.dart';
 import 'package:inzynierka/utils/validators.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
 enum SavingState { saving, done, error }
 
 class UserModel {
-  factory UserModel.fromUser(AppUser user) => UserModel(
-        user.name,
-        user.surname,
-      );
-
   UserModel(this.name, this.surname);
+
+  factory UserModel.fromUser(AppUser user) => UserModel(
+    user.name,
+    user.surname,
+  );
 
   String name;
   String surname;
 }
 
-class ProfileUserDialog extends HookConsumerWidget {
-  const ProfileUserDialog({
+class ProfileUserInfoDialog extends HookConsumerWidget {
+  const ProfileUserInfoDialog({
     Key? key,
     required this.user,
   }) : super(key: key);
