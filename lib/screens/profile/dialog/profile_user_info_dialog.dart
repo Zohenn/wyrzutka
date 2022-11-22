@@ -11,15 +11,13 @@ import 'package:inzynierka/utils/validators.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 import 'package:inzynierka/widgets/progress_indicator_button.dart';
 
-enum SavingState { saving, done, error }
-
 class UserModel {
   UserModel(this.name, this.surname);
 
   factory UserModel.fromUser(AppUser user) => UserModel(
-    user.name,
-    user.surname,
-  );
+        user.name,
+        user.surname,
+      );
 
   String name;
   String surname;
@@ -35,102 +33,101 @@ class ProfileUserInfoDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authUserService = ref.read(authUserServiceProvider);
     final formKey = useRef(GlobalKey<FormState>());
 
     final model = useRef(UserModel.fromUser(user));
     final isSaving = useState(false);
 
     return Dialog(
-        clipBehavior: Clip.hardEdge,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: formKey.value,
-                  child: GutterColumn(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Dane konta',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                      TextFormField(
-                        initialValue: model.value.name,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: const InputDecoration(
-                          label: Text('Imię'),
-                        ),
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.name,
-                        onChanged: (value) => model.value.name = value,
-                        validator: Validators.required('Uzupełnij imię'),
-                      ),
-                      TextFormField(
-                        initialValue: model.value.surname,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: const InputDecoration(
-                          label: Text('Nazwisko'),
-                        ),
-                        keyboardType: TextInputType.name,
-                        onChanged: (value) => model.value.surname = value,
-                        validator: Validators.required('Uzupełnij nazwisko'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                color: Theme.of(context).cardColor,
-                child: Row(
+      clipBehavior: Clip.hardEdge,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: formKey.value,
+                child: GutterColumn(
                   children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        style: TextButton.styleFrom(backgroundColor: Colors.white),
-                        child: const Text('Anuluj'),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Dane konta',
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
-                    const SizedBox(width: 16.0),
-                    Expanded(
-                      child: ProgressIndicatorButton(
-                        isLoading: isSaving.value,
-                        onPressed: () async {
-                          final authUserService = ref.read(authUserServiceProvider);
-
-                          if (formKey.value.currentState?.validate() != true) {
-                            return;
-                          }
-
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          ScaffoldMessenger.of(context).clearSnackBars();
-
-                          isSaving.value = true;
-                          await asyncCall(context, () async {
-                            await authUserService.changeInfo(model.value.name, model.value.surname);
-                            ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
-                              successSnackBar(context: context, message: 'Dane zostały zmienione'),
-                            );
-                            Navigator.of(context).pop();
-                          });
-                          isSaving.value = false;
-                        },
-                        style: TextButton.styleFrom(
-                            foregroundColor: Colors.white, backgroundColor: AppColors.primaryDarker),
-                        child: const Text('Zapisz'),
+                    TextFormField(
+                      initialValue: model.value.name,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: const InputDecoration(
+                        label: Text('Imię'),
                       ),
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.name,
+                      onChanged: (value) => model.value.name = value.trim(),
+                      validator: Validators.required('Uzupełnij imię'),
+                    ),
+                    TextFormField(
+                      initialValue: model.value.surname,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: const InputDecoration(
+                        label: Text('Nazwisko'),
+                      ),
+                      keyboardType: TextInputType.name,
+                      onChanged: (value) => model.value.surname = value.trim(),
+                      validator: Validators.required('Uzupełnij nazwisko'),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+              color: Theme.of(context).cardColor,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(backgroundColor: Colors.white),
+                      child: const Text('Anuluj'),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: ProgressIndicatorButton(
+                      isLoading: isSaving.value,
+                      onPressed: () async {
+                        if (formKey.value.currentState?.validate() != true) {
+                          return;
+                        }
+
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        ScaffoldMessenger.of(context).clearSnackBars();
+
+                        isSaving.value = true;
+                        await asyncCall(context, () async {
+                          await authUserService.changeInfo(model.value.name, model.value.surname);
+                          ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
+                            successSnackBar(context: context, message: 'Dane zostały zmienione'),
+                          );
+                          Navigator.of(context).pop();
+                        });
+                        isSaving.value = false;
+                      },
+                      style:
+                          TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: AppColors.primaryDarker),
+                      child: const Text('Zapisz'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

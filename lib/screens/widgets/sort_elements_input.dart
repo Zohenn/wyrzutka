@@ -377,8 +377,8 @@ class _ElementSheet extends HookConsumerWidget {
       () => templates.map((e) => DropdownMenuItem(value: e, child: Text(e.name))).toList(),
       [templates],
     );
+    final formKey = useRef(GlobalKey<FormState>());
     final element = useState(ElementModel(editedElement?.name ?? '', editedElement?.description ?? ''));
-    final isValid = element.value.name.isNotEmpty;
 
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0 + MediaQuery.of(context).viewInsets.bottom),
@@ -393,62 +393,71 @@ class _ElementSheet extends HookConsumerWidget {
               style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 16.0),
-            GutterColumn(
-              children: [
-                TextFormField(
-                  initialValue: element.value.name,
-                  decoration: const InputDecoration(
-                    labelText: 'Nazwa',
-                  ),
-                  textInputAction: TextInputAction.next,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: Validators.required('Uzupełnij nazwę'),
-                  onChanged: (value) => element.value = ElementModel(value.trim(), element.value.desc),
-                ),
-                TextFormField(
-                  initialValue: element.value.desc,
-                  decoration: const InputDecoration(
-                    labelText: 'Dodatkowe informacje',
-                  ),
-                  onChanged: (value) => element.value = ElementModel(element.value.name, value.trim()),
-                ),
-                if (editedElement == null) ...[
-                  Center(
-                    child: Text(
-                      'Lub',
-                      style: Theme.of(context).textTheme.labelLarge,
+            Form(
+              key: formKey.value,
+              child: GutterColumn(
+                children: [
+                  TextFormField(
+                    initialValue: element.value.name,
+                    decoration: const InputDecoration(
+                      labelText: 'Nazwa',
                     ),
+                    textInputAction: TextInputAction.next,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: Validators.required('Uzupełnij nazwę'),
+                    onChanged: (value) => element.value = ElementModel(value.trim(), element.value.desc),
                   ),
-                  DropdownButtonFormField<SortElementTemplate>(
-                    hint: const Text('Wybierz z listy'),
-                    items: templateItems,
-                    onChanged: (v) {
-                      if (v != null) {
-                        Navigator.of(context).pop(ElementModel(v.name, v.description ?? ''));
-                      }
-                    },
-                  ),
-                ],
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.black,
-                      ),
-                      child: const Text('Cofnij'),
+                  TextFormField(
+                    initialValue: element.value.desc,
+                    decoration: const InputDecoration(
+                      labelText: 'Dodatkowe informacje',
                     ),
-                    TextButton(
-                      onPressed: isValid ? () => Navigator.of(context).pop(element.value) : null,
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.primaryDarker,
+                    onChanged: (value) => element.value = ElementModel(element.value.name, value.trim()),
+                  ),
+                  if (editedElement == null) ...[
+                    Center(
+                      child: Text(
+                        'Lub',
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
-                      child: const Text('Zapisz element'),
+                    ),
+                    DropdownButtonFormField<SortElementTemplate>(
+                      hint: const Text('Wybierz z listy'),
+                      items: templateItems,
+                      onChanged: (v) {
+                        if (v != null) {
+                          Navigator.of(context).pop(ElementModel(v.name, v.description ?? ''));
+                        }
+                      },
                     ),
                   ],
-                ),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.black,
+                        ),
+                        child: const Text('Cofnij'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (formKey.value.currentState?.validate() != true) {
+                            return;
+                          }
+
+                          Navigator.of(context).pop(element.value);
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.primaryDarker,
+                        ),
+                        child: const Text('Zapisz element'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

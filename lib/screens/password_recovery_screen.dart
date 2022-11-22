@@ -66,7 +66,7 @@ class PasswordRecoveryScreen extends HookConsumerWidget {
                         decoration: InputDecoration(
                           label: Text('Adres email'),
                         ),
-                        onChanged: (value) => email.value = value,
+                        onChanged: (value) => email.value = value.trim(),
                         validator: Validators.required('Uzupełnij adres email'),
                       ),
                       ProgressIndicatorButton(

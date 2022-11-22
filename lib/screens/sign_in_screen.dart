@@ -82,7 +82,7 @@ class SignInScreen extends HookConsumerWidget {
                         ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.emailAddress,
-                        onChanged: (value) => model.value.email = value,
+                        onChanged: (value) => model.value.email = value.trim(),
                         validator: Validators.required('Uzupełnij adres email'),
                       ),
                       Column(
@@ -107,7 +107,7 @@ class SignInScreen extends HookConsumerWidget {
                                 child: Text('Zapomniałeś hasła?', style: Theme.of(context).textTheme.labelMedium),
                               ),
                             ),
-                            onChanged: (value) => model.value.password = value,
+                            onChanged: (value) => model.value.password = value.trim(),
                             validator: Validators.required('Uzupełnij hasło'),
                           ),
                         ],
