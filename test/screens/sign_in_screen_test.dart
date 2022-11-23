@@ -3,21 +3,17 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/screens/password_recovery_screen.dart';
 import 'package:inzynierka/screens/sign_in_screen.dart';
-import 'package:inzynierka/screens/sign_up_screen.dart';
 import 'package:inzynierka/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import '../mocks/mock_navigator_observer.dart';
 import '../utils.dart';
 import 'sign_in_screen_test.mocks.dart';
 
 @GenerateMocks([AuthService])
 void main() {
   late MockAuthService authService;
-  late MockNavigatorObserver popObserver;
   late AppUser user;
   String email = 'foo@bar.com';
   String password = 'qwerty';
@@ -25,7 +21,6 @@ void main() {
   buildWidget() => wrapForTesting(
         SignInScreen(),
         overrides: [authServiceProvider.overrideWithValue(authService)],
-        observers: [popObserver],
       );
 
   signIn(WidgetTester tester) async {
@@ -40,7 +35,6 @@ void main() {
 
   setUp(() async {
     authService = MockAuthService();
-    popObserver = MockNavigatorObserver();
     user = AppUser(
       id: 'VJHS5rQwHxh08064vjhkMhes2lS2',
       email: 'mmarciniak299@gmail.com',
@@ -85,8 +79,9 @@ void main() {
       await tester.pumpWidget(buildWidget());
 
       await signIn(tester);
+      await tester.pumpAndSettle();
 
-      verify(popObserver.didPop(any, any)).called(1);
+      expect(find.text('Zaloguj się'), findsNothing);
     });
 
     testWidgets('Should show error message on sign in error', (tester) async {
@@ -94,7 +89,6 @@ void main() {
       await tester.pumpWidget(buildWidget());
 
       await signIn(tester);
-
       await tester.pump();
 
       expect(find.textContaining('Błąd'), findsOneWidget);
@@ -105,8 +99,9 @@ void main() {
       await tester.pumpWidget(buildWidget());
 
       await signIn(tester);
+      await tester.pumpAndSettle();
 
-      verifyNever(popObserver.didPop(any, any));
+      expect(find.text('Zaloguj się'), findsOneWidget);
     });
 
     testWidgets('Should show loading indicator during sign in process', (tester) async {
@@ -141,8 +136,9 @@ void main() {
       await tester.pumpWidget(buildWidget());
 
       await signInWithGoogle(tester);
+      await tester.pumpAndSettle();
 
-      verify(popObserver.didPop(any, any)).called(1);
+      expect(find.text('Zaloguj się'), findsNothing);
     });
 
     testWidgets('Should not close modal after sign in cancel', (tester) async {
@@ -150,8 +146,9 @@ void main() {
       await tester.pumpWidget(buildWidget());
 
       await signInWithGoogle(tester);
+      await tester.pumpAndSettle();
 
-      verifyNever(popObserver.didPop(any, any));
+      expect(find.text('Zaloguj się'), findsOneWidget);
     });
 
     testWidgets('Should show error message on sign in error', (tester) async {
@@ -159,7 +156,6 @@ void main() {
       await tester.pumpWidget(buildWidget());
 
       await signInWithGoogle(tester);
-
       await tester.pump();
 
       expect(find.textContaining('Błąd'), findsOneWidget);
@@ -170,8 +166,9 @@ void main() {
       await tester.pumpWidget(buildWidget());
 
       await signInWithGoogle(tester);
+      await tester.pumpAndSettle();
 
-      verifyNever(popObserver.didPop(any, any));
+      expect(find.text('Zaloguj się'), findsOneWidget);
     });
 
     testWidgets('Should show loading indicator during sign in process', (tester) async {
@@ -199,8 +196,8 @@ void main() {
     await tester.tap(find.textContaining('Zapomniałeś hasła'));
     await tester.pumpAndSettle();
 
-    verify(popObserver.didPop(any, any)).called(1);
-    expect(find.byType(PasswordRecoveryScreen), findsOneWidget);
+    expect(find.text('Zaloguj się'), findsNothing);
+    expect(find.text('Wyślij instrukcje'), findsOneWidget);
   });
 
   testWidgets('Should close current modal and open sign up modal on sign up tap', (tester) async {
@@ -212,7 +209,7 @@ void main() {
     textSpanOnTap(buttonFinder, 'Zarejestruj się');
     await tester.pumpAndSettle();
 
-    verify(popObserver.didPop(any, any)).called(1);
-    expect(find.byType(SignUpScreen), findsOneWidget);
+    expect(find.text('Zaloguj się'), findsNothing);
+    expect(find.text('Zarejestruj się'), findsOneWidget);
   });
 }
