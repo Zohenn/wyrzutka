@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/models/product/sort_element_template.dart';
@@ -27,7 +26,25 @@ void main() {
   late MockSortElementTemplateRepository mockSortElementTemplateRepository;
   late MockOnElementsChanged mockOnElementsChanged;
 
-  buildNewElementWidget(WidgetTester tester) async {
+  buildWidget(WidgetTester tester) async {
+    await tester.pumpWidget(
+      wrapForTesting(
+        SingleChildScrollView(
+          child: SortElementsInput(
+            elements: const {},
+            onElementsChanged: mockOnElementsChanged,
+            required: true,
+          ),
+        ),
+        overrides: [
+          sortElementTemplateRepositoryProvider.overrideWithValue(mockSortElementTemplateRepository),
+          allSortElementTemplatesProvider.overrideWithValue(templates),
+        ],
+      ),
+    );
+  }
+
+  buildWidgetWithSelectedContainer(WidgetTester tester) async {
     await tester.pumpWidget(
       wrapForTesting(
         SingleChildScrollView(
@@ -43,12 +60,9 @@ void main() {
         ],
       ),
     );
-
-    await scrollToAndTap(tester, find.text('Dodaj element'));
-    await tester.pumpAndSettle();
   }
 
-  buildEditElementWidget(WidgetTester tester) async {
+  buildWidgetWithElement(WidgetTester tester) async {
     await tester.pumpWidget(
       wrapForTesting(
         SingleChildScrollView(
@@ -66,6 +80,17 @@ void main() {
         ],
       ),
     );
+  }
+
+  buildNewElementWidget(WidgetTester tester) async {
+    await buildWidgetWithSelectedContainer(tester);
+
+    await scrollToAndTap(tester, find.text('Dodaj element'));
+    await tester.pumpAndSettle();
+  }
+
+  buildEditElementWidget(WidgetTester tester) async {
+    await buildWidgetWithElement(tester);
 
     await scrollToAndTap(tester, find.byTooltip('Edytuj element'));
     await tester.pumpAndSettle();
@@ -76,112 +101,168 @@ void main() {
     mockOnElementsChanged = MockOnElementsChanged();
   });
 
-  testWidgets('Should show templates for selected container only', (tester) async {
-    await buildNewElementWidget(tester);
+  testWidgets('Should emit change event when container is selected', (tester) async {
+    await buildWidget(tester);
 
-    await scrollToAndTap(tester, find.bySemanticsLabel('Wybierz z listy'));
-    await tester.pumpAndSettle();
+    await scrollToAndTap(tester, find.text(selectedContainer.containerName));
 
-    for (var template in templates) {
-      final matcher = selectedContainerTemplates.contains(template) ? findsNWidgets(2) : findsNothing;
-      expect(find.text(template.name), matcher);
-    }
+    verify(mockOnElementsChanged.call({selectedContainer: []}));
   });
 
-  testWidgets('Should fill inputs when editing', (tester) async {
+  testWidgets('Should emit change event when container is deselected', (tester) async {
+    await buildWidgetWithSelectedContainer(tester);
+
+    await scrollToAndTap(tester, find.text(selectedContainer.containerName).first);
+
+    verify(mockOnElementsChanged.call({}));
+  });
+
+  testWidgets('Should emit change event when new element is added', (tester) async {
+    await buildNewElementWidget(tester);
+
+    final context = getContext(tester);
+    Navigator.of(context).pop(ElementModel(element.name, element.description!));
+    await tester.pumpAndSettle();
+
+    verify(mockOnElementsChanged.call({
+      selectedContainer: [element]
+    }));
+  });
+
+  testWidgets('Should emit change event when element is edited', (tester) async {
+    final elementAfterEdit = SortElement(
+      container: selectedContainer,
+      name: 'Edited name',
+      description: 'Edited description',
+    );
     await buildEditElementWidget(tester);
 
-    expect(
-      tester.getSemantics(find.bySemanticsLabel('Nazwa')),
-      matchesSemantics(value: element.name, hasTapAction: true, isTextField: true),
-    );
-    expect(
-      tester.getSemantics(find.bySemanticsLabel('Dodatkowe informacje')),
-      matchesSemantics(value: element.description, hasTapAction: true, isTextField: true),
-    );
+    final context = getContext(tester);
+    Navigator.of(context).pop(ElementModel(elementAfterEdit.name, elementAfterEdit.description!));
+    await tester.pumpAndSettle();
+
+    verify(mockOnElementsChanged.call({
+      selectedContainer: [elementAfterEdit]
+    }));
+  });
+  
+  testWidgets('Should emit change event when element is deleted', (tester) async {
+    await buildWidgetWithElement(tester);
+
+    await scrollToAndTap(tester, find.byTooltip('Usuń element'));
+    await tester.pumpAndSettle();
+
+    verify(mockOnElementsChanged.call({selectedContainer: []}));
   });
 
-  testWidgets('Should not show templates when editing', (tester) async {
-    await buildEditElementWidget(tester);
+  group('element', () {
+    testWidgets('Should show templates for selected container only', (tester) async {
+      await buildNewElementWidget(tester);
 
-    expect(find.text('Wybierz z listy'), findsNothing);
-  });
+      await scrollToAndTap(tester, find.bySemanticsLabel('Wybierz z listy'));
+      await tester.pumpAndSettle();
 
-  testWidgets('Should not save when name is empty', (tester) async {
-    await buildNewElementWidget(tester);
+      for (var template in templates) {
+        final matcher = selectedContainerTemplates.contains(template) ? findsNWidgets(2) : findsNothing;
+        expect(find.text(template.name), matcher);
+      }
+    });
 
-    await scrollToAndTap(tester, find.text('Zapisz element'));
-    await tester.pumpAndSettle();
+    testWidgets('Should fill inputs when editing', (tester) async {
+      await buildEditElementWidget(tester);
 
-    expect(find.text('Nowy element'), findsOneWidget);
-  });
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Nazwa')),
+        matchesSemantics(value: element.name, hasTapAction: true, isTextField: true),
+      );
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Dodatkowe informacje')),
+        matchesSemantics(value: element.description, hasTapAction: true, isTextField: true),
+      );
+    });
 
-  testWidgets('Should save when description is empty', (tester) async {
-    const name = 'Element';
-    await buildNewElementWidget(tester);
+    testWidgets('Should not show templates when editing', (tester) async {
+      await buildEditElementWidget(tester);
 
-    await tester.enterText(find.bySemanticsLabel('Nazwa'), name);
-    await tester.pumpAndSettle();
+      expect(find.text('Wybierz z listy'), findsNothing);
+    });
 
-    await scrollToAndTap(tester, find.text('Zapisz element'));
-    await tester.pumpAndSettle();
+    testWidgets('Should not save when name is empty', (tester) async {
+      await buildNewElementWidget(tester);
 
-    expect(find.text('Nowy element'), findsNothing);
-    verify(
-      mockOnElementsChanged.call({
-        selectedContainer: [SortElement(container: selectedContainer, name: name)],
-      }),
-    );
-  });
+      await scrollToAndTap(tester, find.text('Zapisz element'));
+      await tester.pumpAndSettle();
 
-  testWidgets('Should save element with description', (tester) async {
-    const name = 'Element';
-    const desc = 'Description';
-    await buildNewElementWidget(tester);
+      expect(find.text('Nowy element'), findsOneWidget);
+    });
 
-    await tester.enterText(find.bySemanticsLabel('Nazwa'), name);
-    await tester.pumpAndSettle();
+    testWidgets('Should save when description is empty', (tester) async {
+      const name = 'Element';
+      await buildNewElementWidget(tester);
 
-    await tester.enterText(find.bySemanticsLabel('Dodatkowe informacje'), desc);
-    await tester.pumpAndSettle();
+      await tester.enterText(find.bySemanticsLabel('Nazwa'), name);
+      await tester.pumpAndSettle();
 
-    await scrollToAndTap(tester, find.text('Zapisz element'));
-    await tester.pumpAndSettle();
+      await scrollToAndTap(tester, find.text('Zapisz element'));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Nowy element'), findsNothing);
-    verify(
-      mockOnElementsChanged.call({
-        selectedContainer: [SortElement(container: selectedContainer, name: name, description: desc)],
-      }),
-    );
-  });
+      expect(find.text('Nowy element'), findsNothing);
+      verify(
+        mockOnElementsChanged.call({
+          selectedContainer: [SortElement(container: selectedContainer, name: name)],
+        }),
+      );
+    });
 
-  testWidgets('Should save element chosen from templates list', (tester) async {
-    final template = selectedContainerTemplates.first;
-    await buildNewElementWidget(tester);
+    testWidgets('Should save element with description', (tester) async {
+      const name = 'Element';
+      const desc = 'Description';
+      await buildNewElementWidget(tester);
 
-    await scrollToAndTap(tester, find.bySemanticsLabel('Wybierz z listy'));
-    await tester.pumpAndSettle();
+      await tester.enterText(find.bySemanticsLabel('Nazwa'), name);
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.bySemanticsLabel(template.name).first);
-    await tester.pumpAndSettle();
+      await tester.enterText(find.bySemanticsLabel('Dodatkowe informacje'), desc);
+      await tester.pumpAndSettle();
 
-    expect(find.text('Nowy element'), findsNothing);
-    verify(
-      mockOnElementsChanged.call({
-        selectedContainer: [
-          SortElement(container: selectedContainer, name: template.name, description: template.description)
-        ],
-      }),
-    );
-  });
+      await scrollToAndTap(tester, find.text('Zapisz element'));
+      await tester.pumpAndSettle();
 
-  testWidgets('Should close element modal on tap', (tester) async {
-    await buildNewElementWidget(tester);
+      expect(find.text('Nowy element'), findsNothing);
+      verify(
+        mockOnElementsChanged.call({
+          selectedContainer: [SortElement(container: selectedContainer, name: name, description: desc)],
+        }),
+      );
+    });
 
-    await scrollToAndTap(tester, find.text('Cofnij'));
-    await tester.pumpAndSettle();
+    testWidgets('Should save element chosen from templates list', (tester) async {
+      final template = selectedContainerTemplates.first;
+      await buildNewElementWidget(tester);
 
-    expect(find.text('Nowy element'), findsNothing);
+      await scrollToAndTap(tester, find.bySemanticsLabel('Wybierz z listy'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel(template.name).first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nowy element'), findsNothing);
+      verify(
+        mockOnElementsChanged.call({
+          selectedContainer: [
+            SortElement(container: selectedContainer, name: template.name, description: template.description)
+          ],
+        }),
+      );
+    });
+
+    testWidgets('Should close element modal on tap', (tester) async {
+      await buildNewElementWidget(tester);
+
+      await scrollToAndTap(tester, find.text('Cofnij'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nowy element'), findsNothing);
+    });
   });
 }
