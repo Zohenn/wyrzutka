@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/main.dart';
 import 'package:inzynierka/theme/app_theme.dart';
+import 'package:mockito/mockito.dart';
 
 Widget wrapForTesting(
   Widget child, {
@@ -49,4 +52,21 @@ void textSpanOnTap(Finder finder, String text) {
     (span.recognizer as TapGestureRecognizer).onTap!();
     return false; // stop iterating, we found the one.
   });
+}
+
+Completer<T> stubWithCompleter<T>(PostExpectation<Future<T>> expectation) {
+  final completer = Completer<T>();
+  expectation.thenAnswer((realInvocation) => completer.future);
+  return completer;
+}
+
+Future<void> testLoadingIndicator(Finder defaultFinder, Finder loadingFinder, Completer completer, WidgetTester tester) async {
+  expect(defaultFinder, findsNothing);
+  expect(loadingFinder, findsOneWidget);
+
+  completer.complete();
+  await tester.pump();
+
+  expect(defaultFinder, findsOneWidget);
+  expect(loadingFinder, findsNothing);
 }

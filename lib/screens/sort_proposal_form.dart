@@ -18,6 +18,8 @@ class SortProposalForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final productService = ref.read(productServiceProvider);
+
     final elements = useState<SortElements>({});
     final isSaving = useState(false);
     final isValid = useMemoized(
@@ -46,13 +48,15 @@ class SortProposalForm extends HookConsumerWidget {
             onPressed: isValid
                 ? () async {
                     isSaving.value = true;
-                    final productService = ref.read(productServiceProvider);
-                    await asyncCall(context, () => productService.addSortProposal(product, elements.value));
+                    await asyncCall(context, () async {
+                      await productService.addSortProposal(product, elements.value);
+
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        successSnackBar(context: context, message: 'Twoja propozycja segregacji została zapisana.'),
+                      );
+                    });
                     isSaving.value = false;
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      successSnackBar(context: context, message: 'Twoja propozycja segregacji została zapisana.'),
-                    );
                   }
                 : null,
             child: const Center(
