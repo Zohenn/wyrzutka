@@ -1,11 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/screens/password_recovery_screen.dart';
-import 'package:inzynierka/screens/sign_in_screen.dart';
 import 'package:inzynierka/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import '../mocks/mock_navigator_observer.dart';
 import '../utils.dart';
 import 'password_recovery_screen_test.mocks.dart';
 
@@ -13,12 +11,10 @@ import 'password_recovery_screen_test.mocks.dart';
 void main() {
   const email = 'mmarciniak299@gmail.com';
   late MockAuthService authService;
-  late MockNavigatorObserver popObserver;
 
   buildWidget() => wrapForTesting(
     PasswordRecoveryScreen(),
     overrides: [authServiceProvider.overrideWithValue(authService)],
-    observers: [popObserver],
   );
 
   sendEmail(WidgetTester tester) async {
@@ -31,7 +27,6 @@ void main() {
 
   setUp(() async {
     authService = MockAuthService();
-    popObserver = MockNavigatorObserver();
   });
 
   testWidgets('Should not try to send recovery email with empty email', (tester) async {
@@ -46,26 +41,51 @@ void main() {
     await tester.pumpWidget(buildWidget());
 
     await sendEmail(tester);
+    await tester.pumpAndSettle();
 
     verify(authService.sendPasswordResetEmail(email)).called(1);
-
-    await tester.pumpAndSettle();
   });
 
-  testWidgets('Should open sign in screen and show snackbar on success', (tester) async {
+  testWidgets('Should show snackbar on success', (tester) async {
     await tester.pumpWidget(buildWidget());
 
     await sendEmail(tester);
-
-    await tester.pump();
-
-    verify(popObserver.didPop(any, any)).called(1);
-    expect(find.byType(SignInScreen), findsOneWidget);
-
     await tester.pumpAndSettle();
+
+    expect(find.textContaining('Wiadomość wysłana'), findsOneWidget);
   });
 
-  testWidgets('Should close current modal and open sign up modal on sign up tap', (tester) async {
+  testWidgets('Should show snackbar on error', (tester) async {
+    when(authService.sendPasswordResetEmail(any)).thenAnswer((realInvocation) => Future.error(Error()));
+    await tester.pumpWidget(buildWidget());
+
+    await sendEmail(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('błąd'), findsOneWidget);
+  });
+
+  testWidgets('Should not close modal on error', (tester) async {
+    when(authService.sendPasswordResetEmail(any)).thenAnswer((realInvocation) => Future.error(Error()));
+    await tester.pumpWidget(buildWidget());
+
+    await sendEmail(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Wyślij instrukcje'), findsOneWidget);
+  });
+
+  testWidgets('Should close current modal and open sign in screen on success', (tester) async {
+    await tester.pumpWidget(buildWidget());
+
+    await sendEmail(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Wyślij instrukcje'), findsNothing);
+    expect(find.text('Zaloguj się'), findsOneWidget);
+  });
+
+  testWidgets('Should close current modal and open sign in modal on sign in tap', (tester) async {
     await tester.pumpWidget(buildWidget());
 
     final buttonFinder = find.textContaining('logowania');
@@ -74,9 +94,7 @@ void main() {
     await tester.tap(buttonFinder);
     await tester.pumpAndSettle();
 
-    verify(popObserver.didPop(any, any)).called(1);
-    expect(find.byType(SignInScreen), findsOneWidget);
-
-    await tester.pumpAndSettle();
+    expect(find.text('Wyślij instrukcje'), findsNothing);
+    expect(find.text('Zaloguj się'), findsOneWidget);
   });
 }
