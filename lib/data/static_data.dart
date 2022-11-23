@@ -35,11 +35,32 @@ AppUser? getUser(String? email) {
 
 final symbols = [
   const ProductSymbol(
+    id: 'Q5pJVrUTCUB6gQaGFwZs',
+    name: '01 PET',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Fpet.png?alt=media&token=58bb7f7b-0ed0-48b5-a32e-f6b901d42795',
+    description: 'Politereftalan Etylenu, zdatny do recyklingu.',
+  ),
+  const ProductSymbol(
     id: 'budlC2aRgOumb2c0RsQL',
-    name: 'PAP 21',
+    name: '21 PAP',
     photo:
         'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Fpap.png?alt=media&token=17495d20-605a-4c1c-acc6-ad6df3f548e8',
     description: 'Materiał wykonany z włókien celulozy, zdatny do recyklingu i biodegradowalny.',
+  ),
+  const ProductSymbol(
+    id: 'wDqeQrPtA0Y89UN293sI',
+    name: '40 FE',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Ffe.png?alt=media&token=e26442c2-8513-42e9-a4d6-36320b66657e',
+    description: 'Ferrum, materiał wykonany ze stali.',
+  ),
+  const ProductSymbol(
+    id: 'E7dFfaXbKJ6EsrV1CS3Z',
+    name: '41 ALU',
+    photo:
+        'https://firebasestorage.googleapis.com/v0/b/inzynierka-7f9f7.appspot.com/o/symbols%2Falu.png?alt=media&token=4af176d9-218c-49fe-86f2-f3a110d2a67d',
+    description: 'Aluminium, materiał wykonany z aluminium.',
   ),
   const ProductSymbol(
     id: '6EudWBDUR1T8zgoqoYVl',
@@ -74,6 +95,11 @@ final sortElementTemplates = [
     container: ElementContainer.paper,
     name: 'Opakowanie',
     description: 'Zgnieć przed wyrzuceniem',
+  ),
+  SortElementTemplate(
+    id: 'p1ESXwmWi0ErTnxyBrIj',
+    container: ElementContainer.plastic,
+    name: 'Folia',
   ),
 ];
 
@@ -266,16 +292,15 @@ final productsList = [
     symbols: [],
     sortProposals: {
       '1': Sort(
-        id: '1',
-        user: 'laCdqVLmRZL8qJDQeiPn',
-        elements: [
-          SortElement(name: 'Pieczywo', container: ElementContainer.bio),
-        ],
-        voteBalance: 1,
-        votes: {
-          'VJHS5rQwHxh08064vjhkMhes2lS2': true,
-        }
-      ),
+          id: '1',
+          user: 'laCdqVLmRZL8qJDQeiPn',
+          elements: [
+            SortElement(name: 'Pieczywo', container: ElementContainer.bio),
+          ],
+          voteBalance: 1,
+          votes: {
+            'VJHS5rQwHxh08064vjhkMhes2lS2': true,
+          }),
     },
     user: '1',
     addedDate: FirestoreDateTime(2022, 9, 7),
