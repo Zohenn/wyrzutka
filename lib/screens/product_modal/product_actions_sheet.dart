@@ -23,6 +23,7 @@ class ProductActionsSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authUserService = ref.read(authUserServiceProvider);
     final authUser = ref.watch(authUserProvider);
     final isSaved = authUser?.savedProducts.contains(product.id) ?? false;
     final isSaving = useState(false);
@@ -48,7 +49,6 @@ class ProductActionsSheet extends HookConsumerWidget {
             title: Text(!isSaved ? 'Zapisz na swojej liście' : 'Usuń z listy zapisanych'),
             onTap: isSaving.value == false
                 ? () async {
-                    final authUserService = ref.read(authUserServiceProvider);
                     isSaving.value = true;
                     await asyncCall(context, () => authUserService.updateSavedProduct(product.id));
                     isSaving.value = false;
