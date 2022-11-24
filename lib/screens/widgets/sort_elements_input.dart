@@ -139,11 +139,7 @@ class SortElementsInput extends StatelessWidget {
                                       editElement(
                                         container,
                                         element,
-                                        SortElement(
-                                          container: container,
-                                          name: newElement.name,
-                                          description: newElement.desc.isEmpty ? null : newElement.desc,
-                                        ),
+                                        newElement.toSortElement(container),
                                       );
                                     }
                                   },
@@ -167,11 +163,7 @@ class SortElementsInput extends StatelessWidget {
                             if (newElement != null) {
                               addElement(
                                 container,
-                                SortElement(
-                                  container: container,
-                                  name: newElement.name,
-                                  description: newElement.desc.isEmpty ? null : newElement.desc,
-                                ),
+                                newElement.toSortElement(container),
                               );
                             }
                           },
@@ -350,6 +342,12 @@ class ElementModel {
 
   String name;
   String desc;
+
+  SortElement toSortElement(ElementContainer container) => SortElement(
+        container: container,
+        name: name,
+        description: desc.isEmpty ? null : desc,
+      );
 }
 
 class _ElementSheet extends HookConsumerWidget {
