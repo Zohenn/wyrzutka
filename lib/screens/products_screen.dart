@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/hooks/debounce.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/product_filters.dart';
@@ -14,7 +13,6 @@ import 'package:inzynierka/screens/widgets/product_item.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
 import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/load_more_list_view.dart';
@@ -46,12 +44,12 @@ class ProductsScreen extends HookConsumerWidget {
     final productService = ref.watch(productServiceProvider);
     final isMounted = useIsMounted();
     final productIds = useState<List<String>>([]);
-    final initialProductIds = useRef<List<String>>([]);
     final products = ref.watch(productsProvider(productIds.value));
+    final initialized = useRef(false);
     final future = useInitFuture<List<Product>>(
       () => ref.read(productsFutureProvider).then((value) {
         productIds.value = value.map((product) => product.id).toList();
-        initialProductIds.value = productIds.value;
+        initialized.value = true;
         return value;
       }),
     );
@@ -61,6 +59,10 @@ class ProductsScreen extends HookConsumerWidget {
     final fetchedAll = useState(false);
 
     useEffect(() {
+      if (!initialized.value) {
+        return null;
+      }
+
       if (searchText.value.isNotEmpty) {
         innerFuture.value = productService.search(searchText.value).then((value) async {
           productIds.value = value.map((product) => product.id).toList();
@@ -78,7 +80,12 @@ class ProductsScreen extends HookConsumerWidget {
     }, [searchText.value]);
 
     useEffect(() {
-      innerFuture.value = productService.fetchNextForCustomFilters(filters: selectedFilters.value.values.toList()).then((value) {
+      if (!initialized.value) {
+        return null;
+      }
+
+      innerFuture.value =
+          productService.fetchNextForCustomFilters(filters: selectedFilters.value.values.toList()).then((value) {
         productIds.value = value.map((product) => product.id).toList();
         fetchedAll.value = false;
       });
@@ -191,6 +198,7 @@ class _FilterSection extends StatelessWidget {
         onSearch: onSearch,
         hintText: 'Wyszukaj produkty',
         trailingBuilder: (context) => IconButton(
+          tooltip: 'Filtry',
           style: selectedFilters.isEmpty
               ? null
               : ButtonStyle(
