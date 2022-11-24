@@ -178,7 +178,7 @@ void main() {
       verify(mockUserService.fetchNextModeration(generatedUsers[9].snapshot)).called(1);
     });
 
-    testWidgets('Should fetch more users if scrolled to the bottom', (tester) async {
+    testWidgets('Should show new users if scrolled to the bottom', (tester) async {
       await buildWidget(tester, generatedUsers);
 
       clearInteractions(mockUserService);
