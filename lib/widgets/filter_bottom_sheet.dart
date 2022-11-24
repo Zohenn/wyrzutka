@@ -140,22 +140,26 @@ class CustomFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      decoration: BoxDecoration(
-        color: selected ? Theme.of(context).primaryColor : Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: selected ? Theme.of(context).primaryColor : Theme.of(context).dividerColor),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Material(
-        type: MaterialType.transparency,
+    return Semantics(
+      container: true,
+      selected: selected,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        decoration: BoxDecoration(
+          color: selected ? Theme.of(context).primaryColor : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: selected ? Theme.of(context).primaryColor : Theme.of(context).dividerColor),
+        ),
         clipBehavior: Clip.hardEdge,
-        child: InkWell(
-          onTap: onSelected,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: Text(filter.name),
+        child: Material(
+          type: MaterialType.transparency,
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+            onTap: onSelected,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              child: Text(filter.name),
+            ),
           ),
         ),
       ),
