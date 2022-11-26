@@ -44,35 +44,39 @@ class ProductRepository extends BaseRepository<Product> {
   @override
   CacheNotifier<Product> get cache => ref.read(_productCacheProvider.notifier);
 
+  FirebaseFirestore get firestore => ref.read(firebaseFirestoreProvider);
+
   @override
-  late final CollectionReference<Product> collection =
-      ref.read(firebaseFirestoreProvider).collection('products').withConverter(
-            fromFirestore: Product.fromFirestore,
-            toFirestore: Product.toFirestore,
-          );
+  late final CollectionReference<Product> collection = firestore.collection('products').withConverter(
+        fromFirestore: Product.fromFirestore,
+        toFirestore: Product.toFirestore,
+      );
 
   // todo: mark as verified if voteBalance >= 50
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final productDoc = collection.doc(product.id);
 
-    final transactionData = await FirebaseFirestore.instance.runTransaction<UpdateVoteDto>((transaction) async {
+    final transactionData = await firestore.runTransaction<UpdateVoteDto>((transaction) async {
       final _product = (await productDoc.get()).data()!;
       final _sort = _product.sortProposals[sort.id]!;
       final previousVote = _sort.votes[user.id];
+      final sortProposalPath = 'sortProposals.${sort.id}';
+      final fullVotePath = '$sortProposalPath.votes.${user.id}';
       Map<String, bool> newVotes;
+      Map<String, dynamic> updateData = {};
       if (previousVote == value) {
         // vote cancellation
+        updateData[fullVotePath] = FieldValue.delete();
         newVotes = {..._sort.votes}..remove(user.id);
       } else {
         newVotes = {..._sort.votes, user.id: value};
+        updateData[fullVotePath] = value;
       }
       final newBalance = newVotes.values.fold<int>(0, (previousValue, element) => previousValue + (element ? 1 : -1));
+      updateData['$sortProposalPath.voteBalance'] = newBalance;
       transaction.update(
         productDoc,
-        {
-          'sortProposals.${sort.id}.votes': newVotes,
-          'sortProposals.${sort.id}.voteBalance': newBalance,
-        },
+        updateData,
       );
       return UpdateVoteDto(newVotes, newBalance);
     });
