@@ -38,7 +38,6 @@ class AuthService {
     await user.updatePassword(newPassword);
   }
 
-  // todo: what if somebody tries to register with email that is already tied to some google account? will it be merged?
   Future<AppUser> signUp({
     required String name,
     required String surname,
@@ -71,7 +70,6 @@ class AuthService {
   }
 
   Future<AppUser> _createUserDocFromGoogleCredential(UserCredential userCredential) {
-    // todo: perhaps there's a better way, since displayName can contain anything
     final user = userCredential.user!;
     final nameParts = user.displayName!.split(' ');
     final name = nameParts.first;
