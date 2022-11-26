@@ -71,34 +71,40 @@ class ProductModal extends HookConsumerWidget {
                   ),
                   child: GutterRow(
                     children: [
-                      AnimatedTheme(
-                        data: Theme.of(context).copyWith(
-                          elevatedButtonTheme:
-                              ElevatedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
-                        ),
-                        child: Expanded(
+                      Expanded(
+                        child: AnimatedTheme(
+                          data: Theme.of(context).copyWith(
+                            elevatedButtonTheme:
+                                ElevatedButtonThemeData(style: index.value == 0 ? activeTabStyle : inactiveTabStyle),
+                          ),
                           child: ElevatedButton(
                             onPressed: () => tabController.animateTo(0),
-                            child: const Text('Segregacja'),
+                            child: Semantics(
+                              selected: index.value == 0,
+                              child: const Text('Segregacja'),
+                            ),
                           ),
                         ),
                       ),
-                      AnimatedTheme(
-                        data: Theme.of(context).copyWith(
-                          elevatedButtonTheme:
-                              ElevatedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
-                        ),
-                        child: Expanded(
+                      Expanded(
+                        child: AnimatedTheme(
+                          data: Theme.of(context).copyWith(
+                            elevatedButtonTheme:
+                                ElevatedButtonThemeData(style: index.value == 1 ? activeTabStyle : inactiveTabStyle),
+                          ),
                           child: ElevatedButton(
                             onPressed: () => tabController.animateTo(1),
-                            child: const Text('Warianty'),
+                            child: Semantics(
+                              selected: index.value == 1,
+                              child: const Text('Warianty'),
+                            ),
                           ),
                         ),
                       ),
                       IconButton(
                         onPressed: authUser != null
                             ? () async {
-                                final shouldClose = await showDefaultBottomSheet(
+                                final shouldClose = await showDefaultBottomSheet<bool>(
                                   context: context,
                                   duration: const Duration(milliseconds: 300),
                                   closeModals: false,
@@ -109,7 +115,7 @@ class ProductModal extends HookConsumerWidget {
                                 }
                               }
                             : null,
-                        tooltip: authUser == null ? 'Zaloguj się, aby odblokować dodatkowe funkcje' : null,
+                        tooltip: authUser == null ? 'Więcej akcji – dostępne po zalogowaniu' : 'Więcej akcji',
                         icon: const Icon(Icons.more_vert),
                       ),
                     ],

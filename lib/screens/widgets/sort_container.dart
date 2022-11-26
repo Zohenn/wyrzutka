@@ -49,19 +49,17 @@ class SortContainer extends HookConsumerWidget {
     final authUser = ref.watch(authUserProvider);
     final user = ref.watch(userProvider(sort.user));
     final updateVoteState = useState(_UpdateVoteState.none);
-    final disableButtons =
-        updateVoteState.value != _UpdateVoteState.none || authUser == null || authUser.id == sort.user;
+    final disableVoteButtons = updateVoteState.value != _UpdateVoteState.none || authUser == null;
+    final canOpenDeleteDialog = !verified && (authUser?.role == Role.mod || authUser?.role == Role.admin);
     final userVote = sort.votes[authUser?.id];
 
     return Card(
       child: InkWell(
-        onLongPress: !verified && authUser?.role == Role.mod
-            ? () {
-                showDialog(
+        onLongPress: canOpenDeleteDialog
+            ? () => showDialog(
                   context: context,
                   builder: (context) => SortProposalDeleteDialog(product: product, sortProposal: sort),
-                );
-              }
+                )
             : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +122,7 @@ class SortContainer extends HookConsumerWidget {
                                 ProgressIndicatorIconButton(
                                   isLoading: updateVoteState.value == _UpdateVoteState.up,
                                   spinnerColor: AppColors.positive,
-                                  onPressed: disableButtons
+                                  onPressed: disableVoteButtons
                                       ? null
                                       : () async {
                                           updateVoteState.value = _UpdateVoteState.up;
@@ -134,6 +132,7 @@ class SortContainer extends HookConsumerWidget {
                                         },
                                   color: userVote == true ? AppColors.positive : null,
                                   icon: const Icon(Icons.expand_less),
+                                  tooltip: 'Dobra propozycja segregacji',
                                   style: const ButtonStyle(
                                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   ),
@@ -141,7 +140,7 @@ class SortContainer extends HookConsumerWidget {
                                 ProgressIndicatorIconButton(
                                   isLoading: updateVoteState.value == _UpdateVoteState.down,
                                   spinnerColor: AppColors.negative,
-                                  onPressed: disableButtons
+                                  onPressed: disableVoteButtons
                                       ? null
                                       : () async {
                                           updateVoteState.value = _UpdateVoteState.down;
@@ -151,6 +150,7 @@ class SortContainer extends HookConsumerWidget {
                                         },
                                   color: userVote == false ? AppColors.negative : null,
                                   icon: const Icon(Icons.expand_more),
+                                  tooltip: 'Słaba propozycja segregacji',
                                   style: const ButtonStyle(
                                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   ),
@@ -162,7 +162,7 @@ class SortContainer extends HookConsumerWidget {
                         AvatarIcon(user: user),
                       ],
                     ),
-                    if (authUser?.role == Role.mod) ...[
+                    if (authUser?.role == Role.mod || authUser?.role == Role.admin) ...[
                       const SizedBox(height: 8.0),
                       Text('ID: ${sort.id}', style: TextStyle(color: Theme.of(context).hintColor)),
                     ],

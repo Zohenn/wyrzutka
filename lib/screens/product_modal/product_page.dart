@@ -5,7 +5,7 @@ import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/repositories/product_symbol_repository.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/screens/product_modal/product_sort.dart';
+import 'package:inzynierka/screens/widgets/product_sort.dart';
 import 'package:inzynierka/screens/product_modal/product_symbols.dart';
 import 'package:inzynierka/screens/product_modal/product_user.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
