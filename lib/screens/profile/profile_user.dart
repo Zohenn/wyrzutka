@@ -51,6 +51,7 @@ class ProfileUser extends HookConsumerWidget {
                   ConditionalBuilder(
                     condition: (isRole && isUserProfile) || isProfile,
                     ifTrue: () => IconButton(
+                      tooltip: 'Ustawienia użytkownika',
                       onPressed: () {
                         showDefaultBottomSheet(
                           closeModals: false,
