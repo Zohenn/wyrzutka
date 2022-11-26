@@ -6,7 +6,7 @@ import 'package:inzynierka/services/auth_user_service.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
 import 'package:inzynierka/screens/product_modal/product_modal.dart';
-import 'package:inzynierka/screens/product_modal/product_sort.dart';
+import 'package:inzynierka/screens/widgets/product_sort.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
