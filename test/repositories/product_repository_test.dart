@@ -5,6 +5,7 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
+import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 
@@ -21,6 +22,15 @@ void main() {
         votes: {'1': value, '2': value},
       );
   final sortProposalWithVotes = getSortProposalWithVotes(true);
+  final sortProposalWithHighBalance = Sort(
+    id: '3',
+    user: 'user',
+    elements: [SortElement(container: ElementContainer.plastic, name: 'name')],
+    voteBalance: 49,
+    votes: {
+      for (var i = 2; i < 51; i++) '$i': true,
+    },
+  );
   final product = Product(
     id: '1',
     name: 'name',
@@ -29,6 +39,7 @@ void main() {
     sortProposals: {
       '1': sortProposalWithoutVotes,
       '2': sortProposalWithVotes,
+      '3': sortProposalWithHighBalance,
     },
   );
   final user = AppUser(
@@ -134,5 +145,21 @@ void main() {
         });
       });
     }
+
+    test('Should mark sort as verified if balance reaches 50', () async {
+      final updatedProduct = await repository.updateVote(product, sortProposalWithHighBalance, user, true);
+
+      final newProduct = await getProductFromDatabase();
+
+      for (var product in [updatedProduct, newProduct]) {
+        expect(product.sortProposals, {});
+        expect(
+          product.sort,
+          isA<Sort>()
+              .having((p0) => p0.user, 'user', sortProposalWithHighBalance.user)
+              .having((p0) => p0.elements, 'elements', sortProposalWithHighBalance.elements),
+        );
+      }
+    });
   });
 }
