@@ -219,7 +219,7 @@ class ProductService {
       sortProposals: {},
       verifiedBy: user,
     );
-    final updateData = product.toJson()..removeWhere((key, value) => !['sort', 'sortProposals', 'verifiedBy'].contains(key));
+    final updateData = newProduct.toJson()..removeWhere((key, value) => !['sort', 'sortProposals', 'verifiedBy'].contains(key));
 
     await productRepository.update(product.id, updateData, newProduct);
   }
