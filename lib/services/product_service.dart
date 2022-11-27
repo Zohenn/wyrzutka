@@ -118,28 +118,11 @@ class ProductService {
   List<QueryFilter> _mapFilters(List<dynamic> filters) {
     final nestedFilterList = filters.map((filter) {
       if (filter is ProductSortFilters) {
-        switch (filter) {
-          case ProductSortFilters.verified:
-            return [QueryFilter('sort', FilterOperator.isNull, false)];
-          case ProductSortFilters.unverified:
-            return [
-              QueryFilter('sort', FilterOperator.isNull, true),
-              QueryFilter('sortProposals', FilterOperator.isNotEqualTo, {})
-            ];
-          case ProductSortFilters.noProposals:
-            return [
-              QueryFilter('sort', FilterOperator.isNull, true),
-              QueryFilter('sortProposals', FilterOperator.isEqualTo, {})
-            ];
-        }
+        return filter.toQueryFilters();
       }
 
       if (filter is ProductContainerFilters) {
-        if (filter != ProductContainerFilters.many) {
-          return [QueryFilter('containers', FilterOperator.arrayContains, filter.name)];
-        } else {
-          return [QueryFilter('containerCount', FilterOperator.isGreaterThan, 1)];
-        }
+        return filter.toQueryFilters();
       }
 
       throw UnsupportedError('${filter.runtimeType} is not supported as a Product filter');

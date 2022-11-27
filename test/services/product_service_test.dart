@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
 import 'package:inzynierka/models/product/product.dart';
+import 'package:inzynierka/models/product/product_filters.dart';
 import 'package:inzynierka/models/product/sort.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
@@ -277,6 +278,31 @@ void main() {
             .having((o) => o.operator, 'operator', FilterOperator.arrayContainsAny)
             .having((o) => o.value, 'value', keywords),
       );
+    });
+  });
+
+  group('fetchNextForCustomFilters', () {
+    captureFilters(dynamic Function() call) => verify(call()).captured.first as List<QueryFilter>;
+
+    test('Should map ProductSortFilters', () async {
+      await productService.fetchNextForCustomFilters(filters: [ProductSortFilters.verified]);
+
+      final filters = captureFilters(() => mockProductRepository.fetchNext(filters: captureAnyNamed('filters')));
+      expect(filters, isNotEmpty);
+    });
+
+    test('Should map ProductContainerFilters', () async {
+      await productService.fetchNextForCustomFilters(filters: [ProductContainerFilters.plastic]);
+
+      final filters = captureFilters(() => mockProductRepository.fetchNext(filters: captureAnyNamed('filters')));
+      expect(filters, isNotEmpty);
+    });
+    
+    test('Should pass startAfterDocument to ProductRepository.fetchNext', () async {
+      final snapshot = MockDocumentSnapshot();
+      await productService.fetchNextForCustomFilters(filters: [], startAfterDocument: snapshot);
+
+      verify(mockProductRepository.fetchNext(filters: anyNamed('filters'), startAfterDocument: snapshot)).called(1);
     });
   });
 

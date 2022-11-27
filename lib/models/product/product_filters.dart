@@ -1,4 +1,5 @@
 import 'package:inzynierka/models/product/sort_element.dart';
+import 'package:inzynierka/repositories/query_filter.dart';
 
 enum ProductSortFilters {
   verified,
@@ -17,6 +18,23 @@ enum ProductSortFilters {
         return 'Niezweryfikowano';
       case ProductSortFilters.noProposals:
         return 'Brak propozycji';
+    }
+  }
+
+  List<QueryFilter> toQueryFilters() {
+    switch (this) {
+      case ProductSortFilters.verified:
+        return [QueryFilter('sort', FilterOperator.isNull, false)];
+      case ProductSortFilters.unverified:
+        return [
+          QueryFilter('sort', FilterOperator.isNull, true),
+          QueryFilter('sortProposals', FilterOperator.isNotEqualTo, {})
+        ];
+      case ProductSortFilters.noProposals:
+        return [
+          QueryFilter('sort', FilterOperator.isNull, true),
+          QueryFilter('sortProposals', FilterOperator.isEqualTo, {})
+        ];
     }
   }
 }
@@ -47,6 +65,14 @@ enum ProductContainerFilters {
         return ElementContainer.glass.containerName;
       case ProductContainerFilters.many:
         return 'Wiele pojemników';
+    }
+  }
+
+  List<QueryFilter> toQueryFilters() {
+    if (this != ProductContainerFilters.many) {
+      return [QueryFilter('containers', FilterOperator.arrayContains, name)];
+    } else {
+      return [QueryFilter('containerCount', FilterOperator.isGreaterThan, 1)];
     }
   }
 }
