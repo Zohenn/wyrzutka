@@ -4,7 +4,6 @@ import 'package:inzynierka/data/static_data.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/models/update_vote_dto.dart';
 import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/providers/cache_notifier.dart';
 import 'package:inzynierka/providers/firebase_provider.dart';
@@ -29,6 +28,8 @@ final productsProvider = createCacheItemsProvider(_productCacheProvider);
 
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
+class ProductAlreadyVerifiedException implements Exception {}
+
 class ProductRepository extends BaseRepository<Product> {
   ProductRepository(this.ref);
 
@@ -49,12 +50,18 @@ class ProductRepository extends BaseRepository<Product> {
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final productDoc = collection.doc(product.id);
 
-    final transactionData = await firestore.runTransaction<UpdateVoteDto>((transaction) async {
+    final newProduct = await firestore.runTransaction<Product>((transaction) async {
       final _product = (await productDoc.get()).data()!;
+      if(_product.sort != null){
+        throw ProductAlreadyVerifiedException();
+      }
+
       final _sort = _product.sortProposals[sort.id]!;
       final previousVote = _sort.votes[user.id];
+
       final sortProposalPath = 'sortProposals.${sort.id}';
       final fullVotePath = '$sortProposalPath.votes.${user.id}';
+
       Map<String, bool> newVotes;
       Map<String, dynamic> updateData = {};
       if (previousVote == value) {
@@ -65,17 +72,19 @@ class ProductRepository extends BaseRepository<Product> {
         updateData[fullVotePath] = value;
         newVotes = {..._sort.votes, user.id: value};
       }
+
       final newBalance = newVotes.values.fold<int>(0, (previousValue, element) => previousValue + (element ? 1 : -1));
 
       if (newBalance >= 50) {
+        final verifiedSort = Sort.verified(user: sort.user, elements: sort.elements.map((e) => e.copyWith()).toList());
         transaction.update(
           productDoc,
           {
-            'sort': Sort.verified(user: sort.user, elements: sort.elements.map((e) => e.copyWith()).toList()).toJson(),
+            'sort': verifiedSort.toJson(),
             'sortProposals': FieldValue.delete(),
           },
         );
-        return const UpdateVoteDto.verified();
+        return _product.copyWith(sort: verifiedSort, sortProposals: {});
       }
 
       updateData['$sortProposalPath.voteBalance'] = newBalance;
@@ -83,21 +92,13 @@ class ProductRepository extends BaseRepository<Product> {
         productDoc,
         updateData,
       );
-      return UpdateVoteDto(newVotes, newBalance);
-    });
-
-    final newProduct = transactionData.when(
-      (votes, balance) => product.copyWith(
+      return _product.copyWith(
         sortProposals: {
-          ...product.sortProposals,
-          sort.id: sort.copyWith(voteBalance: balance, votes: {...votes}),
+          ..._product.sortProposals,
+          sort.id: sort.copyWith(voteBalance: newBalance, votes: {...newVotes}),
         },
-      ),
-      verified: () => product.copyWith(
-        sort: Sort.verified(user: sort.user, elements: sort.elements.map((e) => e.copyWith()).toList()),
-        sortProposals: {},
-      ),
-    );
+      );
+    });
 
     addToCache(newProduct.id, newProduct);
 
