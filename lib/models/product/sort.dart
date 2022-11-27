@@ -11,8 +11,8 @@ class Sort with _$Sort {
     @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
     required String user,
     required List<SortElement> elements,
-    required int voteBalance,
-    required Map<String, bool> votes,
+    @Default(0) int voteBalance,
+    @Default({}) Map<String, bool> votes,
   }) = _Sort;
 
   factory Sort.verified({
