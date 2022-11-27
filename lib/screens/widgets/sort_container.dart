@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/screens/widgets/sort_proposal_delete_dialog.dart';
+import 'package:inzynierka/screens/widgets/sort_proposal_verification_dialog.dart';
 import 'package:inzynierka/theme/colors.dart';
 import 'package:inzynierka/models/product/sort_element.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
@@ -50,17 +51,12 @@ class SortContainer extends HookConsumerWidget {
     final user = ref.watch(userProvider(sort.user));
     final updateVoteState = useState(_UpdateVoteState.none);
     final disableVoteButtons = updateVoteState.value != _UpdateVoteState.none || authUser == null;
-    final canOpenDeleteDialog = !verified && (authUser?.role == Role.mod || authUser?.role == Role.admin);
+    final canPerformActions = !verified && (authUser?.role == Role.mod || authUser?.role == Role.admin);
     final userVote = sort.votes[authUser?.id];
 
-    return Card(
-      child: InkWell(
-        onLongPress: canOpenDeleteDialog
-            ? () => showDialog(
-                  context: context,
-                  builder: (context) => SortProposalDeleteDialog(product: product, sortProposal: sort),
-                )
-            : null,
+    return Theme(
+      data: Theme.of(context).copyWith(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
+      child: Card(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -90,11 +86,11 @@ class SortContainer extends HookConsumerWidget {
                   ],
                 ),
               ),
-              ifFalse: () => Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
+              ifFalse: () => Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
@@ -133,9 +129,6 @@ class SortContainer extends HookConsumerWidget {
                                   color: userVote == true ? AppColors.positive : null,
                                   icon: const Icon(Icons.expand_less),
                                   tooltip: 'Dobra propozycja segregacji',
-                                  style: const ButtonStyle(
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
                                 ),
                                 ProgressIndicatorIconButton(
                                   isLoading: updateVoteState.value == _UpdateVoteState.down,
@@ -151,9 +144,6 @@ class SortContainer extends HookConsumerWidget {
                                   color: userVote == false ? AppColors.negative : null,
                                   icon: const Icon(Icons.expand_more),
                                   tooltip: 'Słaba propozycja segregacji',
-                                  style: const ButtonStyle(
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
                                 ),
                               ],
                             ],
@@ -162,12 +152,40 @@ class SortContainer extends HookConsumerWidget {
                         AvatarIcon(user: user),
                       ],
                     ),
-                    if (authUser?.role == Role.mod || authUser?.role == Role.admin) ...[
-                      const SizedBox(height: 8.0),
-                      Text('ID: ${sort.id}', style: TextStyle(color: Theme.of(context).hintColor)),
-                    ],
+                  ),
+                  if (canPerformActions) ...[
+                    const Divider(color: Color(0xffE0E0E0), thickness: 1, height: 1),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text('ID: ${sort.id}', style: TextStyle(color: Theme.of(context).hintColor)),
+                          ),
+                          const SizedBox(width: 16.0),
+                          IconButton(
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => SortProposalVerificationDialog(product: product, sortProposal: sort),
+                            ),
+                            color: AppColors.positive,
+                            tooltip: 'Zatwierdź propozycję',
+                            icon: const Icon(Icons.check),
+                          ),
+                          IconButton(
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => SortProposalDeleteDialog(product: product, sortProposal: sort),
+                            ),
+                            color: AppColors.negative,
+                            tooltip: 'Usuń propozycję',
+                            icon: const Icon(Icons.delete),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
+                ],
               ),
             ),
           ],
