@@ -28,12 +28,7 @@ final productsProvider = createCacheItemsProvider(_productCacheProvider);
 
 final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
-class UpdateVoteDto {
-  UpdateVoteDto(this.votes, this.balance);
-
-  Map<String, bool> votes;
-  int balance;
-}
+class ProductAlreadyVerifiedException implements Exception {}
 
 class ProductRepository extends BaseRepository<Product> {
   ProductRepository(this.ref);
@@ -44,45 +39,67 @@ class ProductRepository extends BaseRepository<Product> {
   @override
   CacheNotifier<Product> get cache => ref.read(_productCacheProvider.notifier);
 
-  @override
-  late final CollectionReference<Product> collection =
-      ref.read(firebaseFirestoreProvider).collection('products').withConverter(
-            fromFirestore: Product.fromFirestore,
-            toFirestore: Product.toFirestore,
-          );
+  FirebaseFirestore get firestore => ref.read(firebaseFirestoreProvider);
 
-  // todo: mark as verified if voteBalance >= 50
+  @override
+  late final CollectionReference<Product> collection = firestore.collection('products').withConverter(
+        fromFirestore: Product.fromFirestore,
+        toFirestore: Product.toFirestore,
+      );
+
   Future<Product> updateVote(Product product, Sort sort, AppUser user, bool value) async {
     final productDoc = collection.doc(product.id);
 
-    final transactionData = await FirebaseFirestore.instance.runTransaction<UpdateVoteDto>((transaction) async {
+    final newProduct = await firestore.runTransaction<Product>((transaction) async {
       final _product = (await productDoc.get()).data()!;
+      if(_product.sort != null){
+        throw ProductAlreadyVerifiedException();
+      }
+
       final _sort = _product.sortProposals[sort.id]!;
       final previousVote = _sort.votes[user.id];
+
+      final sortProposalPath = 'sortProposals.${sort.id}';
+      final fullVotePath = '$sortProposalPath.votes.${user.id}';
+
       Map<String, bool> newVotes;
+      Map<String, dynamic> updateData = {};
       if (previousVote == value) {
         // vote cancellation
+        updateData[fullVotePath] = FieldValue.delete();
         newVotes = {..._sort.votes}..remove(user.id);
       } else {
+        updateData[fullVotePath] = value;
         newVotes = {..._sort.votes, user.id: value};
       }
+
       final newBalance = newVotes.values.fold<int>(0, (previousValue, element) => previousValue + (element ? 1 : -1));
+
+      if (newBalance >= 50) {
+        final verifiedSort = Sort.verified(user: sort.user, elements: sort.elements.map((e) => e.copyWith()).toList());
+        transaction.update(
+          productDoc,
+          {
+            'sort': verifiedSort.toJson(),
+            'sortProposals': FieldValue.delete(),
+          },
+        );
+        return _product.copyWith(sort: verifiedSort, sortProposals: {});
+      }
+
+      updateData['$sortProposalPath.voteBalance'] = newBalance;
       transaction.update(
         productDoc,
-        {
-          'sortProposals.${sort.id}.votes': newVotes,
-          'sortProposals.${sort.id}.voteBalance': newBalance,
+        updateData,
+      );
+      return _product.copyWith(
+        sortProposals: {
+          ..._product.sortProposals,
+          sort.id: sort.copyWith(voteBalance: newBalance, votes: {...newVotes}),
         },
       );
-      return UpdateVoteDto(newVotes, newBalance);
     });
 
-    final newProduct = product.copyWith(
-      sortProposals: {
-        ...product.sortProposals,
-        sort.id: sort.copyWith(voteBalance: transactionData.balance, votes: {...transactionData.votes}),
-      },
-    );
     addToCache(newProduct.id, newProduct);
 
     return newProduct;
