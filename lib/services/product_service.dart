@@ -211,6 +211,19 @@ class ProductService {
     await productRepository.update(product.id, updateData, newProduct);
   }
 
+  Future<void> verifySortProposal(Product product, String sortProposalId) async {
+    final user = ref.read(authUserProvider)!.id;
+    final sortProposal = product.sortProposals[sortProposalId]!;
+    final newProduct = product.copyWith(
+      sort: Sort.verified(user: sortProposal.user, elements: sortProposal.elements.map((e) => e.copyWith()).toList()),
+      sortProposals: {},
+      verifiedBy: user,
+    );
+    final updateData = newProduct.toJson()..removeWhere((key, value) => !['sort', 'sortProposals', 'verifiedBy'].contains(key));
+
+    await productRepository.update(product.id, updateData, newProduct);
+  }
+
   Future<void> deleteSortProposal(Product product, String sortProposalId) async {
     final newProduct = product.copyWith(sortProposals: {...product.sortProposals}..remove(sortProposalId));
     final updateData = {'sortProposals.$sortProposalId': FieldValue.delete()};

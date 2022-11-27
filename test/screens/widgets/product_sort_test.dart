@@ -235,31 +235,38 @@ void main() {
       verify(mockProductRepository.updateVote(product, product.sortProposals.values.first, authUser, false));
     });
     
-    testWidgets('Should not open sort proposal delete dialog if user is not logged in', (tester) async {
+    testWidgets('Should not show verify and delete buttons if user is not logged in', (tester) async {
       authUser = null;
       await buildWidget(tester);
 
-      await tester.longPress(find.text(product.sortProposals.values.first.elements.first.name));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Usuń propozycję'), findsNothing);
+      expect(find.byTooltip('Zatwierdź propozycję'), findsNothing);
+      expect(find.byTooltip('Usuń propozycję'), findsNothing);
     });
 
     testWidgets('Should not open sort proposal delete dialog if user is regular user', (tester) async {
       await buildWidget(tester);
 
-      await tester.longPress(find.text(product.sortProposals.values.first.elements.first.name));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Usuń propozycję'), findsNothing);
+      expect(find.byTooltip('Zatwierdź propozycję'), findsNothing);
+      expect(find.byTooltip('Usuń propozycję'), findsNothing);
     });
 
     for(var role in [Role.mod, Role.admin]){
+      testWidgets('Should open sort proposal verification dialog if user is ${role.name}', (tester) async {
+        authUser = authUser!.copyWith(role: role);
+        await buildWidget(tester);
+
+        await scrollToAndTap(tester, find.byTooltip('Zatwierdź propozycję').first);
+        await tester.pumpAndSettle();
+
+        expect(find.text('Zatwierdź propozycję'), findsOneWidget);
+        expect(find.textContaining(product.sortProposals.values.first.id), findsNWidgets(2));
+      });
+
       testWidgets('Should open sort proposal delete dialog if user is ${role.name}', (tester) async {
         authUser = authUser!.copyWith(role: role);
         await buildWidget(tester);
 
-        await tester.longPress(find.text(product.sortProposals.values.first.elements.first.name));
+        await scrollToAndTap(tester, find.byTooltip('Usuń propozycję').first);
         await tester.pumpAndSettle();
 
         expect(find.text('Usuń propozycję'), findsOneWidget);

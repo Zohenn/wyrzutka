@@ -470,6 +470,64 @@ void main() {
     });
   });
 
+  group('verifySortProposal', () {
+    late Product productWithProposals;
+    late String sortProposalId;
+    late Sort sortProposal;
+    late Sort verifiedSort;
+
+    setUp(() {
+      sortProposalId = '1';
+      productWithProposals = product.copyWith(sortProposals: {
+        '1': Sort(
+          id: '1',
+          user: authUser.id,
+          elements: [SortElement(container: ElementContainer.plastic, name: 'Butelka')],
+          voteBalance: 1,
+          votes: {},
+        ),
+        '2': Sort(
+          id: '2',
+          user: authUser.id,
+          elements: [SortElement(container: ElementContainer.paper, name: 'Opakowanie')],
+          voteBalance: 0,
+          votes: {},
+        ),
+      });
+      sortProposal = productWithProposals.sortProposals[sortProposalId]!;
+      verifiedSort = Sort.verified(user: sortProposal.user, elements: sortProposal.elements);
+    });
+
+    test('Should call update for correct product id', () async {
+      await productService.verifySortProposal(productWithProposals, sortProposalId);
+
+      verify(mockProductRepository.update(productWithProposals.id, any, any)).called(1);
+    });
+
+    test('Should have verified sort, empty sortProposals and verifiedBy in update data', () async {
+      await productService.verifySortProposal(productWithProposals, sortProposalId);
+
+      final updateData = verify(mockProductRepository.update(any, captureAny, any)).captured.first;
+      expect(updateData, {
+        'sort': verifiedSort.toJson(),
+        'sortProposals': {},
+        'verifiedBy': authUser.id,
+      });
+    });
+
+    test('Should set verified sort in product', () async {
+      await productService.verifySortProposal(productWithProposals, sortProposalId);
+
+      final newProduct = verify(mockProductRepository.update(any, any, captureAny)).captured.first;
+      expect(
+        newProduct,
+        isA<Product>()
+            .having((o) => o.sort, 'sort', verifiedSort)
+            .having((o) => o.sortProposals, 'sortProposals', {}).having((o) => o.verifiedBy, 'verifiedBy', authUser.id),
+      );
+    });
+  });
+
   group('deleteSortProposal', () {
     late Product productWithProposals;
     late String sortProposalId;
