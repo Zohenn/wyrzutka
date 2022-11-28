@@ -32,6 +32,9 @@ class UserRepository extends BaseRepository<AppUser> {
 
   Future<AppUser> createAndGet(AppUser user) async {
     final docId = await create(user);
-    return user.copyWith(id: docId);
+    final newUser = user.copyWith(id: docId);
+    // add to cache, or exception will be thrown when app opens profile for newly signed up user
+    addToCache(docId, newUser);
+    return newUser;
   }
 }
