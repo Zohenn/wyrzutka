@@ -3,7 +3,7 @@ import 'package:patrol/patrol.dart';
 import 'package:inzynierka/main.dart' as app;
 
 import 'config.dart';
-import 'use_firebase_emulator.dart';
+import 'setup.dart';
 
 void main() {
   patrolTest(
@@ -12,8 +12,9 @@ void main() {
     nativeAutomatorConfig: nativeAutomatorConfig,
     nativeAutomation: true,
     ($) async {
-      await useFirebaseEmulator();
+      await setupIntegrationTest($, 'revoke');
       app.main();
+
       await $.tester.pump();
       if (!(await $.native.isPermissionDialogVisible())) {
         await $.tester.pump();
@@ -26,7 +27,8 @@ void main() {
       await $.tester.pump();
 
       await $.native.grantPermissionWhenInUse();
-      await $.tester.pumpAndSettle();
+      // give it more time as it tends to be a bit flaky
+      await $.tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       expect(find.text('Skanuj'), findsAtLeastNWidgets(2));
     },

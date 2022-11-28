@@ -1,17 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/main.dart' as app;
 import 'package:patrol/patrol.dart';
 
 import 'config.dart';
-import 'use_firebase_emulator.dart';
+import 'setup.dart';
 import 'utils.dart';
 
 void main() {
-  setUp(() async {
-    await useFirebaseEmulator();
-  });
-
   tearDown(() async {
     await FirebaseAuth.instance.signOut();
   });
@@ -22,6 +19,7 @@ void main() {
     nativeAutomatorConfig: nativeAutomatorConfig,
     nativeAutomation: true,
     ($) async {
+      await setupIntegrationTest($);
       app.main();
       await $.tester.pumpAndSettle();
 
@@ -56,9 +54,14 @@ void main() {
       const surname = 'Kowalski';
 
       addTearDown(() async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
+        }
         await FirebaseAuth.instance.currentUser?.delete();
       });
 
+      await setupIntegrationTest($);
       app.main();
       await $.tester.pumpAndSettle();
 
