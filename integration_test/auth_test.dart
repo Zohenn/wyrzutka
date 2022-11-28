@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/main.dart' as app;
-import 'package:patrol/patrol.dart';
 
-import 'config.dart';
-import 'setup.dart';
 import 'utils.dart';
 
 void main() {
@@ -13,14 +9,9 @@ void main() {
     await FirebaseAuth.instance.signOut();
   });
 
-  patrolTest(
+  defaultPatrolTest(
     'Should show profile screen after sign in',
-    config: patrolConfig,
-    nativeAutomatorConfig: nativeAutomatorConfig,
-    nativeAutomation: true,
     ($) async {
-      await setupIntegrationTest($);
-      app.main();
       await $.tester.pumpAndSettle();
 
       await scrollToAndTap($.tester, find.text('Profil'));
@@ -42,11 +33,8 @@ void main() {
     },
   );
 
-  patrolTest(
+  defaultPatrolTest(
     'Should show profile screen after sign up',
-    config: patrolConfig,
-    nativeAutomatorConfig: nativeAutomatorConfig,
-    nativeAutomation: true,
     ($) async {
       const email = 'jan.kowalski@gmail.com';
       const password = 'qwerty1234';
@@ -61,8 +49,6 @@ void main() {
         await FirebaseAuth.instance.currentUser?.delete();
       });
 
-      await setupIntegrationTest($);
-      app.main();
       await $.tester.pumpAndSettle();
 
       await scrollToAndTap($.tester, find.text('Profil'));

@@ -1,20 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:patrol/patrol.dart';
-import 'package:inzynierka/main.dart' as app;
 
-import 'config.dart';
-import 'setup.dart';
+import 'utils.dart';
 
 void main() {
-  patrolTest(
+  defaultPatrolTest(
     'Should allow for permission to be granted again if it was denied before',
-    config: patrolConfig,
-    nativeAutomatorConfig: nativeAutomatorConfig,
-    nativeAutomation: true,
+    cameraPermissionAction: 'revoke',
     ($) async {
-      await setupIntegrationTest($, 'revoke');
-      app.main();
-
       await $.tester.pump();
       if (!(await $.native.isPermissionDialogVisible())) {
         await $.tester.pump();

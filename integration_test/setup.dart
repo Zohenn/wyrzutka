@@ -4,9 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:patrol/patrol.dart';
 
-Future<void> setupIntegrationTest(PatrolTester $, [String permissionAction = 'grant']) async {
+Future<void> setupIntegrationTest(PatrolTester $, [String cameraPermissionAction = 'grant']) async {
   await useFirebaseEmulator();
-  await $.host.runProcess('adb', arguments: ['shell', 'pm', permissionAction, 'com.example.inzynierka', 'android.permission.CAMERA']);
+  await $.host.runProcess(
+    'adb',
+    arguments: ['shell', 'pm', cameraPermissionAction, 'com.example.inzynierka', 'android.permission.CAMERA'],
+  );
 }
 
 Future<void> useFirebaseEmulator() async {

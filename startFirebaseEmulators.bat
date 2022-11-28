@@ -1,0 +1,1 @@
+firebase emulators:start --import=integration_test/firebase_data

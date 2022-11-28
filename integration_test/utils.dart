@@ -2,6 +2,29 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:patrol/patrol.dart';
+import 'package:inzynierka/main.dart' as app;
+
+import 'config.dart';
+import 'setup.dart';
+
+void defaultPatrolTest(
+  String description,
+  PatrolTesterCallback callback, {
+  String cameraPermissionAction = 'grant',
+}) {
+  patrolTest(
+    description,
+    config: patrolConfig,
+    nativeAutomatorConfig: nativeAutomatorConfig,
+    nativeAutomation: true,
+    ($) async {
+      await setupIntegrationTest($, cameraPermissionAction);
+      app.main();
+      await callback($);
+    },
+  );
+}
 
 Future<void> scrollToAndTap(WidgetTester tester, Finder buttonFinder) async {
   await tester.ensureVisible(buttonFinder);
