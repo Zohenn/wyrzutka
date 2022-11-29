@@ -38,7 +38,11 @@ service cloud.firestore {
       }
 
       function validateUserDataUpdate(data) {
-        return data.diff(resource.data).affectedKeys().hasOnly(["name", "surname"]) && data.name is string && data.surname is string;
+        let affectedKeys = data.diff(resource.data).affectedKeys();
+        return (affectedKeys.hasOnly(["name", "surname", "searchNS", "searchSN"]) &&
+                data.name is string && data.surname is string &&
+                data.searchNS is string && data.searchSN is string) ||
+               affectedKeys.hasOnly(["savedProducts"]);
       }
 
       function validateUserRoleUpdate(data) {
@@ -54,8 +58,6 @@ service cloud.firestore {
     match /{document=**} {
       allow read;
       allow write: if false;
-      // allow read, write: if
-      //     request.time < timestamp.date(2022, 12, 2);
     }
   }
 }
