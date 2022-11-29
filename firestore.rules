@@ -1,9 +1,61 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isModOrAdmin(request) {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ["mod", "admin"];
+    }
+
+    match /products/{document=**} {
+      allow create, update: if request.auth != null;
+      allow delete: if isModOrAdmin(request);
+    }
+
+    match /sortElementTemplates/{document=**} {
+      function validateSortElementTemplate(data) {
+        return data.name is string && data.container in ["plastic", "paper", "glass", "mixed", "bio"] &&
+               (data.description == null || data.description is string);
+      }
+
+      allow create, update: if isModOrAdmin(request) && validateSortElementTemplate(request.resource.data);
+      allow delete: if isModOrAdmin(request);
+    }
+
+    match /symbols/{document=**} {
+      function validateSymbol(data) {
+        return data.name is string && data.photo is string;
+      }
+
+      allow create, update: if isModOrAdmin(request) && validateSymbol(request.resource.data);
+      allow delete: if isModOrAdmin(request);
+    }
+
+    match /users/{document=**} {
+      function validateUser(data) {
+        return data.name is string && data.surname is string &&
+               data.email is string && data.role == "user" &&
+               data.signUpDate == request.time &&
+               data.searchNS is string && data.searchSN is string;
+      }
+
+      function validateUserDataUpdate(data) {
+        return data.diff(resource.data).affectedKeys().hasOnly(["name", "surname"]) && data.name is string && data.surname is string;
+      }
+
+      function validateUserRoleUpdate(data) {
+        return data.diff(resource.data).affectedKeys().hasOnly(["role"]) && data.role in ["user", "mod", "admin"];
+      }
+
+      allow create: if request.auth != null && request.auth.token.email == request.resource.data.email && validateUser(request.resource.data);
+      allow update: if (request.auth != null && request.auth.uid == resource.id && validateUserDataUpdate(request.resource.data)) ||
+                       (isModOrAdmin(request) && validateUserRoleUpdate(request.resource.data));
+      allow delete: if request.auth != null && request.auth.uid == resource.id;
+    }
+
     match /{document=**} {
-      allow read, write: if
-          request.time < timestamp.date(2022, 12, 2);
+      allow read;
+      allow write: if false;
+      // allow read, write: if
+      //     request.time < timestamp.date(2022, 12, 2);
     }
   }
 }
