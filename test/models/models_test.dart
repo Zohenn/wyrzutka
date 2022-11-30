@@ -39,7 +39,7 @@ void main() {
         expect(_user.id, equals(doc.id));
       });
 
-      test('Should not have id field in serialized data', () {
+      test('Should not include id field in serialized data', () {
         expect(AppUser.toFirestore(user, null), isNot(contains('id')));
       });
     });

@@ -22,9 +22,9 @@ class ProductModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productRepository = ref.watch(productRepositoryProvider);
+    final productRepository = ref.read(productRepositoryProvider);
 
-    final future = useInitFuture<Product?>(() => productRepository.fetchId(id));
+    final future = useInitFuture(() => productRepository.fetchId(id));
     final product = ref.watch(productProvider(id));
     final authUser = ref.watch(authUserProvider);
 

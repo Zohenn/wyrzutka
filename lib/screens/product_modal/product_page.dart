@@ -8,6 +8,7 @@ import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:inzynierka/screens/widgets/product_sort.dart';
 import 'package:inzynierka/screens/product_modal/product_symbols.dart';
 import 'package:inzynierka/screens/product_modal/product_user.dart';
+import 'package:inzynierka/services/user_service.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 import 'package:inzynierka/widgets/gutter_column.dart';
 
@@ -22,17 +23,13 @@ class ProductPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final symbolRepository = ref.watch(productSymbolRepositoryProvider);
-    final userRepository = ref.watch(userRepositoryProvider);
+    final userService = ref.watch(userServiceProvider);
 
     final future = useInitFuture(
       () => Future.wait(
         [
           symbolRepository.fetchIds(product.symbols),
-          userRepository.fetchIds([
-            product.user,
-            if (product.sort != null) product.sort!.user,
-            ...product.sortProposals.values.map((e) => e.user),
-          ]),
+          userService.fetchUsersForProduct(product),
         ],
       ),
     );

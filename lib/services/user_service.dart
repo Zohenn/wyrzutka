@@ -3,6 +3,7 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:inzynierka/models/product/product.dart';
 import 'package:inzynierka/repositories/query_filter.dart';
 import 'package:inzynierka/repositories/user_repository.dart';
 
@@ -27,6 +28,15 @@ class UserService {
       filters: [QueryFilter('role', FilterOperator.whereIn, roles)],
       startAfterDocument: startAfterDocument,
     );
+  }
+
+  Future<List<AppUser>> fetchUsersForProduct(Product product) {
+    final ids = [
+      product.user,
+      if(product.sort != null) product.sort!.user,
+      ...product.sortProposals.values.map((e) => e.user),
+    ];
+    return userRepository.fetchIds(ids);
   }
 
   Future<List<AppUser>> search(String value) async {

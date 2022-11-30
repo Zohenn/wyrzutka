@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
+import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:inzynierka/services/auth_user_service.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
@@ -10,6 +11,7 @@ import 'package:inzynierka/screens/widgets/product_sort.dart';
 import 'package:inzynierka/models/product/product.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/screens/widgets/product_photo.dart';
+import 'package:inzynierka/services/user_service.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/conditional_builder.dart';
@@ -25,19 +27,26 @@ class ScannerProductModal extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final productRepository = ref.read(productRepositoryProvider);
+    final userService = ref.read(userServiceProvider);
     final authUser = ref.watch(authUserProvider);
 
     final isSaved = authUser?.savedProducts.contains(id) ?? false;
     final isSaving = useState(false);
 
-    final future = useInitFuture<Product?>(() => ref.read(productRepositoryProvider).fetchId(id));
+    final future = useInitFuture(() async {
+      final product = await productRepository.fetchId(id);
+      if (product != null) {
+        await userService.fetchUsersForProduct(product);
+      }
+    });
     final product = ref.watch(productProvider(id));
 
     final activeTabStyle = Theme.of(context).elevatedButtonTheme.style!;
     final inactiveTabStyle = Theme.of(context).outlinedButtonTheme.style!.copyWith(
-      backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
-      side: const MaterialStatePropertyAll(BorderSide.none),
-    );
+          backgroundColor: MaterialStatePropertyAll(Theme.of(context).cardColor),
+          side: const MaterialStatePropertyAll(BorderSide.none),
+        );
 
     return FutureHandler(
       future: future,
