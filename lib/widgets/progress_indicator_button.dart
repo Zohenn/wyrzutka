@@ -33,6 +33,7 @@ class ProgressIndicatorButton extends StatelessWidget {
         : null;
     final _child = Stack(
       alignment: Alignment.center,
+      fit: StackFit.passthrough,
       children: [
         Opacity(
           opacity: isLoading ? 0 : 1,
@@ -41,9 +42,12 @@ class ProgressIndicatorButton extends StatelessWidget {
         if (isLoading)
           Semantics(
             label: 'Ładowanie',
-            child: const SpinKitThreeBounce(
-              size: 18,
-              color: Colors.black54,
+            child: SizedBox.fromSize(
+              size: const Size(36, 18),
+              child: const SpinKitThreeBounce(
+                size: 18,
+                color: Colors.black54,
+              ),
             ),
           )
         else

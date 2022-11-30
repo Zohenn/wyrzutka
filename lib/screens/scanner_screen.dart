@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:inzynierka/hooks/barcode_camera.dart';
 import 'package:inzynierka/screens/scanner_product_modal.dart';
+import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/default_bottom_sheet.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
@@ -104,20 +105,18 @@ class ScannerScreen extends HookWidget {
               alignment: const Alignment(0.0, 0.80),
               child: ProgressIndicatorButton(
                 isLoading: isScanning.value,
-                onPressed: () {
+                onPressed: () async {
                   isScanning.value = true;
-                  // camera.cropTest().then((value) async {
-                  //   isScanning.value = false;
-                  //   showDefaultBottomSheet(
-                  //     context: context,
-                  //     builder: (context) => Image.memory(value),
-                  //   );
-                  // });
-                  camera.scan().then((value) async {
-                    isScanning.value = false;
-                    await showProductModal(context, value?.rawValue ?? '');
-                    camera.controller!.resumePreview();
-                  });
+                  await asyncCall(
+                    context,
+                    () async {
+                      final value = await camera.scan();
+                      isScanning.value = false;
+                      await showProductModal(context, value?.rawValue ?? '');
+                      camera.controller!.resumePreview();
+                    },
+                  );
+                  isScanning.value = false;
                 },
                 child: const Text('Skanuj'),
               ),
