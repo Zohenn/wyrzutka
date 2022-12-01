@@ -32,6 +32,12 @@ Future<void> scrollToAndTap(WidgetTester tester, Finder buttonFinder) async {
   await tester.tap(buttonFinder);
 }
 
+Future<void> scrollToAndEnterText(WidgetTester tester, Finder finder, String text) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.enterText(finder, text);
+}
+
 void textSpanOnTap(Finder finder, String text) {
   final Element element = finder.evaluate().single;
   final RenderParagraph paragraph = element.renderObject as RenderParagraph;

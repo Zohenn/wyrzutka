@@ -7,20 +7,20 @@ void main() {
     'Should allow for permission to be granted again if it was denied before',
     cameraPermissionAction: 'revoke',
     ($) async {
-      await $.tester.pump();
+      await $.pump();
       if (!(await $.native.isPermissionDialogVisible())) {
-        await $.tester.pump();
+        await $.pump();
       }
 
       await $.native.denyPermission();
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
-      await $.tester.tap(find.text('Spróbuj ponownie'));
-      await $.tester.pump();
+      await $.tap(find.text('Spróbuj ponownie'));
+      await $.pump();
 
       await $.native.grantPermissionWhenInUse();
       // give it more time as it tends to be a bit flaky
-      await $.tester.pumpAndSettle(const Duration(milliseconds: 500));
+      await $.pumpAndSettle(const Duration(milliseconds: 500));
 
       expect(find.text('Skanuj'), findsAtLeastNWidgets(2));
     },

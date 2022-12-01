@@ -12,22 +12,21 @@ void main() {
   defaultPatrolTest(
     'Should show profile screen after sign in',
     ($) async {
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
       await scrollToAndTap($.tester, find.text('Profil'));
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
       await $.tester.ensureVisible(find.textContaining('Zaloguj się'));
-      await $.tester.pumpAndSettle();
-
+      await $.pumpAndSettle();
       textSpanOnTap(find.textContaining('Zaloguj się'), 'Zaloguj się');
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
-      await $.tester.enterText(find.bySemanticsLabel('Adres email'), 'mmarciniak299@gmail.com');
-      await $.tester.enterText(find.bySemanticsLabel('Hasło'), 'qwerty');
+      await scrollToAndEnterText($.tester, find.bySemanticsLabel('Adres email'), 'mmarciniak299@gmail.com');
+      await scrollToAndEnterText($.tester, find.bySemanticsLabel('Hasło'), 'qwerty');
 
       await scrollToAndTap($.tester, find.text('Zaloguj się'));
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
       expect(find.text('Michał Marciniak'), findsOneWidget);
     },
@@ -49,21 +48,21 @@ void main() {
         await FirebaseAuth.instance.currentUser?.delete();
       });
 
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
       await scrollToAndTap($.tester, find.text('Profil'));
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
       await scrollToAndTap($.tester, find.text('Zarejestruj się'));
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
-      await $.tester.enterText(find.bySemanticsLabel('Imię'), name);
-      await $.tester.enterText(find.bySemanticsLabel('Nazwisko'), surname);
-      await $.tester.enterText(find.bySemanticsLabel('Adres email'), email);
-      await $.tester.enterText(find.bySemanticsLabel('Hasło'), password);
+      await scrollToAndEnterText($.tester, find.bySemanticsLabel('Imię'), name);
+      await scrollToAndEnterText($.tester, find.bySemanticsLabel('Nazwisko'), surname);
+      await scrollToAndEnterText($.tester, find.bySemanticsLabel('Adres email'), email);
+      await scrollToAndEnterText($.tester, find.bySemanticsLabel('Hasło'), password);
 
       await scrollToAndTap($.tester, find.text('Zarejestruj się').last);
-      await $.tester.pumpAndSettle();
+      await $.pumpAndSettle();
 
       expect(find.text('$name $surname'), findsOneWidget);
     },

@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isModOrAdmin(request) {
+      return request.auth != null;
+    }
+
+    match /products/{productId}/{file=**} {
+      allow create: if request.auth != null;
+      allow update, delete: if isModOrAdmin(request);
+    }
+
+    match /symbols/{symbolId}/{file=**} {
+      allow write: if isModOrAdmin(request);
+    }
+
+    match /{allPaths=**} {
+      allow read;
+      allow write: if false;
+    }
+  }
+}

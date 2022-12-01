@@ -1,0 +1,1 @@
+firebase emulators:export integration_test/firebase_data
