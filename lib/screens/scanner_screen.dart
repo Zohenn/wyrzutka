@@ -21,10 +21,10 @@ class ScannerAreaPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     Rect box = Rect.fromLTWH(
-      size.width * 0.15,
-      size.height * 0.15,
-      size.width * 0.7,
-      size.height * 0.2,
+      size.width * BarcodeCamera.scanAreaOffsetFactor,
+      size.height * BarcodeCamera.scanAreaOffsetFactor,
+      size.width * BarcodeCamera.scanAreaWidthFactor,
+      size.height * BarcodeCamera.scanAreaHeightFactor,
     );
     var boxPaint = Paint()..blendMode = BlendMode.clear;
     canvas

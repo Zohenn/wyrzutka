@@ -8,7 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:image/image.dart';
 
-BarcodeCameraWrapper useBarcodeCamera({
+BarcodeCamera useBarcodeCamera({
   List<Object?>? keys,
 }) {
   final camera = use(
@@ -30,8 +30,12 @@ BarcodeCameraWrapper useBarcodeCamera({
   return camera;
 }
 
-class BarcodeCameraWrapper {
-  BarcodeCameraWrapper({this.onInit});
+class BarcodeCamera {
+  BarcodeCamera._({this.onInit});
+
+  static const scanAreaOffsetFactor = 0.15;
+  static const scanAreaWidthFactor = 0.7;
+  static const scanAreaHeightFactor = 0.2;
 
   final List<CameraDescription> _cameras = [];
   CameraController? controller;
@@ -50,11 +54,17 @@ class BarcodeCameraWrapper {
 
   Future<void> init() async {
     onInit?.call();
-    scanner = BarcodeScanner(formats: [BarcodeFormat.ean8, BarcodeFormat.ean13]);
+    scanner = BarcodeScanner(
+      formats: [BarcodeFormat.ean8, BarcodeFormat.ean13],
+    );
     _cameras
       ..clear()
       ..addAll(await availableCameras());
-    controller = CameraController(_backCamera!, ResolutionPreset.high, enableAudio: false);
+    controller = CameraController(
+      _backCamera!,
+      ResolutionPreset.high,
+      enableAudio: false,
+    );
     await controller!.initialize();
   }
 
@@ -62,12 +72,17 @@ class BarcodeCameraWrapper {
     final picture = await controller!.takePicture();
     await controller!.pausePreview();
     final image = decodeImage(await picture.readAsBytes())!;
-    final offsetX = (image.width * 0.15).toInt();
-    final offsetY = (image.height * 0.15).toInt();
-    final croppedImage = copyCrop(image, offsetX, offsetY, (image.width * 0.7).toInt(), (image.height * 0.2).toInt());
+
+    final offsetX = (image.width * scanAreaOffsetFactor).toInt();
+    final offsetY = (image.height * scanAreaOffsetFactor).toInt();
+    final width = (image.width * scanAreaWidthFactor).toInt();
+    final height = (image.height * scanAreaHeightFactor).toInt();
+
+    final croppedImage = copyCrop(image, offsetX, offsetY, width, height);
     final pictureFile = File(picture.path);
     pictureFile.writeAsBytesSync(encodeJpg(croppedImage));
     final inputImage = InputImage.fromFilePath(picture.path);
+
     final barcode = (await scanner!.processImage(inputImage)).firstOrNull;
     pictureFile.delete();
     return barcode;
@@ -77,9 +92,12 @@ class BarcodeCameraWrapper {
     final picture = await controller!.takePicture();
     // await controller!.pausePreview();
     final image = decodeImage(await picture.readAsBytes())!;
-    final offsetX = (image.width * 0.15).toInt();
-    final offsetY = (image.height * 0.15).toInt();
-    final croppedImage = copyCrop(image, offsetX, offsetY, (image.width * 0.7).toInt(), (image.height * 0.2).toInt());
+    final offsetX = (image.width * scanAreaOffsetFactor).toInt();
+    final offsetY = (image.height * scanAreaOffsetFactor).toInt();
+    final width = (image.width * scanAreaWidthFactor).toInt();
+    final height = (image.height * scanAreaHeightFactor).toInt();
+
+    final croppedImage = copyCrop(image, offsetX, offsetY, width, height);
     return Uint8List.fromList(encodeJpg(croppedImage));
   }
 
@@ -90,20 +108,20 @@ class BarcodeCameraWrapper {
   }
 }
 
-class _BarcodeCameraHook extends Hook<BarcodeCameraWrapper> {
+class _BarcodeCameraHook extends Hook<BarcodeCamera> {
   const _BarcodeCameraHook({
     List<Object?>? keys,
   }) : super(keys: keys);
 
   @override
-  HookState<BarcodeCameraWrapper, Hook<BarcodeCameraWrapper>> createState() => _BarcodeCameraHookState();
+  HookState<BarcodeCamera, Hook<BarcodeCamera>> createState() => _BarcodeCameraHookState();
 }
 
-class _BarcodeCameraHookState extends HookState<BarcodeCameraWrapper, _BarcodeCameraHook> {
-  late final camera = BarcodeCameraWrapper(onInit: () => setState(() {}));
+class _BarcodeCameraHookState extends HookState<BarcodeCamera, _BarcodeCameraHook> {
+  late final camera = BarcodeCamera._(onInit: () => setState(() {}));
 
   @override
-  BarcodeCameraWrapper build(BuildContext context) => camera;
+  BarcodeCamera build(BuildContext context) => camera;
 
   @override
   void dispose() {
