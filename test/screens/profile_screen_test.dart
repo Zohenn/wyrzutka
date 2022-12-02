@@ -109,6 +109,8 @@ void main() {
 
   group('signed in', () {
     group('user', () {
+      final profileActionsButtonFinder = find.byTooltip('Ustawienia użytkownika');
+
       testWidgets('Should load authUser', (tester) async {
         await tester.pumpWidget(buildAuthUserWidget());
         await tester.pumpAndSettle();
@@ -116,34 +118,35 @@ void main() {
         expect(find.text(authUser.displayName), findsOneWidget);
       });
 
-      testWidgets('Should load profile actions button', (tester) async {
+      testWidgets('Should show profile actions button', (tester) async {
         await tester.pumpWidget(buildAuthUserWidget());
         await tester.pumpAndSettle();
 
         expect(find.text(authUser.displayName), findsOneWidget);
-
-        Finder finder = find.byTooltip('Ustawienia użytkownika');
-        expect(finder, findsOneWidget);
+        expect(profileActionsButtonFinder, findsOneWidget);
       });
 
-      testWidgets('Should load profile actions button in user profile with role', (tester) async {
+      testWidgets('Should show profile actions button in user profile with privileged role', (tester) async {
+        assert([Role.mod, Role.admin].contains(authUser.role));
         await tester.pumpWidget(buildUserWidget());
         await tester.pumpAndSettle();
 
-        expect(authUser.role, anyOf([Role.mod, Role.admin]));
-
-        Finder finder = find.byTooltip('Ustawienia użytkownika');
-        expect(finder, findsOneWidget);
+        expect(profileActionsButtonFinder, findsOneWidget);
       });
 
-      testWidgets('Should load action sheet modal on settings tap', (tester) async {
+      testWidgets('Should not show profile actions button in user profile without privileged role', (tester) async {
+        authUser = authUser.copyWith(role: Role.user);
+        await tester.pumpWidget(buildUserWidget());
+        await tester.pumpAndSettle();
+
+        expect(profileActionsButtonFinder, findsNothing);
+      });
+
+      testWidgets('Should show action sheet modal on settings tap', (tester) async {
         await tester.pumpWidget(buildAuthUserWidget());
         await tester.pumpAndSettle();
 
-        Finder finder = find.byTooltip('Ustawienia użytkownika');
-        expect(finder, findsOneWidget);
-
-        await scrollToAndTap(tester, finder);
+        await scrollToAndTap(tester, profileActionsButtonFinder);
         await tester.pumpAndSettle();
 
         expect(find.bySemanticsLabel('Akcje użytkownika'), findsOneWidget);
@@ -318,10 +321,7 @@ void main() {
     testWidgets('Should load sign up modal on tap', (tester) async {
       await tester.pumpWidget(buildWidget());
 
-      Finder finder = find.textContaining('Zarejestruj się');
-      expect(finder, findsOneWidget);
-
-      await scrollToAndTap(tester, finder);
+      await scrollToAndTap(tester, find.textContaining('Zarejestruj się'));
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Rejestracja'), findsWidgets);
