@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
@@ -14,7 +15,7 @@ import 'package:inzynierka/services/user_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 import 'profile_screen_test.mocks.dart';
 
 @GenerateNiceMocks([
@@ -108,7 +109,7 @@ void main() {
   });
 
   group('signed in', () {
-    group('user', () {
+    group('profile', () {
       testWidgets('Should load authUser', (tester) async {
         await tester.pumpWidget(buildAuthUserWidget());
         await tester.pumpAndSettle();
@@ -126,16 +127,6 @@ void main() {
         expect(finder, findsOneWidget);
       });
 
-      testWidgets('Should load profile actions button in user profile with role', (tester) async {
-        await tester.pumpWidget(buildUserWidget());
-        await tester.pumpAndSettle();
-
-        expect(authUser.role, anyOf([Role.mod, Role.admin]));
-
-        Finder finder = find.byTooltip('Ustawienia użytkownika');
-        expect(finder, findsOneWidget);
-      });
-
       testWidgets('Should load action sheet modal on settings tap', (tester) async {
         await tester.pumpWidget(buildAuthUserWidget());
         await tester.pumpAndSettle();
@@ -147,6 +138,16 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.bySemanticsLabel('Akcje użytkownika'), findsOneWidget);
+      });
+    });
+
+    group('user profile', () {
+      testWidgets('Should load profile actions button in user profile with role', (tester) async {
+        await tester.pumpWidget(buildUserWidget());
+        await tester.pumpAndSettle();
+
+        Finder finder = find.byTooltip('Ustawienia użytkownika');
+        expect(finder, findsOneWidget);
       });
     });
 
