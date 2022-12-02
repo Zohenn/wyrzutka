@@ -6,6 +6,7 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/profile/widgets/product_list.dart';
+import 'package:inzynierka/screens/profile/widgets/profile_product_list_section.dart';
 import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
@@ -40,7 +41,7 @@ class ProfileAddedProductsPage extends HookConsumerWidget {
       future: future,
       data: () => ProductList(
         products: products,
-        title: const UserProductsTitle(),
+        title: 'Dodane produkty',
         productsCount: userProductsCount.value,
         onScroll: () => asyncCall(
           context,
@@ -57,48 +58,6 @@ class ProfileAddedProductsPage extends HookConsumerWidget {
           },
         ),
         fetchedAll: fetchedAll.value,
-      ),
-    );
-  }
-}
-
-class UserProductsTitle extends StatelessWidget {
-  const UserProductsTitle({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text('Dodane produkty', style: Theme.of(context).textTheme.titleMedium);
-  }
-}
-
-class UserProductsEmpty extends StatelessWidget {
-  const UserProductsEmpty({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              const CircleAvatar(
-                foregroundColor: Colors.black,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.star_half),
-              ),
-              const SizedBox(width: 16.0),
-              Text(
-                'Brak dodanych produktów',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

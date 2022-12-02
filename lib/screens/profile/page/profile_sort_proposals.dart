@@ -6,6 +6,7 @@ import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/base_repository.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/profile/widgets/product_list.dart';
+import 'package:inzynierka/screens/profile/widgets/profile_product_list_section.dart';
 import 'package:inzynierka/services/product_service.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
@@ -30,7 +31,9 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
     final fetchedAll = useState(false);
 
     final future = useInitFuture(() => Future.wait([
-          productService.countVerifiedSortProposalsForUser(user).then((value) => verifiedSortProposalsCount.value = value),
+          productService
+              .countVerifiedSortProposalsForUser(user)
+              .then((value) => verifiedSortProposalsCount.value = value),
           productService
               .fetchNextVerifiedSortProposalsForUser(user: user)
               .then((value) => visibleProducts.value = value.map((product) => product.id).toList()),
@@ -40,7 +43,8 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
       future: future,
       data: () => ProductList(
         products: products,
-        title: const SortProposalsTitle(),
+        title: 'Propozycje segregacji',
+        subtitle: 'Zweryfikowane przez system',
         productsCount: verifiedSortProposalsCount.value,
         onScroll: () => asyncCall(
           context,
@@ -57,60 +61,6 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
           },
         ),
         fetchedAll: fetchedAll.value,
-      ),
-    );
-  }
-}
-
-class SortProposalsTitle extends StatelessWidget {
-  const SortProposalsTitle({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Propozycje segregacji',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        Text(
-          'Zweryfikowane przez system',
-          style: Theme.of(context).textTheme.labelSmall,
-        ),
-      ],
-    );
-  }
-}
-
-class SortProposalsEmpty extends StatelessWidget {
-  const SortProposalsEmpty({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              const CircleAvatar(
-                foregroundColor: Colors.black,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.star_half),
-              ),
-              const SizedBox(width: 16.0),
-              Text(
-                'Brak zweryfikowanych propozycji',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

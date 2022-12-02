@@ -28,55 +28,59 @@ class ProfileActionsSheet extends HookConsumerWidget {
     // todo: perhaps show info if logged with google or email
     return ListTileTheme(
       data: Theme.of(context).listTileTheme.copyWith(minLeadingWidth: 0, iconColor: Colors.black),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (user.id == authUser?.id) ...[
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('Edytuj dane konta'),
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) => ProfileUserInfoDialog(user: user),
-              ),
-            ),
-            if(authService.usedPasswordProvider)...[
+      child: Semantics(
+        container: true,
+        label: 'Akcje użytkownika',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (user.id == authUser?.id) ...[
               ListTile(
-                leading: const Icon(Icons.lock_outlined),
-                title: const Text('Zmień hasło'),
+                leading: const Icon(Icons.edit),
+                title: const Text('Edytuj dane konta'),
                 onTap: () => showDialog(
                   context: context,
-                  builder: (context) => ProfilePasswordDialog(user: user),
+                  builder: (context) => ProfileUserInfoDialog(user: user),
+                ),
+              ),
+              if(authService.usedPasswordProvider)...[
+                ListTile(
+                  leading: const Icon(Icons.lock_outlined),
+                  title: const Text('Zmień hasło'),
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => ProfilePasswordDialog(user: user),
+                  ),
+                ),
+              ],
+            ],
+            if (authUser?.id != user.id && (authUser?.role == Role.mod || authUser?.role == Role.admin)) ...[
+              ListTile(
+                leading: const Icon(Icons.verified_outlined),
+                title: const Text('Zmień rolę'),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (context) => ProfileRoleDialog(user: user),
                 ),
               ),
             ],
-          ],
-          if (authUser?.id != user.id && (authUser?.role == Role.mod || authUser?.role == Role.admin)) ...[
-            ListTile(
-              leading: const Icon(Icons.verified_outlined),
-              title: const Text('Zmień rolę'),
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) => ProfileRoleDialog(user: user),
-              ),
-            ),
-          ],
-          ConditionalBuilder(
-            condition: user.id == authUser?.id,
-            ifTrue: () => ListTile(
-              title: const Center(
-                child: Text(
-                  'Wyloguj się',
-                  style: TextStyle(color: AppColors.primaryDarker),
+            ConditionalBuilder(
+              condition: user.id == authUser?.id,
+              ifTrue: () => ListTile(
+                title: const Center(
+                  child: Text(
+                    'Wyloguj się',
+                    style: TextStyle(color: AppColors.primaryDarker),
+                  ),
                 ),
+                onTap: () {
+                  ref.read(authServiceProvider).signOut();
+                  Navigator.of(context).pop();
+                },
               ),
-              onTap: () {
-                ref.read(authServiceProvider).signOut();
-                Navigator.of(context).pop();
-              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

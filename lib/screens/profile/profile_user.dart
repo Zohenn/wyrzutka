@@ -23,7 +23,7 @@ class ProfileUser extends HookConsumerWidget {
 
     final bool isRole = (authUser?.role != Role.user || authUser?.role == Role.admin);
     final bool isProfile = ModalRoute.of(context).runtimeType != ModalBottomSheetRoute && authUser?.id == user.id;
-    final bool isUserProfile = ModalRoute.of(context).runtimeType == ModalBottomSheetRoute && authUser?.id != user.id;
+    final bool isUserProfile = !isProfile && authUser?.id != user.id;
 
     return Card(
       child: Column(
@@ -51,6 +51,7 @@ class ProfileUser extends HookConsumerWidget {
                   ConditionalBuilder(
                     condition: (isRole && isUserProfile) || isProfile,
                     ifTrue: () => IconButton(
+                      tooltip: 'Ustawienia użytkownika',
                       onPressed: () {
                         showDefaultBottomSheet(
                           closeModals: false,

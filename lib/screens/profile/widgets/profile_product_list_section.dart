@@ -16,15 +16,19 @@ class ProfileProductListSection extends HookConsumerWidget {
     required this.onPageChanged,
     required this.destination,
     required this.title,
-    required this.emptyContent,
+    this.subtitle,
+    required this.emptyContentTitle,
+    required this.emptyContentIcon,
   }) : super(key: key);
 
   final List<Product> products;
   final int productsCount;
   final void Function(ProfileScreenPages) onPageChanged;
   final ProfileScreenPages destination;
-  final Widget title;
-  final Widget emptyContent;
+  final String title;
+  final String? subtitle;
+  final String emptyContentTitle;
+  final IconData emptyContentIcon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,24 +36,44 @@ class ProfileProductListSection extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       gutterSize: 4,
       children: [
-        ProductListTitle(productCount: productsCount, title: title),
+        ProfileProductListTitle(title: title, subtitle: subtitle, productsCount: productsCount),
         ConditionalBuilder(
           condition: products.isNotEmpty,
           ifTrue: () => GutterColumn(
             children: [
-              for(var product in products)
-                ProductItem(product: product),
+              for (var product in products) ProductItem(product: product),
             ],
           ),
-          ifFalse: () => emptyContent,
+          ifFalse: () => Card(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.white,
+                      child: Icon(emptyContentIcon),
+                    ),
+                    const SizedBox(width: 16.0),
+                    Text(
+                      emptyContentTitle,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
         ConditionalBuilder(
           condition: products.length < productsCount,
           ifTrue: () => TextButton(
             onPressed: () => onPageChanged(destination),
-            child: const Text(
+            child: Text(
               'Pokaż wszystko',
-              style: TextStyle(color: AppColors.primaryDarker),
+              style: const TextStyle(color: AppColors.primaryDarker),
+              semanticsLabel: 'Pokaż wszystko $title',
             ),
           ),
         ),

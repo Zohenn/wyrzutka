@@ -23,10 +23,7 @@ enum ProfileScreenPages {
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({
     Key? key,
-    this.user,
   }) : super(key: key);
-
-  final AppUser? user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -5,6 +5,7 @@ import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/profile/widgets/product_list.dart';
+import 'package:inzynierka/screens/profile/widgets/profile_product_list_section.dart';
 import 'package:inzynierka/utils/async_call.dart';
 import 'package:inzynierka/widgets/future_handler.dart';
 
@@ -34,7 +35,7 @@ class ProfileSavedProductsPage extends HookConsumerWidget {
       future: future,
       data: () => ProductList(
         products: products,
-        title: const SavedProductsTitle(),
+        title: 'Zapisane produkty',
         productsCount: savedProductCount,
         onScroll: () => asyncCall(
           context,
@@ -45,45 +46,6 @@ class ProfileSavedProductsPage extends HookConsumerWidget {
           },
         ),
         fetchedAll: fetchedAll,
-      ),
-    );
-  }
-}
-
-class SavedProductsTitle extends StatelessWidget {
-  const SavedProductsTitle({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text('Zapisane produkty', style: Theme.of(context).textTheme.titleMedium);
-  }
-}
-
-class SavedProductsEmpty extends StatelessWidget {
-  const SavedProductsEmpty({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              const CircleAvatar(
-                foregroundColor: Colors.black,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.star_half),
-              ),
-              const SizedBox(width: 16.0),
-              Text('Brak zapisanych produktów', style: Theme.of(context).textTheme.bodyLarge),
-            ],
-          ),
-        ),
       ),
     );
   }
