@@ -34,7 +34,6 @@ void main() {
     surname: 'Brandeburg',
     role: Role.user,
     signUpDate: FirestoreDateTime.serverTimestamp(),
-    savedProducts: [],
   );
   final List<Product> products = List.generate(
     15,

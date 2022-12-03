@@ -33,9 +33,8 @@ void main() {
       email: 'wojciech.brandeburg@pollub.edu.pl',
       name: 'Wojciech',
       surname: 'Brandeburg',
-      role: Role.mod,
+      role: Role.user,
       signUpDate: FirestoreDateTime.serverTimestamp(),
-      savedProducts: [],
     );
 
     mockAuthService = MockAuthService();
