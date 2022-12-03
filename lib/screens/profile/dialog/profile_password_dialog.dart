@@ -29,6 +29,8 @@ class ProfilePasswordDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authService = ref.read(authServiceProvider);
+
     final formKey = useRef(GlobalKey<FormState>());
 
     final passwordVisible = useState(false);
@@ -116,8 +118,6 @@ class ProfilePasswordDialog extends HookConsumerWidget {
                       child: ProgressIndicatorButton(
                         isLoading: isSaving.value,
                         onPressed: () async {
-                          final authService = ref.read(authServiceProvider);
-
                           if (formKey.value.currentState?.validate() != true) {
                             return;
                           }
