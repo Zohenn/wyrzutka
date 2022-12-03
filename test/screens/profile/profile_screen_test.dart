@@ -47,8 +47,8 @@ void main() {
     ),
   );
 
-  final modUser = regularUser.copyWith(id: '2', role: Role.mod, name: 'name2', surname: 'name2');
-  final adminUser = regularUser.copyWith(id: '3', role: Role.admin, name: 'name3', surname: 'name3');
+  final modUser = regularUser.copyWith(id: '2', role: Role.mod, name: 'mod', surname: 'mod');
+  final adminUser = regularUser.copyWith(id: '3', role: Role.admin, name: 'admin', surname: 'admin');
   final privilegedUsers = [modUser, adminUser];
 
   late MockProductRepository mockProductRepository;

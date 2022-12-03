@@ -15,66 +15,97 @@ import 'profile_actions_sheet_test.mocks.dart';
   MockSpec<AuthService>(),
 ])
 void main() {
-  late AppUser authUser;
-  late AppUser user;
+  final AppUser regularUser = AppUser(
+    id: '1',
+    email: 'email',
+    name: 'Wojciech',
+    surname: 'Brandeburg',
+    role: Role.user,
+    signUpDate: FirestoreDateTime.serverTimestamp(),
+    savedProducts: [],
+  );
+
+  final modUser = regularUser.copyWith(id: '2', role: Role.mod, name: 'mod', surname: 'mod');
+  final adminUser = regularUser.copyWith(id: '3', role: Role.admin, name: 'admin', surname: 'admin');
+  final privilegedUsers = [modUser, adminUser];
 
   late MockAuthService mockAuthService;
 
-  buildAuthWidget() => wrapForTesting(
-    ProfileActionsSheet(userId: authUser.id),
-    overrides: [
-      authUserProvider.overrideWith((ref) => authUser),
-      authServiceProvider.overrideWith((ref) => mockAuthService),
-      userProvider.overrideWith((ref, id) => authUser),
-    ],
-  );
+  late AppUser user;
 
-  buildUserWidget() => wrapForTesting(
-    ProfileActionsSheet(userId: authUser.id),
-    overrides: [
-      authUserProvider.overrideWith((ref) => authUser),
-      authServiceProvider.overrideWith((ref) => mockAuthService),
-      userProvider.overrideWith((ref, id) => user)
-    ],
-  );
+  buildWidget({required AppUser authUser, AppUser? user}) => wrapForTesting(
+        ProfileActionsSheet(userId: authUser.id),
+        overrides: [
+          authUserProvider.overrideWith((ref) => authUser),
+          authServiceProvider.overrideWith((ref) => mockAuthService),
+          userProvider.overrideWith((ref, id) => user ?? authUser),
+        ],
+      );
 
   setUp(() {
-    authUser = AppUser(
-      id: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
-      email: 'wojciech.brandeburg@pollub.edu.pl',
-      name: 'Wojciech',
-      surname: 'Brandeburg',
-      role: Role.mod,
-      signUpDate: FirestoreDateTime.serverTimestamp(),
-      savedProducts: [],
-    );
-
-    user = AppUser(
-      id: 'VJHS5rQwHxh08064vjhkMhes2lS2',
-      email: 'mmarciniak299@gmail.com',
-      name: 'Michał',
-      surname: 'Marciniak',
-      role: Role.user,
-      signUpDate: FirestoreDateTime.serverTimestamp(),
-    );
+    user = regularUser;
 
     mockAuthService = MockAuthService();
-
     when(mockAuthService.usedPasswordProvider).thenReturn(true);
   });
 
-
   group('profile', () {
     testWidgets('Should show sign out button', (tester) async {
-      await tester.pumpWidget(buildAuthWidget());
+      await tester.pumpWidget(buildWidget(authUser: user));
       await tester.pumpAndSettle();
 
       Finder finder = find.textContaining('Wyloguj się');
       expect(finder, findsOneWidget);
     });
 
+    testWidgets('Should show change info button', (tester) async {
+      await tester.pumpWidget(buildWidget(authUser: user));
+      await tester.pumpAndSettle();
+
+      Finder finder = find.textContaining('Edytuj dane konta');
+      expect(finder, findsOneWidget);
+    });
+
+    testWidgets('Should show change password button', (tester) async {
+      await tester.pumpWidget(buildWidget(authUser: user));
+      await tester.pumpAndSettle();
+
+      Finder finder = find.textContaining('Zmień hasło');
+      expect(finder, findsOneWidget);
+    });
+
+    testWidgets('Should not show chamge role button', (tester) async {
+      await tester.pumpWidget(buildWidget(authUser: user));
+      await tester.pumpAndSettle();
+
+      Finder finder = find.textContaining('Zmień rolę');
+      expect(finder, findsNothing);
+    });
+  });
+
+  group('user profile', () {
+    testWidgets('Should not show sign out button', (tester) async {
+      await tester.pumpWidget(buildWidget(authUser: modUser, user: user));
+      await tester.pumpAndSettle();
+
+      Finder finder = find.textContaining('Wyloguj się');
+      expect(finder, findsNothing);
+    });
+
+    for (var privilegedUser in privilegedUsers) {
+      testWidgets('Should show change role button for ${privilegedUser.role.name} user', (tester) async {
+        await tester.pumpWidget(buildWidget(authUser: privilegedUser, user: user));
+        await tester.pumpAndSettle();
+
+        final finder = find.textContaining('Zmień rolę');
+        expect(finder, findsOneWidget);
+      });
+    }
+  });
+
+  group('user buttons', () {
     testWidgets('Should sign out user on tap', (tester) async {
-      await tester.pumpWidget(buildAuthWidget());
+      await tester.pumpWidget(buildWidget(authUser: user));
       await tester.pumpAndSettle();
 
       Finder finder = find.textContaining('Wyloguj się');
@@ -85,18 +116,9 @@ void main() {
       verify(mockAuthService.signOut()).called(1);
     });
 
-    testWidgets('Should show change info button', (tester) async {
-      await tester.pumpWidget(buildAuthWidget());
-      await tester.pumpAndSettle();
-
-      Finder finder = find.textContaining('Edytuj dane konta');
-      expect(finder, findsOneWidget);
-    });
-
     testWidgets('Should open change info dialog on tap', (tester) async {
-      await tester.pumpWidget(buildAuthWidget());
+      await tester.pumpWidget(buildWidget(authUser: user));
       await tester.pumpAndSettle();
-
 
       final buttonFinder = find.textContaining('Edytuj dane konta');
       expect(buttonFinder, findsOneWidget);
@@ -108,18 +130,9 @@ void main() {
       expect(find.textContaining('Nazwisko'), findsOneWidget);
     });
 
-    testWidgets('Should show change password button', (tester) async {
-      await tester.pumpWidget(buildAuthWidget());
-      await tester.pumpAndSettle();
-
-      Finder finder = find.textContaining('Zmień hasło');
-      expect(finder, findsOneWidget);
-    });
-
     testWidgets('Should open change password dialog on tap', (tester) async {
-      await tester.pumpWidget(buildAuthWidget());
+      await tester.pumpWidget(buildWidget(authUser: user));
       await tester.pumpAndSettle();
-
 
       Finder finder = find.textContaining('Zmień hasło');
       expect(finder, findsOneWidget);
@@ -131,19 +144,10 @@ void main() {
     });
   });
 
-  group('user profile', () {
-    testWidgets('Should show change role button with role', (tester) async {
-      await tester.pumpWidget(buildUserWidget());
-      await tester.pumpAndSettle();
-
-      final finder = find.textContaining('Zmień rolę');
-      expect(finder, findsOneWidget);
-    });
-
+  group('privileged user buttons', () {
     testWidgets('Should open role dialog on tap', (tester) async {
-      await tester.pumpWidget(buildUserWidget());
+      await tester.pumpWidget(buildWidget(authUser: modUser, user: user));
       await tester.pumpAndSettle();
-
 
       final finder = find.textContaining('Zmień rolę');
       expect(finder, findsOneWidget);
@@ -152,14 +156,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Zmiana roli'), findsOneWidget);
-    });
-
-    testWidgets('Should not show sign out button', (tester) async {
-      await tester.pumpWidget(buildUserWidget());
-      await tester.pumpAndSettle();
-
-      Finder finder = find.textContaining('Wyloguj się');
-      expect(finder, findsNothing);
     });
   });
 }
