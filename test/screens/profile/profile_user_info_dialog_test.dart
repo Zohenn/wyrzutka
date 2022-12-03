@@ -15,7 +15,14 @@ import 'profile_user_info_dialog_test.mocks.dart';
   MockSpec<AuthUserService>(),
 ])
 void main() {
-  late AppUser authUser;
+  late AppUser authUser = AppUser(
+    id: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    email: 'wojciech.brandeburg@pollub.edu.pl',
+    name: 'Wojciech',
+    surname: 'Brandeburg',
+    role: Role.user,
+    signUpDate: FirestoreDateTime.serverTimestamp(),
+  );
   late MockAuthUserService mockAuthUserService;
 
   String name = 'Michał';
@@ -29,17 +36,7 @@ void main() {
   );
 
   setUp(() {
-    authUser = AppUser(
-      id: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
-      email: 'wojciech.brandeburg@pollub.edu.pl',
-      name: 'Wojciech',
-      surname: 'Brandeburg',
-      role: Role.user,
-      signUpDate: FirestoreDateTime.serverTimestamp(),
-    );
-
     mockAuthUserService = MockAuthUserService();
-
   });
 
   testWidgets('Should close dialog on tap', (tester) async {
@@ -123,7 +120,7 @@ void main() {
     await tester.enterText(find.bySemanticsLabel('Imię'), name);
     await tester.enterText(find.bySemanticsLabel('Nazwisko'), surname);
 
-    await tester.tap(find.text('Zapisz'));
+    await scrollToAndTap(tester, find.text('Zapisz'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Imię'), findsOneWidget);

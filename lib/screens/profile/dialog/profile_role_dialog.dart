@@ -49,12 +49,14 @@ class ProfileRoleDialog extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 24.0),
                   DropdownButtonFormField<Role>(
+                    key: const ValueKey('Dropdown'),
                     value: selectedRole.value,
                     borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                     decoration: const InputDecoration(labelText: 'Nowa rola'),
                     items: [
                       for (var role in availableRoles)
                         DropdownMenuItem(
+                          key: ValueKey(role.desc),
                           value: role,
                           child: Text(role.desc, style: TextStyle(color: role.descColor)),
                         ),

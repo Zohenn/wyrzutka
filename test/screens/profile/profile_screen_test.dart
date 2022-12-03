@@ -28,8 +28,8 @@ import 'profile_screen_test.mocks.dart';
 ])
 void main() {
   final AppUser regularUser = AppUser(
-    id: '1',
-    email: 'email',
+    id: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    email: 'wojciech.brandeburg@pollub.edu.pl',
     name: 'Wojciech',
     surname: 'Brandeburg',
     role: Role.user,

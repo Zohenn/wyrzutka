@@ -16,13 +16,12 @@ import 'profile_actions_sheet_test.mocks.dart';
 ])
 void main() {
   final AppUser regularUser = AppUser(
-    id: '1',
-    email: 'email',
+    id: 'GGGtyUFUyMO3OEsYnGRm4jlcrXw1',
+    email: 'wojciech.brandeburg@pollub.edu.pl',
     name: 'Wojciech',
     surname: 'Brandeburg',
     role: Role.user,
     signUpDate: FirestoreDateTime.serverTimestamp(),
-    savedProducts: [],
   );
 
   final modUser = regularUser.copyWith(id: '2', role: Role.mod, name: 'mod', surname: 'mod');
