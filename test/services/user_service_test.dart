@@ -47,36 +47,29 @@ void main() {
   });
 
   group('updateRole', () {
-    late Role role;
-
-    setUp(() {
-      role = Role.user;
-    });
-
     test('Should call update for correct user id', () async {
-      await container.read(userServiceProvider).changeRole(user, role);
+      await container.read(userServiceProvider).changeRole(user, Role.user);
       verify(mockUserRepository.update(user.id, any, any)).called(1);
     });
 
-    test('Should update role', () async {
-      await container.read(userServiceProvider).changeRole(user, role);
+    for(var role in Role.values){
+      test('Should update role to ${role.name}', () async {
+        await container.read(userServiceProvider).changeRole(user, role);
 
-      final updateData = verify(mockUserRepository.update(any, captureAny, any)).captured.first;
-      expect(
-        updateData,
-        isA<Map<String, dynamic>>().having((o) => o['role'], 'role', role.name),
-      );
-    });
+        final updateData = verify(mockUserRepository.update(any, captureAny, any)).captured.first;
+        expect(updateData, {'role': role.name});
+      });
 
-    test('Should update user', () async {
-      await container.read(userServiceProvider).changeRole(user, role);
+      test('Should update user to have ${role.name} role', () async {
+        await container.read(userServiceProvider).changeRole(user, role);
 
-      final updateUser = verify(mockUserRepository.update(any, any, captureAny)).captured.first;
-      expect(
-        updateUser,
-        isA<AppUser>().having((u) => u.role, 'role', role),
-      );
-    });
+        final updateUser = verify(mockUserRepository.update(any, any, captureAny)).captured.first;
+        expect(
+          updateUser,
+          isA<AppUser>().having((u) => u.role, 'role', role),
+        );
+      });
+    }
   });
 
   group('searchUser', () {
@@ -125,7 +118,8 @@ void main() {
     test('Should check for right roles', () async {
       await container.read(userServiceProvider).fetchNextModeration(snapshot);
 
-      final filters = verify(mockUserRepository.fetchNext(filters: captureAnyNamed('filters'), startAfterDocument: anyNamed('startAfterDocument')))
+      final filters = verify(mockUserRepository.fetchNext(
+              filters: captureAnyNamed('filters'), startAfterDocument: anyNamed('startAfterDocument')))
           .captured
           .first as List<QueryFilter>;
       final filter = filters.first;

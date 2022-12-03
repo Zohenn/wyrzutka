@@ -1,0 +1,1 @@
+perl %GENHTML% -o coverage\html coverage\lcov.info
