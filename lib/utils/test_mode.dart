@@ -1,0 +1,1 @@
+const kTestMode = bool.fromEnvironment('TEST_MODE');

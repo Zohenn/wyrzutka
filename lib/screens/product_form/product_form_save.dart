@@ -40,8 +40,6 @@ class ProductFormSave extends HookConsumerWidget {
       future.then((value) {
         return state.value = SavingState.done;
       }).onError((error, stackTrace) {
-        debugPrint(error.toString());
-        debugPrintStack(stackTrace: stackTrace);
         return state.value = SavingState.error;
       }).whenComplete(() => animationController.forward());
 

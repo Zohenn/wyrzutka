@@ -36,6 +36,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Usuń produkt'), findsNothing);
+    verifyNever(mockProductRepository.delete(any));
   });
 
   testWidgets('Should delete product on tap', (tester) async {
