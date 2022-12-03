@@ -29,14 +29,13 @@ void main() {
 
   setUp(() {
     authUser = AppUser(
-      id: 'id',
-      email: 'email',
-      name: 'name',
-      surname: 'surname',
-      role: Role.user,
-      signUpDate: FirestoreDateTime.serverTimestamp(),
-      savedProducts: ['1', '2']
-    );
+        id: 'id',
+        email: 'email',
+        name: 'name',
+        surname: 'surname',
+        role: Role.user,
+        signUpDate: FirestoreDateTime.serverTimestamp(),
+        savedProducts: ['1', '2']);
     mockUserRepository = MockUserRepository();
     createContainer();
     authUserService = container.read(authUserServiceProvider);
@@ -57,8 +56,13 @@ void main() {
       verification.called(1);
       final updateData = verification.captured[0];
       final newUser = verification.captured[1];
-      expect(updateData, {'savedProducts': FieldValue.arrayUnion([newProduct])});
-      expect(newUser, isA<AppUser>().having((o) => o.savedProducts, 'savedProducts', containsAll([...authUser.savedProducts, newProduct])));
+      expect(updateData, {
+        'savedProducts': FieldValue.arrayUnion([newProduct])
+      });
+      expect(
+          newUser,
+          isA<AppUser>()
+              .having((o) => o.savedProducts, 'savedProducts', containsAll([...authUser.savedProducts, newProduct])));
       expect(container.read(authUserProvider.notifier), isNot(authUser));
     });
 
@@ -69,8 +73,39 @@ void main() {
       verification.called(1);
       final updateData = verification.captured[0];
       final newUser = verification.captured[1];
-      expect(updateData, {'savedProducts': FieldValue.arrayRemove([deletedProduct])});
-      expect(newUser, isA<AppUser>().having((o) => o.savedProducts, 'savedProducts', containsAll([...authUser.savedProducts]..remove(deletedProduct))));
+      expect(updateData, {
+        'savedProducts': FieldValue.arrayRemove([deletedProduct])
+      });
+      expect(
+          newUser,
+          isA<AppUser>().having((o) => o.savedProducts, 'savedProducts',
+              containsAll([...authUser.savedProducts]..remove(deletedProduct))));
+      expect(container.read(authUserProvider.notifier), isNot(authUser));
+    });
+  });
+
+  group('changeInfo', () {
+    const name = 'Wojciech';
+    const surname = 'Brandeburg';
+
+    test('Should update user name and surname', () async {
+      await authUserService.changeInfo(name, surname);
+
+      final verification = verify(mockUserRepository.update(authUser.id, captureAny, captureAny));
+      verification.called(1);
+      final updateData = verification.captured[0];
+      final newUser = verification.captured[1];
+
+      expect(updateData.containsKey('name'), true);
+      expect(updateData['name'], name);
+
+      expect(updateData.containsKey('surname'), true);
+      expect(updateData['surname'], surname);
+
+      expect(
+        newUser,
+        isA<AppUser>().having((o) => o.name, 'name', name).having((o) => o.surname, 'surname', surname),
+      );
       expect(container.read(authUserProvider.notifier), isNot(authUser));
     });
   });
