@@ -84,30 +84,28 @@ void main() {
   });
 
   group('signed in', () {
+    final profileActionsButtonFinder = find.byTooltip('Ustawienia użytkownika');
+
     group('profile', () {
-      testWidgets('Should load authUser', (tester) async {
+      testWidgets('Should show authUser', (tester) async {
         await tester.pumpWidget(buildWidget(authUser: user));
         await tester.pumpAndSettle();
 
         expect(find.text(user.displayName), findsOneWidget);
       });
 
-      testWidgets('Should load profile actions button', (tester) async {
+      testWidgets('Should show profile actions button', (tester) async {
         await tester.pumpWidget(buildWidget(authUser: user));
         await tester.pumpAndSettle();
 
-        Finder finder = find.byTooltip('Ustawienia użytkownika');
-        expect(finder, findsOneWidget);
+        expect(profileActionsButtonFinder, findsOneWidget);
       });
 
-      testWidgets('Should load action sheet modal on settings tap', (tester) async {
+      testWidgets('Should show action sheet modal on settings tap', (tester) async {
         await tester.pumpWidget(buildWidget(authUser: user));
         await tester.pumpAndSettle();
 
-        Finder finder = find.byTooltip('Ustawienia użytkownika');
-        expect(finder, findsOneWidget);
-
-        await scrollToAndTap(tester, finder);
+        await scrollToAndTap(tester, profileActionsButtonFinder);
         await tester.pumpAndSettle();
 
         expect(find.bySemanticsLabel('Akcje użytkownika'), findsOneWidget);
@@ -120,13 +118,14 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: privilegedUser, user: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.byTooltip('Ustawienia użytkownika');
-          expect(finder, findsOneWidget);
+          expect(profileActionsButtonFinder, findsOneWidget);
         });
       }
     });
 
     group('savedProducts', () {
+      final profileSavedProductsButtonFinder = find.bySemanticsLabel('Pokaż wszystko Zapisane produkty');
+
       final List<Product> savedProducts = products;
       final List<Product> nextProducts = savedProducts.skip(10).take(5).toList();
 
@@ -134,14 +133,21 @@ void main() {
         user = user.copyWith(savedProducts: savedProducts.map((p) => p.id).toList());
       });
 
+      testWidgets('Should show saved products page button', (tester) async {
+        await tester.pumpWidget(buildWidget(authUser: user));
+        await tester.pumpAndSettle();
+
+        expect(profileSavedProductsButtonFinder, findsOneWidget);
+      });
+
+
       testWidgets('Should not show saved products page button', (tester) async {
         user = user.copyWith(savedProducts: savedProducts.take(2).map((p) => p.id).toList());
 
         await tester.pumpWidget(buildWidget(authUser: user));
         await tester.pumpAndSettle();
 
-        Finder finder = find.bySemanticsLabel('Pokaż wszystko Zapisane produkty');
-        expect(finder, findsNothing);
+        expect(profileSavedProductsButtonFinder, findsNothing);
       });
 
       testWidgets('Should open product modal on product tap', (tester) async {
@@ -150,14 +156,13 @@ void main() {
 
         debugDumpSemanticsTree(DebugSemanticsDumpOrder.traversalOrder);
 
-        Product product = products.firstWhere((p) => p.id == 'Product1');
-        Finder finder = find.byTooltip(product.name);
+        Finder finder = find.byTooltip(products[0].name);
         expect(finder, findsOneWidget);
 
         await scrollToAndTap(tester, finder);
         await tester.pumpAndSettle();
 
-        expect(find.textContaining(product.id), findsOneWidget);
+        expect(find.textContaining(products[0].id), findsOneWidget);
       });
 
       group('savedProducts page', () {
@@ -168,10 +173,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Zapisane produkty');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileSavedProductsButtonFinder);
           await tester.pumpAndSettle();
 
           expect(find.textContaining('ProductName3'), findsOneWidget);
@@ -181,10 +183,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Zapisane produkty');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileSavedProductsButtonFinder);
           await tester.pumpAndSettle();
 
           clearInteractions(mockProductRepository);
@@ -199,10 +198,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Zapisane produkty');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileSavedProductsButtonFinder);
           await tester.pumpAndSettle();
 
           clearInteractions(mockProductRepository);
@@ -221,6 +217,8 @@ void main() {
     });
 
     group('sortProposals', () {
+      final profileSortProposalsButtonFinder = find.bySemanticsLabel('Pokaż wszystko Propozycje segregacji');
+
       final List<Product> sortProposals = products.take(10).toList();
       final List<Product> nextProducts = products.skip(10).take(5).toList();
 
@@ -239,14 +237,20 @@ void main() {
         when(fetchSortProposals()).thenAnswer((realInvocation) => Future.value(nextProducts));
       });
 
+      testWidgets('Should show sort proposals page button', (tester) async {
+        await tester.pumpWidget(buildWidget(authUser: user));
+        await tester.pumpAndSettle();
+
+        expect(profileSortProposalsButtonFinder, findsOneWidget);
+      });
+
       testWidgets('Should not show sort proposals page button', (tester) async {
         when(countSortProposals()).thenAnswer((realInvocation) => Future.value(2));
 
         await tester.pumpWidget(buildWidget(authUser: user));
         await tester.pumpAndSettle();
 
-        Finder finder = find.bySemanticsLabel('Pokaż wszystko Propozycje segregacji');
-        expect(finder, findsNothing);
+        expect(profileSortProposalsButtonFinder, findsNothing);
       });
 
       testWidgets('Should open product modal on product tap', (tester) async {
@@ -267,10 +271,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Propozycje segregacji');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileSortProposalsButtonFinder);
           await tester.pumpAndSettle();
 
           verify(initPageFetchSortProposals()).called(1);
@@ -281,10 +282,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Propozycje segregacji');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileSortProposalsButtonFinder);
           await tester.pumpAndSettle();
 
           await tester.dragFrom(Offset(300, 500), Offset(0, -600));
@@ -297,10 +295,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Propozycje segregacji');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileSortProposalsButtonFinder);
           await tester.pumpAndSettle();
 
           await tester.dragFrom(Offset(300, 500), Offset(0, -600));
@@ -317,6 +312,8 @@ void main() {
     });
 
     group('userProducts', () {
+      final profileUserProductsButtonFinder = find.bySemanticsLabel('Pokaż wszystko Dodane produkty');
+
       final List<Product> userProducts = products.take(10).toList();
       final List<Product> nextProducts = products.skip(10).take(5).toList();
 
@@ -335,14 +332,20 @@ void main() {
         when(fetchUserProducts()).thenAnswer((realInvocation) => Future.value(nextProducts));
       });
 
+      testWidgets('Should show user products page button', (tester) async {
+        await tester.pumpWidget(buildWidget(authUser: user));
+        await tester.pumpAndSettle();
+
+        expect(profileUserProductsButtonFinder, findsOneWidget);
+      });
+
       testWidgets('Should not show user products page button', (tester) async {
         when(countUserProducts()).thenAnswer((realInvocation) => Future.value(2));
 
         await tester.pumpWidget(buildWidget(authUser: user));
         await tester.pumpAndSettle();
 
-        Finder finder = find.bySemanticsLabel('Pokaż wszystko Dodane produkty');
-        expect(finder, findsNothing);
+        expect(profileUserProductsButtonFinder, findsNothing);
       });
 
       testWidgets('Should open product modal on product tap', (tester) async {
@@ -363,10 +366,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Dodane produkty');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileUserProductsButtonFinder);
           await tester.pumpAndSettle();
 
           verify(initPageFetchUserProducts()).called(1);
@@ -377,10 +377,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Dodane produkty');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileUserProductsButtonFinder);
           await tester.pumpAndSettle();
 
           await tester.dragFrom(Offset(300, 500), Offset(0, -600));
@@ -393,10 +390,7 @@ void main() {
           await tester.pumpWidget(buildWidget(authUser: user));
           await tester.pumpAndSettle();
 
-          Finder finder = find.bySemanticsLabel('Pokaż wszystko Dodane produkty');
-          expect(finder, findsOneWidget);
-
-          await scrollToAndTap(tester, finder);
+          await scrollToAndTap(tester, profileUserProductsButtonFinder);
           await tester.pumpAndSettle();
 
           await tester.dragFrom(Offset(300, 500), Offset(0, -600));
