@@ -49,12 +49,14 @@ class ProfileRoleDialog extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 24.0),
                   DropdownButtonFormField<Role>(
+                    key: const ValueKey('Dropdown'),
                     value: selectedRole.value,
                     borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                     decoration: const InputDecoration(labelText: 'Nowa rola'),
                     items: [
                       for (var role in availableRoles)
                         DropdownMenuItem(
+                          key: ValueKey(role.desc),
                           value: role,
                           child: Text(role.desc, style: TextStyle(color: role.descColor)),
                         ),
@@ -87,11 +89,13 @@ class ProfileRoleDialog extends HookConsumerWidget {
                         ScaffoldMessenger.of(context).clearSnackBars();
 
                         isSaving.value = true;
-                        await asyncCall(context, () => userService.changeRole(user, selectedRole.value));
-                        ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
-                          successSnackBar(context: context, message: 'Rola została zmieniona'),
-                        );
-                        Navigator.of(context).pop();
+                        await asyncCall(context, () async {
+                          await userService.changeRole(user, selectedRole.value);
+                          ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
+                            successSnackBar(context: context, message: 'Rola została zmieniona'),
+                          );
+                          Navigator.of(context).pop();
+                        });
                         isSaving.value = false;
                       },
                       style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
