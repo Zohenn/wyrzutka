@@ -113,7 +113,7 @@ void main() {
     });
 
     group('user profile', () {
-      testWidgets('Should show profile actions button in user profile with privileged role', (tester) async {
+      testWidgets('Should show profile actions button on user profile for privileged user', (tester) async {
         authUser = modUser;
         assert([Role.mod, Role.admin].contains(authUser.role));
         await tester.pumpWidget(buildWidget(authUser: authUser, user: user));
@@ -122,7 +122,7 @@ void main() {
         expect(profileActionsButtonFinder, findsOneWidget);
       });
 
-      testWidgets('Should not show profile actions button in user profile without privileged role', (tester) async {
+      testWidgets('Should not show profile actions button on user profile for unprivileged user', (tester) async {
         authUser = modUser.copyWith(role: Role.user);
         await tester.pumpWidget(buildWidget(authUser: authUser, user: user));
         await tester.pumpAndSettle();

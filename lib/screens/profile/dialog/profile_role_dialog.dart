@@ -89,11 +89,13 @@ class ProfileRoleDialog extends HookConsumerWidget {
                         ScaffoldMessenger.of(context).clearSnackBars();
 
                         isSaving.value = true;
-                        await asyncCall(context, () => userService.changeRole(user, selectedRole.value));
-                        ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
-                          successSnackBar(context: context, message: 'Rola została zmieniona'),
-                        );
-                        Navigator.of(context).pop();
+                        await asyncCall(context, () async {
+                          await userService.changeRole(user, selectedRole.value);
+                          ScaffoldMessenger.of(rootScaffoldKey.currentContext!).showSnackBar(
+                            successSnackBar(context: context, message: 'Rola została zmieniona'),
+                          );
+                          Navigator.of(context).pop();
+                        });
                         isSaving.value = false;
                       },
                       style: Theme.of(context).elevatedButtonTheme.style!.copyWith(

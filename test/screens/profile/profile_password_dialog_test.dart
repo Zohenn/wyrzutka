@@ -51,7 +51,7 @@ void main() {
     expect(find.text('Nowe hasło'), findsNothing);
   });
 
-  testWidgets('Should not try to change password empty passwords', (tester) async {
+  testWidgets('Should not try to change when passwords are empty', (tester) async {
     await tester.pumpWidget(buildWidget());
     await tester.pumpAndSettle();
 
