@@ -36,7 +36,6 @@ void main() {
           authUserServiceProvider.overrideWith((ref) => mockAuthUserService),
           authUserProvider.overrideWith((ref) => authUser),
           productProvider.overrideWith((ref, id) => product)
-
         ],
       );
 
@@ -76,14 +75,14 @@ void main() {
       expect(find.textContaining('Nieznany produkt'), findsOneWidget);
     });
 
-    testWidgets('Should show barcode scan', (tester) async {
+    testWidgets('Should show barcode value', (tester) async {
       await tester.pumpWidget(buildWidget());
       await tester.pumpAndSettle();
 
       expect(find.textContaining(barcode), findsOneWidget);
     });
 
-    testWidgets('Should not show add product button', (tester) async {
+    testWidgets('Should not show add product button if user is not logged in', (tester) async {
       authUser = null;
 
       await tester.pumpWidget(buildWidget());
@@ -92,7 +91,7 @@ void main() {
       expect(find.bySemanticsLabel('Uzupełnij informacje'), findsNothing);
     });
 
-    testWidgets('Should show add product button for user', (tester) async {
+    testWidgets('Should show add product button if user is logged in', (tester) async {
       await tester.pumpWidget(buildWidget());
       await tester.pumpAndSettle();
 
@@ -129,11 +128,22 @@ void main() {
       expect(find.textContaining('Oznaczenia'), findsOneWidget);
     });
 
-    testWidgets('Should change user savedProducts on tap', (tester) async {
+    testWidgets('Should add product to saved list on tap', (tester) async {
       await tester.pumpWidget(buildWidget());
       await tester.pumpAndSettle();
 
       await scrollToAndTap(tester, find.bySemanticsLabel('Zapisz na liście'));
+      await tester.pumpAndSettle();
+
+      verify(mockAuthUserService.updateSavedProduct(barcode)).called(1);
+    });
+
+    testWidgets('Should remove product from saved list on tap', (tester) async {
+      authUser = authUser!.copyWith(savedProducts: [barcode]);
+      await tester.pumpWidget(buildWidget());
+      await tester.pumpAndSettle();
+
+      await scrollToAndTap(tester, find.bySemanticsLabel('Zapisano na liście'));
       await tester.pumpAndSettle();
 
       verify(mockAuthUserService.updateSavedProduct(barcode)).called(1);
