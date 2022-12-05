@@ -70,14 +70,29 @@ void main() {
     expect(find.text('Zmiana roli'), findsNothing);
   });
 
+  testWidgets('Should update selected role on tap', (tester) async {
+    const newRole = Role.mod;
+    await tester.pumpWidget(buildWidget(adminUser));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(ValueKey('Dropdown')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(ValueKey(newRole.desc)).last);
+    await tester.pumpAndSettle();
+
+    await scrollToAndTap(tester, find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    verify(mockUserService.changeRole(any, newRole)).called(1);
+  });
+
   for (var privilegedUser in privilegedUsers) {
     testWidgets('Should show roles for ${privilegedUser.role.name} user', (tester) async {
       await tester.pumpWidget(buildWidget(privilegedUser));
       await tester.pumpAndSettle();
 
-      final dropdown = find.byKey(ValueKey('Dropdown'));
-
-      await tester.tap(dropdown);
+      await tester.tap(find.byKey(ValueKey('Dropdown')));
       await tester.pumpAndSettle();
 
       for (var role in Role.values) {
