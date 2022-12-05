@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inzynierka/hooks/init_future.dart';
 import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
 import 'package:inzynierka/services/auth_user_service.dart';
 import 'package:inzynierka/repositories/product_repository.dart';
 import 'package:inzynierka/screens/product_form/product_form.dart';
@@ -147,7 +146,7 @@ class ScannerProductModal extends HookConsumerWidget {
   }
 }
 
-class _UnknownProductInfo extends StatelessWidget {
+class _UnknownProductInfo extends HookConsumerWidget {
   const _UnknownProductInfo({
     Key? key,
     required this.onFillTap,
@@ -156,7 +155,9 @@ class _UnknownProductInfo extends StatelessWidget {
   final VoidCallback onFillTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authUser = ref.watch(authUserProvider);
+
     return GutterColumn(
       children: [
         Card(
@@ -165,18 +166,18 @@ class _UnknownProductInfo extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Brak informacji dotyczacych produktu',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                Text('Brak informacji dotyczacych produktu', style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
           ),
         ),
-        Center(
-          child: ElevatedButton(
-            onPressed: onFillTap,
-            child: const Text('Uzupełnij informacje'),
+        ConditionalBuilder(
+          condition: authUser != null,
+          ifTrue: () => Center(
+            child: ElevatedButton(
+              onPressed: onFillTap,
+              child: const Text('Uzupełnij informacje'),
+            ),
           ),
         ),
       ],
@@ -222,7 +223,7 @@ class _ProductName extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                product?.id.toString() ?? id,
+                product?.id ?? id,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ],
