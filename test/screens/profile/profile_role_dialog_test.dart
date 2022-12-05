@@ -71,14 +71,28 @@ void main() {
     verify(mockUserService.changeRole(any, any)).called(1);
   });
 
+  testWidgets('Should update selected role on tap', (tester) async {
+    await tester.pumpWidget(buildWidget(adminUser));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(ValueKey('Dropdown')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(ValueKey('Moderator')).last);
+    await tester.pumpAndSettle();
+
+    await scrollToAndTap(tester, find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    verify(mockUserService.changeRole(any, Role.mod)).called(1);
+  });
+
   for (var privilegedUser in privilegedUsers) {
     testWidgets('Should show roles for ${privilegedUser.role.name} user', (tester) async {
       await tester.pumpWidget(buildWidget(privilegedUser));
       await tester.pumpAndSettle();
 
-      final dropdown = find.byKey(ValueKey('Dropdown'));
-
-      await tester.tap(dropdown);
+      await tester.tap(find.byKey(ValueKey('Dropdown')));
       await tester.pumpAndSettle();
 
       final availableRoles = Role.values.where((element) => element.index <= privilegedUser.role.index);
