@@ -47,18 +47,7 @@ void main() {
     await scrollToAndTap(tester, find.text('Anuluj'));
     await tester.pumpAndSettle();
 
-    expect(find.bySemanticsLabel('Nowa rola'), findsNothing);
-  });
-
-  testWidgets('Should close modal on success', (tester) async {
-    when(mockUserService.changeRole(any , any)).thenAnswer((realInvocation) => Future.value());
-    await tester.pumpWidget(buildWidget(modUser));
-    await tester.pumpAndSettle();
-
-    await scrollToAndTap(tester, find.text('Zapisz'));
-    await tester.pumpAndSettle();
-
-    expect(find.bySemanticsLabel('Nowa rola'), findsNothing);
+    expect(find.text('Zmiana roli'), findsNothing);
   });
 
   testWidgets('Should change role on tap', (tester) async {
@@ -68,7 +57,17 @@ void main() {
     await scrollToAndTap(tester, find.text('Zapisz'));
     await tester.pumpAndSettle();
 
-    verify(mockUserService.changeRole(any, any)).called(1);
+    verify(mockUserService.changeRole(regularUser, any)).called(1);
+  });
+
+  testWidgets('Should close modal on success', (tester) async {
+    await tester.pumpWidget(buildWidget(modUser));
+    await tester.pumpAndSettle();
+
+    await scrollToAndTap(tester, find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Zmiana roli'), findsNothing);
   });
 
   testWidgets('Should update selected role on tap', (tester) async {
@@ -95,10 +94,30 @@ void main() {
       await tester.tap(find.byKey(ValueKey('Dropdown')));
       await tester.pumpAndSettle();
 
-      final availableRoles = Role.values.where((element) => element.index <= privilegedUser.role.index);
-      for (var role in availableRoles) {
-        expect(find.byKey(ValueKey(role.desc)), findsWidgets);
+      for (var role in Role.values) {
+        final shouldBeAvailable = role.index <= privilegedUser.role.index;
+        expect(find.byKey(ValueKey(role.desc)), shouldBeAvailable ? findsWidgets : findsNothing);
       }
     });
   }
+
+  testWidgets('Should show error snackbar on error', (tester) async {
+    when(mockUserService.changeRole(any, any)).thenAnswer((realInvocation) => Future.error(Error()));
+    await tester.pumpWidget(buildWidget(modUser));
+
+    await scrollToAndTap(tester, find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('błąd'), findsOneWidget);
+  });
+
+  testWidgets('Should not close dialog on error', (tester) async {
+    when(mockUserService.changeRole(any, any)).thenAnswer((realInvocation) => Future.error(Error()));
+    await tester.pumpWidget(buildWidget(modUser));
+
+    await scrollToAndTap(tester, find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Zmiana roli'), findsOneWidget);
+  });
 }

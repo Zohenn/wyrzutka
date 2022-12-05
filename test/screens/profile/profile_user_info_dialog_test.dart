@@ -1,8 +1,6 @@
-import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:inzynierka/models/app_user/app_user.dart';
 import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/screens/profile/dialog/profile_password_dialog.dart';
 import 'package:inzynierka/screens/profile/dialog/profile_user_info_dialog.dart';
 import 'package:inzynierka/services/auth_user_service.dart';
 import 'package:mockito/annotations.dart';
@@ -49,7 +47,7 @@ void main() {
     expect(find.textContaining('Nazwisko'), findsNothing);
   });
 
-  testWidgets('Should put in user info into fields', (tester) async {
+  testWidgets('Should fill fields with user info', (tester) async {
     await tester.pumpWidget(buildWidget());
 
     await scrollToAndTap(tester, find.text('Zapisz'));
@@ -73,12 +71,8 @@ void main() {
   testWidgets('Should change user info on tap', (tester) async {
     await tester.pumpWidget(buildWidget());
 
-    debugDumpSemanticsTree(DebugSemanticsDumpOrder.traversalOrder);
-
     await tester.enterText(find.bySemanticsLabel('Imię'), name);
     await tester.enterText(find.bySemanticsLabel('Nazwisko'), surname);
-
-    debugDumpSemanticsTree(DebugSemanticsDumpOrder.traversalOrder);
 
     await scrollToAndTap(tester, find.text('Zapisz'));
     await tester.pumpAndSettle();
@@ -97,7 +91,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Imię'), findsNothing);
-    expect(find.textContaining('Nazwisko'), findsNothing);
   });
 
   testWidgets('Should show error snackbar on error', (tester) async {
@@ -124,6 +117,5 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Imię'), findsOneWidget);
-    expect(find.textContaining('Nazwisko'), findsOneWidget);
   });
 }

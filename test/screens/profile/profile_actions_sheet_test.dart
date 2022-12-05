@@ -33,7 +33,7 @@ void main() {
   late AppUser user;
 
   buildWidget({required AppUser authUser, AppUser? user}) => wrapForTesting(
-        ProfileActionsSheet(userId: authUser.id),
+        ProfileActionsSheet(userId: (user ?? authUser).id),
         overrides: [
           authUserProvider.overrideWith((ref) => authUser),
           authServiceProvider.overrideWith((ref) => mockAuthService),
@@ -73,7 +73,7 @@ void main() {
       expect(finder, findsOneWidget);
     });
 
-    testWidgets('Should not show chamge role button', (tester) async {
+    testWidgets('Should not show change role button', (tester) async {
       await tester.pumpWidget(buildWidget(authUser: user));
       await tester.pumpAndSettle();
 
