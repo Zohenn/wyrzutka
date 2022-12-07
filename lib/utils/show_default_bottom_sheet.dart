@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/widgets/default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/default_bottom_sheet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 Future<T?> showDefaultBottomSheet<T>({

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/hooks/tap_gesture_recognizer.dart';
-import 'package:inzynierka/screens/sign_in_screen.dart';
-import 'package:inzynierka/screens/sign_up_screen.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/hooks/tap_gesture_recognizer.dart';
+import 'package:wyrzutka/screens/sign_in_screen.dart';
+import 'package:wyrzutka/screens/sign_up_screen.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/gutter_column.dart';
 
 class ProfileFeaturesScreen extends HookWidget {
   const ProfileFeaturesScreen({Key? key}) : super(key: key);

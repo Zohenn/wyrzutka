@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/repositories/query_filter.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/services/user_service.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/repositories/query_filter.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
+import 'package:wyrzutka/services/user_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

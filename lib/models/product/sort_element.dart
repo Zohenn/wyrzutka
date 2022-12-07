@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inzynierka/theme/app_icons.dart';
-import 'package:inzynierka/theme/colors.dart';
+import 'package:wyrzutka/theme/app_icons.dart';
+import 'package:wyrzutka/theme/colors.dart';
 
 part 'sort_element.freezed.dart';
 

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/providers/firebase_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/providers/firebase_provider.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
 
 final _initialAuthStateProvider = FutureProvider<User?>((ref) {
   final completer = Completer<User?>();

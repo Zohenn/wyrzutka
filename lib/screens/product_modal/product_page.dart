@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/hooks/init_future.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/repositories/product_symbol_repository.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/screens/widgets/product_sort.dart';
-import 'package:inzynierka/screens/product_modal/product_symbols.dart';
-import 'package:inzynierka/screens/product_modal/product_user.dart';
-import 'package:inzynierka/services/user_service.dart';
-import 'package:inzynierka/widgets/future_handler.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:wyrzutka/hooks/init_future.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/repositories/product_symbol_repository.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
+import 'package:wyrzutka/screens/widgets/product_sort.dart';
+import 'package:wyrzutka/screens/product_modal/product_symbols.dart';
+import 'package:wyrzutka/screens/product_modal/product_user.dart';
+import 'package:wyrzutka/services/user_service.dart';
+import 'package:wyrzutka/widgets/future_handler.dart';
+import 'package:wyrzutka/widgets/gutter_column.dart';
 
 class ProductPage extends HookConsumerWidget {
   const ProductPage({

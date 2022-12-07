@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/providers/image_picker_provider.dart';
-import 'package:inzynierka/screens/product_form/product_form.dart';
-import 'package:inzynierka/services/product_service.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/providers/image_picker_provider.dart';
+import 'package:wyrzutka/screens/product_form/product_form.dart';
+import 'package:wyrzutka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';

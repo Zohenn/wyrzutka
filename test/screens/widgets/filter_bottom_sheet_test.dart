@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/filter_bottom_sheet.dart';
 
 import '../../utils.dart';
 

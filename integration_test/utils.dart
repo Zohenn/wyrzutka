@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:patrol/patrol.dart';
-import 'package:inzynierka/main.dart' as app;
+import 'package:wyrzutka/main.dart' as app;
 
 import 'config.dart';
 import 'setup.dart';

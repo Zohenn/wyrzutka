@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/models/product/sort_element_template.dart';
-import 'package:inzynierka/models/product_symbol/product_symbol.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/sort.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/models/product/sort_element_template.dart';
+import 'package:wyrzutka/models/product_symbol/product_symbol.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
 
 void main() {
   group('Entities', () {

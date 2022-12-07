@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/widgets/generic_popup_menu_item.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/widgets/generic_popup_menu_item.dart';
 
 class RadioPopupMenuItem<T> extends GenericPopupMenuItem<T> {
   const RadioPopupMenuItem({

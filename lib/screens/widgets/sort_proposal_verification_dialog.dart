@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/screens/widgets/product_photo.dart';
-import 'package:inzynierka/services/product_service.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/widgets/progress_indicator_button.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/sort.dart';
+import 'package:wyrzutka/screens/widgets/product_photo.dart';
+import 'package:wyrzutka/services/product_service.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/utils/async_call.dart';
+import 'package:wyrzutka/widgets/progress_indicator_button.dart';
 
 class SortProposalVerificationDialog extends HookConsumerWidget {
   const SortProposalVerificationDialog({

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/screens/sort_proposal_form.dart';
-import 'package:inzynierka/screens/widgets/sort_container.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/screens/sort_proposal_form.dart';
+import 'package:wyrzutka/screens/widgets/sort_container.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:wyrzutka/widgets/gutter_column.dart';
 
 class ProductSort extends ConsumerWidget {
   const ProductSort({

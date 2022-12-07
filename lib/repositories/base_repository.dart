@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/identifiable.dart';
-import 'package:inzynierka/providers/cache_notifier.dart';
-import 'package:inzynierka/repositories/query_filter.dart';
+import 'package:wyrzutka/models/identifiable.dart';
+import 'package:wyrzutka/providers/cache_notifier.dart';
+import 'package:wyrzutka/repositories/query_filter.dart';
 
 abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V> {
   Ref get ref;

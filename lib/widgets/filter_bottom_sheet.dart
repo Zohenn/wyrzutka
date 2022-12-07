@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
+import 'package:wyrzutka/widgets/gutter_column.dart';
 
 typedef Filters = Map<String, dynamic>;
 

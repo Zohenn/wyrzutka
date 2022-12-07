@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/theme/colors.dart';
+import 'package:wyrzutka/theme/colors.dart';
 
 SnackBar errorSnackBar({required BuildContext context, required String message}) => SnackBar(
       backgroundColor: AppColors.negativeDark,

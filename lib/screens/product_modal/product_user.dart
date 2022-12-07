@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/screens/widgets/avatar_icon.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/screens/widgets/avatar_icon.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
 
 class ProductUser extends StatelessWidget {
   const ProductUser({

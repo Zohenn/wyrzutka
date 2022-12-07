@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:503394218276:android:567368a522844d323d03b1",
         "android_client_info": {
-          "package_name": "com.example.inzynierka"
+          "package_name": "com.example.wyrzutka"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "503394218276-7t4ovh6cvlnf42faem18nggq6vuf1r1v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.inzynierka",
+            "package_name": "com.example.wyrzutka",
             "certificate_hash": "9b4f96f9471b15eba7fd01636a249de3b42d8e63"
           }
         },

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/screens/profile/dialog/profile_password_dialog.dart';
-import 'package:inzynierka/screens/profile/dialog/profile_role_dialog.dart';
-import 'package:inzynierka/screens/profile/dialog/profile_user_info_dialog.dart';
-import 'package:inzynierka/services/auth_service.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
+import 'package:wyrzutka/screens/profile/dialog/profile_password_dialog.dart';
+import 'package:wyrzutka/screens/profile/dialog/profile_role_dialog.dart';
+import 'package:wyrzutka/screens/profile/dialog/profile_user_info_dialog.dart';
+import 'package:wyrzutka/services/auth_service.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
 
 class ProfileActionsSheet extends HookConsumerWidget {
   const ProfileActionsSheet({

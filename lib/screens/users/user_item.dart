@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/screens/widgets/avatar_icon.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/screens/widgets/avatar_icon.dart';
 
 class UserItem extends StatelessWidget {
   const UserItem({

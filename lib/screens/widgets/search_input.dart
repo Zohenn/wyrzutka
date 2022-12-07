@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:inzynierka/hooks/debounce.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/custom_color_selection_handle.dart';
+import 'package:wyrzutka/hooks/debounce.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/widgets/custom_color_selection_handle.dart';
 
 class SearchInput extends HookWidget {
   const SearchInput({

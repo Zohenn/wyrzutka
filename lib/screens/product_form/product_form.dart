@@ -7,17 +7,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:inzynierka/hooks/debounce.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/services/product_service.dart';
-import 'package:inzynierka/screens/product_form/product_form_information.dart';
-import 'package:inzynierka/screens/product_form/product_form_save.dart';
-import 'package:inzynierka/screens/product_form/product_form_sort.dart';
-import 'package:inzynierka/screens/product_form/product_form_symbols.dart';
-import 'package:inzynierka/utils/shared_axis_transition_builder.dart';
-import 'package:inzynierka/widgets/custom_stepper.dart';
+import 'package:wyrzutka/hooks/debounce.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/sort.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/services/product_service.dart';
+import 'package:wyrzutka/screens/product_form/product_form_information.dart';
+import 'package:wyrzutka/screens/product_form/product_form_save.dart';
+import 'package:wyrzutka/screens/product_form/product_form_sort.dart';
+import 'package:wyrzutka/screens/product_form/product_form_symbols.dart';
+import 'package:wyrzutka/utils/shared_axis_transition_builder.dart';
+import 'package:wyrzutka/widgets/custom_stepper.dart';
 
 part 'product_form.freezed.dart';
 

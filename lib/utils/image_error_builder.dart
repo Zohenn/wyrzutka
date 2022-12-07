@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/theme/colors.dart';
+import 'package:wyrzutka/theme/colors.dart';
 
 Widget imageErrorBuilder(BuildContext context, Object error, StackTrace? stackTrace) => const Tooltip(
       message: 'Zdjęcie niedostępne',

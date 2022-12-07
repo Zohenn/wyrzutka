@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product_symbol/product_symbol.dart';
-import 'package:inzynierka/repositories/product_symbol_repository.dart';
-import 'package:inzynierka/screens/product_form/product_form.dart';
-import 'package:inzynierka/services/product_service.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product_symbol/product_symbol.dart';
+import 'package:wyrzutka/repositories/product_symbol_repository.dart';
+import 'package:wyrzutka/screens/product_form/product_form.dart';
+import 'package:wyrzutka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

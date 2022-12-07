@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/providers/firebase_provider.dart';
+import 'package:wyrzutka/providers/firebase_provider.dart';
 
 final imageUploadServiceProvider = Provider(ImageUploadService.new);
 

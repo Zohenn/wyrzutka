@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/screens/product_modal/product_modal.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/screens/widgets/product_photo.dart';
-import 'package:inzynierka/utils/pluralization.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/utils/text_overflow_ellipsis_fix.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/gutter_row.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/screens/product_modal/product_modal.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/screens/widgets/product_photo.dart';
+import 'package:wyrzutka/utils/pluralization.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/utils/text_overflow_ellipsis_fix.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/widgets/default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/gutter_row.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ProductItem extends StatelessWidget {

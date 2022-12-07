@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/utils/image_error_builder.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/utils/image_error_builder.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
 
 enum ProductPhotoType {
   small,

@@ -8,7 +8,7 @@ Future<void> setupIntegrationTest(PatrolTester $, [String cameraPermissionAction
   await useFirebaseEmulator();
   await $.host.runProcess(
     'adb',
-    arguments: ['shell', 'pm', cameraPermissionAction, 'com.example.inzynierka', 'android.permission.CAMERA'],
+    arguments: ['shell', 'pm', cameraPermissionAction, 'com.example.wyrzutka', 'android.permission.CAMERA'],
   );
 }
 

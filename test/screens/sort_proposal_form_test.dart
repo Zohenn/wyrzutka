@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/repositories/sort_element_template_repository.dart';
-import 'package:inzynierka/screens/sort_proposal_form.dart';
-import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
-import 'package:inzynierka/services/product_service.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/repositories/sort_element_template_repository.dart';
+import 'package:wyrzutka/screens/sort_proposal_form.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

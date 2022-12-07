@@ -3,12 +3,12 @@ import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/providers/firebase_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/services/auth_service.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/providers/firebase_provider.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
+import 'package:wyrzutka/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

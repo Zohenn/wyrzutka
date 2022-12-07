@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/services/auth_user_service.dart';
-import 'package:inzynierka/screens/product_form/product_form.dart';
-import 'package:inzynierka/screens/product_modal/product_delete_dialog.dart';
-import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/services/auth_user_service.dart';
+import 'package:wyrzutka/screens/product_form/product_form.dart';
+import 'package:wyrzutka/screens/product_modal/product_delete_dialog.dart';
+import 'package:wyrzutka/utils/async_call.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
 
 class ProductActionsSheet extends HookConsumerWidget {
   const ProductActionsSheet({

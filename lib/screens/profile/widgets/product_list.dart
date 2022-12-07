@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/screens/profile/widgets/profile_product_list_section.dart';
-import 'package:inzynierka/screens/widgets/product_item.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
-import 'package:inzynierka/widgets/load_more_list_view.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/screens/profile/widgets/profile_product_list_section.dart';
+import 'package:wyrzutka/screens/widgets/product_item.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/widgets/gutter_column.dart';
+import 'package:wyrzutka/widgets/load_more_list_view.dart';
 
 class ProductList extends StatelessWidget {
   const ProductList({

@@ -2,20 +2,20 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/screens/widgets/sort_proposal_delete_dialog.dart';
-import 'package:inzynierka/screens/widgets/sort_proposal_verification_dialog.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/repositories/product_repository.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/screens/widgets/avatar_icon.dart';
-import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/widgets/progress_indicator_icon_button.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/screens/widgets/sort_proposal_delete_dialog.dart';
+import 'package:wyrzutka/screens/widgets/sort_proposal_verification_dialog.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/repositories/product_repository.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
+import 'package:wyrzutka/screens/widgets/avatar_icon.dart';
+import 'package:wyrzutka/utils/async_call.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/sort.dart';
+import 'package:wyrzutka/widgets/progress_indicator_icon_button.dart';
 
 enum _UpdateVoteState { none, up, down }
 

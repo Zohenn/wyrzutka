@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/screens/profile/profile_actions_sheet.dart';
-import 'package:inzynierka/screens/widgets/avatar_icon.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/screens/profile/profile_actions_sheet.dart';
+import 'package:wyrzutka/screens/widgets/avatar_icon.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ProfileUser extends HookConsumerWidget {

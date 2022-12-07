@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/screens/product_modal/product_actions_sheet.dart';
-import 'package:inzynierka/services/auth_user_service.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/screens/product_modal/product_actions_sheet.dart';
+import 'package:wyrzutka/services/auth_user_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

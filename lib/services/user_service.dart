@@ -1,11 +1,11 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/repositories/query_filter.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/repositories/query_filter.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
 
 final userServiceProvider = Provider(UserService.new);
 

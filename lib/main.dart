@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:inzynierka/theme/app_theme.dart';
-import 'package:inzynierka/routing/router.dart';
+import 'package:wyrzutka/theme/app_theme.dart';
+import 'package:wyrzutka/routing/router.dart';
 
 final rootScaffoldKey = GlobalKey<ScaffoldState>();
 

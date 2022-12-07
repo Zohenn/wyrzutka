@@ -1,9 +1,9 @@
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/screens/profile/dialog/profile_password_dialog.dart';
-import 'package:inzynierka/services/auth_service.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/screens/profile/dialog/profile_password_dialog.dart';
+import 'package:wyrzutka/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

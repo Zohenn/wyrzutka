@@ -2,16 +2,16 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/providers/auth_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/screens/profile/page/profile_added_products.dart';
-import 'package:inzynierka/screens/profile/page/profile_page.dart';
-import 'package:inzynierka/screens/profile/page/profile_saved_products.dart';
-import 'package:inzynierka/screens/profile/page/profile_sort_proposals.dart';
-import 'package:inzynierka/screens/profile/profile_features_screen.dart';
-import 'package:inzynierka/utils/shared_axis_transition_builder.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/providers/auth_provider.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
+import 'package:wyrzutka/screens/profile/page/profile_added_products.dart';
+import 'package:wyrzutka/screens/profile/page/profile_page.dart';
+import 'package:wyrzutka/screens/profile/page/profile_saved_products.dart';
+import 'package:wyrzutka/screens/profile/page/profile_sort_proposals.dart';
+import 'package:wyrzutka/screens/profile/profile_features_screen.dart';
+import 'package:wyrzutka/utils/shared_axis_transition_builder.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
 
 enum ProfileScreenPages {
   profile,

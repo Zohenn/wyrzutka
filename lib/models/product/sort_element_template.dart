@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inzynierka/models/identifiable.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/models/util.dart';
+import 'package:wyrzutka/models/identifiable.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/models/util.dart';
 
 part 'sort_element_template.freezed.dart';
 

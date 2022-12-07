@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/screens/password_recovery_screen.dart';
-import 'package:inzynierka/services/auth_service.dart';
+import 'package:wyrzutka/screens/password_recovery_screen.dart';
+import 'package:wyrzutka/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

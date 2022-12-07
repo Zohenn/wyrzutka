@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/data/static_data.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/repositories/base_repository.dart';
-import 'package:inzynierka/providers/cache_notifier.dart';
-import 'package:inzynierka/providers/firebase_provider.dart';
+import 'package:wyrzutka/data/static_data.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/sort.dart';
+import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/providers/cache_notifier.dart';
+import 'package:wyrzutka/providers/firebase_provider.dart';
 
 Future saveExampleProductData(WidgetRef ref) async {
   return Future.wait(productsList.map((e) {

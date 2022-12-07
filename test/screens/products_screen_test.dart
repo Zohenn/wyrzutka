@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/product_filters.dart';
-import 'package:inzynierka/repositories/product_repository.dart';
-import 'package:inzynierka/repositories/product_symbol_repository.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
-import 'package:inzynierka/screens/products_screen.dart';
-import 'package:inzynierka/services/product_service.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/product_filters.dart';
+import 'package:wyrzutka/repositories/product_repository.dart';
+import 'package:wyrzutka/repositories/product_symbol_repository.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
+import 'package:wyrzutka/screens/products_screen.dart';
+import 'package:wyrzutka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

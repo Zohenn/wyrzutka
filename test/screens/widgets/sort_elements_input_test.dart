@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/models/product/sort_element_template.dart';
-import 'package:inzynierka/repositories/sort_element_template_repository.dart';
-import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/models/product/sort_element_template.dart';
+import 'package:wyrzutka/repositories/sort_element_template_repository.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 

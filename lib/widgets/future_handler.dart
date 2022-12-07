@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/theme/colors.dart';
+import 'package:wyrzutka/theme/colors.dart';
 
 class FutureHandler<T> extends StatelessWidget {
   const FutureHandler({

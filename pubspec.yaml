@@ -1,4 +1,4 @@
-name: inzynierka
+name: wyrzutka
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -94,8 +94,6 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/
-    - assets/images/products/
-    - assets/images/symbols/
 
   fonts:
     - family: MyFlutterApp

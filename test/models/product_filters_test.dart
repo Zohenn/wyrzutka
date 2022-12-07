@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:inzynierka/models/product/product_filters.dart';
-import 'package:inzynierka/repositories/query_filter.dart';
+import 'package:wyrzutka/models/product/product_filters.dart';
+import 'package:wyrzutka/repositories/query_filter.dart';
 
 void main() {
   group('ProductSortFilters', () {

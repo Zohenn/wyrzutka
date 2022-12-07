@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/hooks/init_future.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/models/product/product_filters.dart';
-import 'package:inzynierka/repositories/base_repository.dart';
-import 'package:inzynierka/repositories/product_repository.dart';
-import 'package:inzynierka/screens/widgets/search_input.dart';
-import 'package:inzynierka/services/product_service.dart';
-import 'package:inzynierka/screens/widgets/product_item.dart';
-import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/filter_bottom_sheet.dart';
-import 'package:inzynierka/widgets/future_handler.dart';
-import 'package:inzynierka/widgets/load_more_list_view.dart';
+import 'package:wyrzutka/hooks/init_future.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/models/product/product_filters.dart';
+import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/product_repository.dart';
+import 'package:wyrzutka/screens/widgets/search_input.dart';
+import 'package:wyrzutka/services/product_service.dart';
+import 'package:wyrzutka/screens/widgets/product_item.dart';
+import 'package:wyrzutka/utils/async_call.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/widgets/filter_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/future_handler.dart';
+import 'package:wyrzutka/widgets/load_more_list_view.dart';
 
 final _filterGroups = [
   FilterGroup(

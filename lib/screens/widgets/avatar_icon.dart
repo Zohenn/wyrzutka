@@ -2,13 +2,13 @@ import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:inzynierka/routing/router.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/screens/profile/profile_screen.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/default_bottom_sheet.dart';
+import 'package:wyrzutka/routing/router.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/screens/profile/profile_screen.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/widgets/default_bottom_sheet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AvatarIcon extends StatelessWidget {

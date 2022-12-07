@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:inzynierka/main.dart';
-import 'package:inzynierka/utils/snackbars.dart';
-import 'package:inzynierka/utils/firebase_errors.dart';
-import 'package:inzynierka/utils/test_mode.dart';
+import 'package:wyrzutka/main.dart';
+import 'package:wyrzutka/utils/snackbars.dart';
+import 'package:wyrzutka/utils/firebase_errors.dart';
+import 'package:wyrzutka/utils/test_mode.dart';
 
 Future<void> asyncCall(
   BuildContext context,

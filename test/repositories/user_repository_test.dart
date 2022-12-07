@@ -1,10 +1,10 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/app_user/app_user.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/providers/firebase_provider.dart';
-import 'package:inzynierka/repositories/user_repository.dart';
+import 'package:wyrzutka/models/app_user/app_user.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/providers/firebase_provider.dart';
+import 'package:wyrzutka/repositories/user_repository.dart';
 
 void main() {
   late FakeFirebaseFirestore firestore;

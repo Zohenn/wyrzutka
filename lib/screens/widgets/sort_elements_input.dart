@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/hooks/init_future.dart';
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/models/product/sort_element_template.dart';
-import 'package:inzynierka/repositories/sort_element_template_repository.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/utils/validators.dart';
-import 'package:inzynierka/widgets/conditional_builder.dart';
-import 'package:inzynierka/widgets/future_handler.dart';
-import 'package:inzynierka/widgets/gutter_column.dart';
-import 'package:inzynierka/widgets/gutter_row.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/hooks/init_future.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/models/product/sort_element_template.dart';
+import 'package:wyrzutka/repositories/sort_element_template_repository.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/utils/validators.dart';
+import 'package:wyrzutka/widgets/conditional_builder.dart';
+import 'package:wyrzutka/widgets/future_handler.dart';
+import 'package:wyrzutka/widgets/gutter_column.dart';
+import 'package:wyrzutka/widgets/gutter_row.dart';
 
 typedef SortElements = Map<ElementContainer, List<SortElement>>;
 

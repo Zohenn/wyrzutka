@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:inzynierka/models/firestore_date_time.dart';
-import 'package:inzynierka/models/identifiable.dart';
-import 'package:inzynierka/models/product/sort.dart';
-import 'package:inzynierka/models/util.dart';
+import 'package:wyrzutka/models/firestore_date_time.dart';
+import 'package:wyrzutka/models/identifiable.dart';
+import 'package:wyrzutka/models/product/sort.dart';
+import 'package:wyrzutka/models/util.dart';
 
 part 'product.freezed.dart';
 

@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:inzynierka/hooks/barcode_camera.dart';
-import 'package:inzynierka/screens/scanner_product_modal.dart';
-import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/utils/show_default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/default_bottom_sheet.dart';
-import 'package:inzynierka/widgets/future_handler.dart';
-import 'package:inzynierka/widgets/gutter_row.dart';
-import 'package:inzynierka/widgets/progress_indicator_button.dart';
+import 'package:wyrzutka/hooks/barcode_camera.dart';
+import 'package:wyrzutka/screens/scanner_product_modal.dart';
+import 'package:wyrzutka/utils/async_call.dart';
+import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/default_bottom_sheet.dart';
+import 'package:wyrzutka/widgets/future_handler.dart';
+import 'package:wyrzutka/widgets/gutter_row.dart';
+import 'package:wyrzutka/widgets/progress_indicator_button.dart';
 
 class ScannerAreaPainter extends CustomPainter {
   @override

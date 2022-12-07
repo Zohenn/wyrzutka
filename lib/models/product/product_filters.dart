@@ -1,5 +1,5 @@
-import 'package:inzynierka/models/product/sort_element.dart';
-import 'package:inzynierka/repositories/query_filter.dart';
+import 'package:wyrzutka/models/product/sort_element.dart';
+import 'package:wyrzutka/repositories/query_filter.dart';
 
 enum ProductSortFilters {
   verified,

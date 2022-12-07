@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inzynierka/models/product/product.dart';
-import 'package:inzynierka/services/product_service.dart';
-import 'package:inzynierka/screens/widgets/sort_elements_input.dart';
-import 'package:inzynierka/utils/async_call.dart';
-import 'package:inzynierka/utils/snackbars.dart';
-import 'package:inzynierka/widgets/progress_indicator_button.dart';
+import 'package:wyrzutka/models/product/product.dart';
+import 'package:wyrzutka/services/product_service.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/utils/async_call.dart';
+import 'package:wyrzutka/utils/snackbars.dart';
+import 'package:wyrzutka/widgets/progress_indicator_button.dart';
 
 class SortProposalForm extends HookConsumerWidget {
   const SortProposalForm({

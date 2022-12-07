@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/theme/colors.dart';
-import 'package:inzynierka/widgets/gutter_row.dart';
+import 'package:wyrzutka/theme/colors.dart';
+import 'package:wyrzutka/widgets/gutter_row.dart';
 
 enum _StepType { previous, current, next }
 

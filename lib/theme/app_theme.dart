@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inzynierka/theme/color_schemes.dart';
-import 'package:inzynierka/theme/colors.dart';
+import 'package:wyrzutka/theme/color_schemes.dart';
+import 'package:wyrzutka/theme/colors.dart';
 
 class AppTheme extends StatelessWidget {
   const AppTheme({

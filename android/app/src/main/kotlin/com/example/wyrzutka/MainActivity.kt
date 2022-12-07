@@ -1,4 +1,4 @@
-package com.example.inzynierka
+package com.example.wyrzutka
 
 import io.flutter.embedding.android.FlutterActivity
 
