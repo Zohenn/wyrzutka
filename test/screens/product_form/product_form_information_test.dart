@@ -19,7 +19,7 @@ void main() {
   const photoPath = 'photo.png';
   const name = 'Produkt';
   const keywords = 'woda gazowana';
-  final keywordsList = keywords.split(' ').toList();
+  final keywordsSet = keywords.split(' ').toSet();
   final Product variant =
       Product(id: '1234', name: 'name', user: 'user', addedDate: FirestoreDateTime.serverTimestamp());
   final Product editedProduct = Product(
@@ -27,7 +27,7 @@ void main() {
     name: 'Edytowany produkt',
     user: 'user',
     addedDate: FirestoreDateTime.serverTimestamp(),
-    keywords: ['słowo', 'klucz'],
+    keywords: {'słowo', 'klucz'},
     photo: 'editPhoto.png',
   );
   late MockProductService mockProductService;
@@ -54,7 +54,7 @@ void main() {
     mockImagePicker = MockImagePicker();
     when(mockImagePicker.pickImage(source: ImageSource.camera))
         .thenAnswer((realInvocation) => Future.value(FakeXFile(photoPath)));
-    when(mockProductService.findVariant(keywordsList)).thenAnswer((realInvocation) => Future.value(variant));
+    when(mockProductService.findVariant(keywordsSet)).thenAnswer((realInvocation) => Future.value(variant));
   });
 
   testWidgets('Should show product id', (tester) async {
@@ -168,7 +168,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      verify(mockProductService.findVariant(keywordsList)).called(1);
+      verify(mockProductService.findVariant(keywordsSet)).called(1);
       expect(find.text(variant.name), findsOneWidget);
     });
 

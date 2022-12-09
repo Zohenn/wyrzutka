@@ -26,7 +26,7 @@ class ProductFormModel with _$ProductFormModel {
   const factory ProductFormModel({
     required String id,
     @Default('') String name,
-    @Default([]) List<String> keywords,
+    @Default(<String>{}) Set<String> keywords,
     File? photo,
     @Default([]) List<String> symbols,
     @Default({}) Map<ElementContainer, List<SortElement>> elements,
@@ -36,7 +36,7 @@ class ProductFormModel with _$ProductFormModel {
   factory ProductFormModel.fromProduct(Product product) => ProductFormModel(
         id: product.id,
         name: product.name,
-        keywords: [...product.keywords],
+        keywords: {...product.keywords},
         symbols: [...product.symbols],
         elements: product.sort?.elements.groupListsBy((element) => element.container) ?? {},
         product: product,
@@ -68,7 +68,7 @@ class ProductForm extends HookConsumerWidget {
     final model = useState(id != null ? ProductFormModel(id: id!) : ProductFormModel.fromProduct(editedProduct!));
     final step = useState(0);
     final previousStep = usePrevious(step.value);
-    final debounce = useDebounceHook<List<String>>(
+    final debounce = useDebounceHook<Set<String>>(
       onEmit: (keywords) {
         if (editedProduct == null) {
           productService.findVariant(keywords).then((value) => variant.value = value);

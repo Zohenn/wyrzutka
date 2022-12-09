@@ -38,7 +38,7 @@ class ProductFormInformation extends HookConsumerWidget {
   final Product? variant;
   final Product? confirmedVariant;
   final void Function(String) onNameChanged;
-  final void Function(List<String>) onKeywordsChanged;
+  final void Function(Set<String>) onKeywordsChanged;
   final void Function(File) onPhotoChanged;
   final VoidCallback onVariantDismissed;
   final VoidCallback onVariantConfirmed;
@@ -51,6 +51,7 @@ class ProductFormInformation extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final imagePicker = ref.read(imagePickerProvider);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
@@ -116,8 +117,7 @@ class ProductFormInformation extends HookConsumerWidget {
                               type: MaterialType.transparency,
                               child: InkWell(
                                 onTap: () async {
-                                  final picker = ref.read(imagePickerProvider);
-                                  final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                                  final XFile? image = await imagePicker.pickImage(source: ImageSource.camera);
                                   if (image != null) {
                                     final croppedImage = await showDefaultBottomSheet<File>(
                                       context: context,
@@ -174,7 +174,7 @@ class ProductFormInformation extends HookConsumerWidget {
                     labelText: 'Słowa kluczowe',
                   ),
                   onChanged: (value) => onKeywordsChanged(
-                    value.split(' ').map((e) => e.toLowerCase().trim()).toList()
+                    value.split(' ').map((e) => e.toLowerCase().trim()).toSet()
                       ..removeWhere((element) => element.isEmpty),
                   ),
                 ),

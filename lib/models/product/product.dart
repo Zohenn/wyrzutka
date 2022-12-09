@@ -27,7 +27,7 @@ class Product with _$Product, Identifiable {
   const factory Product({
     @JsonKey(toJson: toJsonNull, includeIfNull: false) required String id,
     required String name,
-    @Default([]) List<String> keywords,
+    @Default(<String>{}) Set<String> keywords,
     String? photo,
     String? photoSmall,
     @Default([]) List<String> symbols,

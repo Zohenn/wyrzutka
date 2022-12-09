@@ -33,7 +33,7 @@ class ProductService {
     final product = Product(
       id: model.id,
       name: model.name,
-      keywords: [...model.keywords],
+      keywords: {...model.keywords},
       photo: photoUrls[0],
       photoSmall: photoUrls[1],
       symbols: [...(variant != null ? variant.symbols : model.symbols)],
@@ -98,7 +98,7 @@ class ProductService {
     };
     final newProduct = model.product!.copyWith(
       name: model.name,
-      keywords: [...model.keywords],
+      keywords: {...model.keywords},
       photo: photoUrls?[0] ?? model.product!.photo,
       photoSmall: photoUrls?[1] ?? model.product!.photoSmall,
       sort: model.product!.sort?.copyWith(elements: model.elements.values.flattened.toList()),
@@ -107,12 +107,13 @@ class ProductService {
     await productRepository.update(model.id, updateData, newProduct);
   }
 
-  Future<Product?> findVariant(List<String> keywords) async {
-    final result = await productRepository.fetchNext(
-      filters: [QueryFilter('keywords', FilterOperator.arrayContainsAny, keywords)],
-      batchSize: 1,
+  Future<Product?> findVariant(Set<String> keywords) async {
+    final results = await productRepository.fetchNext(
+      filters: [QueryFilter('keywords', FilterOperator.arrayContainsAny, keywords.toList())],
+      batchSize: 3,
     );
-    return result.firstOrNull;
+    results.sort((a, b) => b.keywords.intersection(keywords).length - a.keywords.intersection(keywords).length);
+    return results.firstOrNull;
   }
 
   List<QueryFilter> _mapFilters(List<dynamic> filters) {

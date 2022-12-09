@@ -90,7 +90,7 @@ void main() {
         id: 'foo',
         name: 'Produkt2',
         photo: MockFile(),
-        keywords: ['keyword'],
+        keywords: {'keyword'},
         symbols: ['symbol'],
       );
     });
@@ -111,7 +111,7 @@ void main() {
 
     setUp(() {
       model =
-          ProductFormModel(id: 'foo', name: 'Produkt2', keywords: ['keyword'], symbols: ['symbol'], product: product);
+          ProductFormModel(id: 'foo', name: 'Produkt2', keywords: {'keyword'}, symbols: ['symbol'], product: product);
       verifiedProduct = product.copyWith(
         sort: Sort.verified(
           user: 'id',
@@ -257,10 +257,10 @@ void main() {
   });
 
   group('findVariant', () {
-    late List<String> keywords;
+    late Set<String> keywords;
 
     setUp(() {
-      keywords = ['a', 'b'];
+      keywords = {'a', 'b'};
     });
 
     test('Should find product by keywords', () async {

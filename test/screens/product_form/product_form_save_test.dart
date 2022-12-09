@@ -24,7 +24,7 @@ void main() {
     name: 'Edytowany produkt',
     user: 'user',
     addedDate: FirestoreDateTime.serverTimestamp(),
-    keywords: ['słowo', 'klucz'],
+    keywords: {'słowo', 'klucz'},
     photo: 'editPhoto.png',
   );
 
