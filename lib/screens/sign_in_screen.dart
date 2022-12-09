@@ -26,7 +26,7 @@ class SignInScreen extends HookConsumerWidget {
     showDefaultBottomSheet(
       fullScreen: true,
       context: context,
-      builder: (context) => SignUpScreen(),
+      builder: (context) => const SignUpScreen(),
     );
   }
 
@@ -35,12 +35,13 @@ class SignInScreen extends HookConsumerWidget {
     showDefaultBottomSheet(
       fullScreen: true,
       context: context,
-      builder: (context) => PasswordRecoveryScreen(),
+      builder: (context) => const PasswordRecoveryScreen(),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authService = ref.read(authServiceProvider);
     final formKey = useRef(GlobalKey<FormState>());
     final model = useRef(SignInModel());
     final passwordVisible = useState(false);
@@ -63,7 +64,7 @@ class SignInScreen extends HookConsumerWidget {
               key: formKey.value,
               child: Material(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: GutterColumn(
@@ -77,7 +78,7 @@ class SignInScreen extends HookConsumerWidget {
                       ),
                       TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           label: Text('Adres email'),
                         ),
                         textInputAction: TextInputAction.next,
@@ -91,7 +92,7 @@ class SignInScreen extends HookConsumerWidget {
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             obscureText: !passwordVisible.value,
                             decoration: InputDecoration(
-                              label: Text('Hasło'),
+                              label: const Text('Hasło'),
                               suffixIcon: Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
                                 child: IconButton(
@@ -120,14 +121,12 @@ class SignInScreen extends HookConsumerWidget {
                           }
                           isSigningIn.value = true;
                           await asyncCall(message: 'Błąd logowania.', context, () async {
-                            await ref
-                                .read(authServiceProvider)
-                                .signIn(email: model.value.email, password: model.value.password);
+                            await authService.signIn(email: model.value.email, password: model.value.password);
                             Navigator.of(context, rootNavigator: true).pop();
                           });
                           isSigningIn.value = false;
                         },
-                        child: Center(child: Text('Zaloguj się')),
+                        child: const Center(child: Text('Zaloguj się')),
                       ),
                       Text('Lub', style: Theme.of(context).textTheme.labelLarge),
                       ProgressIndicatorButton(
@@ -135,41 +134,31 @@ class SignInScreen extends HookConsumerWidget {
                         onPressed: () async {
                           isSigningInWithGoogle.value = true;
                           await asyncCall(message: 'Błąd logowania.', context, () async {
-                            final user = await ref.read(authServiceProvider).signInWithGoogle();
+                            final user = await authService.signInWithGoogle();
                             if (user != null) {
                               Navigator.of(context, rootNavigator: true).pop();
                             }
                           });
                           isSigningInWithGoogle.value = false;
                         },
-                        style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                              backgroundColor: MaterialStatePropertyAll(Colors.white),
-                              side: MaterialStatePropertyAll(BorderSide(color: Theme.of(context).primaryColor)),
-                            ),
+                        type: ButtonType.outlined,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(
-                              'assets/images/google_logo.svg',
-                              width: 24,
-                              height: 24,
-                            ),
-                            // Icon(Icons.circle),
-                            SizedBox(width: 12.0),
-                            Text('Zaloguj się przez Google'),
+                            SvgPicture.asset('assets/images/google_logo.svg', width: 24, height: 24),
+                            const SizedBox(width: 12.0),
+                            const Text('Zaloguj się przez Google'),
                           ],
                         ),
                       ),
                       Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(
-                              text: 'Nie masz konta? ',
-                            ),
+                            const TextSpan(text: 'Nie masz konta? '),
                             TextSpan(
                               text: 'Zarejestruj się',
                               recognizer: signUpGestureRecognizer,
-                              style: TextStyle(color: AppColors.primaryDarker),
+                              style: const TextStyle(color: AppColors.primaryDarker),
                             ),
                           ],
                         ),
