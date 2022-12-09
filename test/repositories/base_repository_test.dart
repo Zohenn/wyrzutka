@@ -3,7 +3,7 @@ import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/models/identifiable.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/providers/cache_notifier.dart';
 import 'package:wyrzutka/providers/firebase_provider.dart';
 import 'package:wyrzutka/repositories/query_filter.dart';
@@ -42,7 +42,7 @@ class _Test with Identifiable {
   int get hashCode => id.hashCode ^ a.hashCode ^ b.hashCode;
 }
 
-class _TestRepository extends BaseRepository<_Test> {
+class _TestRepository extends Repository<_Test> {
   _TestRepository(this.ref);
 
   @override

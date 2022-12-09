@@ -5,7 +5,7 @@ import 'package:wyrzutka/models/identifiable.dart';
 import 'package:wyrzutka/providers/cache_notifier.dart';
 import 'package:wyrzutka/repositories/query_filter.dart';
 
-abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V> {
+abstract class Repository<V extends Identifiable> with CacheNotifierMixin<V> {
   Ref get ref;
 
   @protected
@@ -79,7 +79,7 @@ abstract class BaseRepository<V extends Identifiable> with CacheNotifierMixin<V>
   Future<List<V>> fetchNext({
     List<QueryFilter> filters = const [],
     DocumentSnapshot? startAfterDocument,
-    int batchSize = BaseRepository.batchSize,
+    int batchSize = Repository.batchSize,
   }) async {
     Query<V> query = _applyFilters(collection.limit(batchSize), filters);
 

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/data/static_data.dart';
 import 'package:wyrzutka/models/product/sort_element_template.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/providers/cache_notifier.dart';
 import 'package:wyrzutka/providers/firebase_provider.dart';
 
@@ -19,7 +19,7 @@ Future saveExampleSortElementTemplateData(WidgetRef ref) async {
   }));
 }
 
-class SortElementTemplateRepository extends BaseRepository<SortElementTemplate> {
+class SortElementTemplateRepository extends Repository<SortElementTemplate> {
   SortElementTemplateRepository(this.ref);
 
   @override

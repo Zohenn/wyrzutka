@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/data/static_data.dart';
 import 'package:wyrzutka/models/product_symbol/product_symbol.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/providers/cache_notifier.dart';
 import 'package:wyrzutka/providers/firebase_provider.dart';
 
@@ -21,7 +21,7 @@ Future saveExampleSymbolData(WidgetRef ref) async {
   }));
 }
 
-class ProductSymbolRepository extends BaseRepository<ProductSymbol> {
+class ProductSymbolRepository extends Repository<ProductSymbol> {
   ProductSymbolRepository(this.ref);
 
   @override

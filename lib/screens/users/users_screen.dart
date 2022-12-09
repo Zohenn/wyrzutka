@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/hooks/init_future.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/repositories/user_repository.dart';
 import 'package:wyrzutka/screens/profile/profile_screen.dart';
 import 'package:wyrzutka/screens/users/user_item.dart';
@@ -84,7 +84,7 @@ class UsersScreen extends HookConsumerWidget {
                         builder: (context) => ProfileScreenContent(userId: users[index].id),
                       ),
                     ),
-                    canLoad: moderationIds.value.length >= BaseRepository.batchSize &&
+                    canLoad: moderationIds.value.length >= Repository.batchSize &&
                         searchText.value.isEmpty &&
                         !fetchedAll.value,
                     onLoad: () => asyncCall(
@@ -92,7 +92,7 @@ class UsersScreen extends HookConsumerWidget {
                       () => userService.fetchNextModeration(users.last.snapshot).then((value) {
                         if (isMounted()) {
                           moderationIds.value = [...moderationIds.value, ...value.map((user) => user.id)];
-                          fetchedAll.value = value.length < BaseRepository.batchSize;
+                          fetchedAll.value = value.length < Repository.batchSize;
                         }
                       }),
                     ),

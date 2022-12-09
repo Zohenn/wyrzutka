@@ -13,7 +13,7 @@ import 'package:wyrzutka/models/product/sort.dart';
 import 'package:wyrzutka/models/product/sort_element.dart';
 import 'package:wyrzutka/providers/auth_provider.dart';
 import 'package:wyrzutka/providers/firebase_provider.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/repositories/product_repository.dart';
 import 'package:wyrzutka/repositories/query_filter.dart';
 import 'package:wyrzutka/screens/product_form/product_form.dart';
@@ -350,7 +350,7 @@ void main() {
         mockProductRepository.fetchNext(
           filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, authUser.id)],
           startAfterDocument: snapshot,
-          batchSize: BaseRepository.batchSize,
+          batchSize: Repository.batchSize,
         ),
       ).called(1);
     });
@@ -401,7 +401,7 @@ void main() {
         mockProductRepository.fetchNext(
           filters: [QueryFilter('user', FilterOperator.isEqualTo, authUser.id)],
           startAfterDocument: snapshot,
-          batchSize: BaseRepository.batchSize,
+          batchSize: Repository.batchSize,
         ),
       ).called(1);
     });

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/models/app_user/app_user.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/providers/cache_notifier.dart';
 import 'package:wyrzutka/providers/firebase_provider.dart';
 
@@ -14,7 +14,7 @@ final usersProvider = createCacheItemsProvider(_userCacheProvider);
 
 final userRepositoryProvider = Provider((ref) => UserRepository(ref));
 
-class UserRepository extends BaseRepository<AppUser> {
+class UserRepository extends Repository<AppUser> {
   UserRepository(this.ref);
 
   @override

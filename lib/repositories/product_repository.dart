@@ -4,7 +4,7 @@ import 'package:wyrzutka/data/static_data.dart';
 import 'package:wyrzutka/models/app_user/app_user.dart';
 import 'package:wyrzutka/models/product/product.dart';
 import 'package:wyrzutka/models/product/sort.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/providers/cache_notifier.dart';
 import 'package:wyrzutka/providers/firebase_provider.dart';
 
@@ -30,7 +30,7 @@ final productRepositoryProvider = Provider((ref) => ProductRepository(ref));
 
 class ProductAlreadyVerifiedException implements Exception {}
 
-class ProductRepository extends BaseRepository<Product> {
+class ProductRepository extends Repository<Product> {
   ProductRepository(this.ref);
 
   @override

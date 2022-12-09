@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/hooks/init_future.dart';
 import 'package:wyrzutka/models/product/product.dart';
 import 'package:wyrzutka/models/product/product_filters.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/repositories/product_repository.dart';
 import 'package:wyrzutka/screens/widgets/search_input.dart';
 import 'package:wyrzutka/services/product_service.dart';
@@ -126,7 +126,7 @@ class ProductsScreen extends HookConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                 itemCount: products.length,
                 showLoading: searchText.value.isNotEmpty,
-                canLoad: productIds.value.length >= BaseRepository.batchSize && !fetchedAll.value,
+                canLoad: productIds.value.length >= Repository.batchSize && !fetchedAll.value,
                 onLoad: () => asyncCall(
                   context,
                   () => productService
@@ -135,7 +135,7 @@ class ProductsScreen extends HookConsumerWidget {
                       .then((value) {
                     if (isMounted()) {
                       productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-                      fetchedAll.value = value.length < BaseRepository.batchSize;
+                      fetchedAll.value = value.length < Repository.batchSize;
                     }
                   }),
                 ),

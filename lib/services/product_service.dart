@@ -8,7 +8,7 @@ import 'package:wyrzutka/models/product/product_filters.dart';
 import 'package:wyrzutka/models/product/sort.dart';
 import 'package:wyrzutka/providers/auth_provider.dart';
 import 'package:wyrzutka/providers/firebase_provider.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/services/image_upload_service.dart';
 import 'package:wyrzutka/repositories/product_repository.dart';
 import 'package:wyrzutka/repositories/query_filter.dart';
@@ -149,7 +149,7 @@ class ProductService {
     return productRepository.fetchNext(
       filters: [QueryFilter('sort.user', FilterOperator.isEqualTo, user.id)],
       startAfterDocument: startAfterDocument,
-      batchSize: batchSize ?? BaseRepository.batchSize,
+      batchSize: batchSize ?? Repository.batchSize,
     );
   }
 
@@ -165,7 +165,7 @@ class ProductService {
     return productRepository.fetchNext(
       filters: [QueryFilter('user', FilterOperator.isEqualTo, user.id)],
       startAfterDocument: startAfterDocument,
-      batchSize: batchSize ?? BaseRepository.batchSize,
+      batchSize: batchSize ?? Repository.batchSize,
     );
   }
 

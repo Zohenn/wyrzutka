@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/hooks/init_future.dart';
 import 'package:wyrzutka/models/app_user/app_user.dart';
-import 'package:wyrzutka/repositories/base_repository.dart';
+import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/repositories/product_repository.dart';
 import 'package:wyrzutka/screens/profile/widgets/product_list.dart';
 import 'package:wyrzutka/screens/profile/widgets/profile_product_list_section.dart';
@@ -55,7 +55,7 @@ class ProfileVerifiedSortProposalsPage extends HookConsumerWidget {
               visibleProducts.value = [...visibleProducts.value, ...value.map((product) => product.id)];
               return value;
             });
-            if (fetchedProducts.length < BaseRepository.batchSize) {
+            if (fetchedProducts.length < Repository.batchSize) {
               fetchedAll.value = true;
             }
           },
