@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/screens/product_form/product_symbols_sheet.dart';
-import 'package:wyrzutka/theme/colors.dart';
-import 'package:wyrzutka/hooks/init_future.dart';
-import 'package:wyrzutka/models/product_symbol/product_symbol.dart';
 import 'package:wyrzutka/repositories/product_symbol_repository.dart';
 import 'package:wyrzutka/screens/product_form/product_form.dart';
 import 'package:wyrzutka/screens/widgets/symbol_item.dart';
-import 'package:wyrzutka/utils/image_error_builder.dart';
 import 'package:wyrzutka/utils/show_default_bottom_sheet.dart';
 import 'package:wyrzutka/widgets/conditional_builder.dart';
-import 'package:wyrzutka/widgets/future_handler.dart';
 import 'package:wyrzutka/widgets/gutter_column.dart';
 
 class ProductFormSymbols extends HookConsumerWidget {

@@ -17,7 +17,7 @@ import 'package:wyrzutka/repositories/repository.dart';
 import 'package:wyrzutka/repositories/product_repository.dart';
 import 'package:wyrzutka/repositories/query_filter.dart';
 import 'package:wyrzutka/screens/product_form/product_form.dart';
-import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_field.dart';
 import 'package:wyrzutka/services/image_upload_service.dart';
 import 'package:wyrzutka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
@@ -266,7 +266,7 @@ void main() {
     test('Should find product by keywords', () async {
       await productService.findVariant(keywords);
 
-      final filters = verify(mockProductRepository.fetchNext(filters: captureAnyNamed('filters'), batchSize: 1))
+      final filters = verify(mockProductRepository.fetchNext(filters: captureAnyNamed('filters'), batchSize: 3))
           .captured
           .first as List<QueryFilter>;
       final filter = filters.first;

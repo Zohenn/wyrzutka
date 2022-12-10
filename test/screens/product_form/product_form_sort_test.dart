@@ -9,7 +9,7 @@ import 'package:wyrzutka/providers/image_picker_provider.dart';
 import 'package:wyrzutka/repositories/product_symbol_repository.dart';
 import 'package:wyrzutka/repositories/sort_element_template_repository.dart';
 import 'package:wyrzutka/screens/product_form/product_form.dart';
-import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_field.dart';
 import 'package:wyrzutka/services/product_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

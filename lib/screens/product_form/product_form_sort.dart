@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:wyrzutka/screens/product_form/product_form.dart';
-import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_field.dart';
 import 'package:wyrzutka/widgets/conditional_builder.dart';
 import 'package:wyrzutka/widgets/progress_indicator_button.dart';
 
@@ -35,7 +35,7 @@ class ProductFormSort extends HookWidget {
           const SizedBox(height: 24.0),
           ConditionalBuilder(
             condition: model.product == null || model.product!.sort != null,
-            ifTrue: () => SortElementsInput(
+            ifTrue: () => SortElementsField(
               elements: elements,
               onElementsChanged: onElementsChanged,
               required: false,

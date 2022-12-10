@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wyrzutka/models/product/product.dart';
 import 'package:wyrzutka/services/product_service.dart';
-import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_field.dart';
 import 'package:wyrzutka/utils/async_call.dart';
 import 'package:wyrzutka/utils/snackbars.dart';
 import 'package:wyrzutka/widgets/progress_indicator_button.dart';
@@ -37,7 +37,7 @@ class SortProposalForm extends HookConsumerWidget {
             style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 24.0),
-          SortElementsInput(
+          SortElementsField(
             elements: elements.value,
             onElementsChanged: (_elements) => elements.value = _elements,
             required: true,

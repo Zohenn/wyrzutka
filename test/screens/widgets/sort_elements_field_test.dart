@@ -3,12 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wyrzutka/models/product/sort_element.dart';
 import 'package:wyrzutka/models/product/sort_element_template.dart';
 import 'package:wyrzutka/repositories/sort_element_template_repository.dart';
-import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_field.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
-import 'sort_elements_input_test.mocks.dart';
+import 'sort_elements_field_test.mocks.dart';
 
 class MockOnElementsChanged extends Mock {
   void call(SortElements elements) => super.noSuchMethod(Invocation.method(#call, [elements]));
@@ -30,7 +30,7 @@ void main() {
     await tester.pumpWidget(
       wrapForTesting(
         SingleChildScrollView(
-          child: SortElementsInput(
+          child: SortElementsField(
             elements: const {},
             onElementsChanged: mockOnElementsChanged,
             required: true,
@@ -48,7 +48,7 @@ void main() {
     await tester.pumpWidget(
       wrapForTesting(
         SingleChildScrollView(
-          child: SortElementsInput(
+          child: SortElementsField(
             elements: const {selectedContainer: []},
             onElementsChanged: mockOnElementsChanged,
             required: true,
@@ -66,7 +66,7 @@ void main() {
     await tester.pumpWidget(
       wrapForTesting(
         SingleChildScrollView(
-          child: SortElementsInput(
+          child: SortElementsField(
             elements: {
               selectedContainer: [element]
             },

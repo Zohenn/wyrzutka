@@ -15,8 +15,8 @@ import 'package:wyrzutka/widgets/gutter_row.dart';
 
 typedef SortElements = Map<ElementContainer, List<SortElement>>;
 
-class SortElementsInput extends StatelessWidget {
-  const SortElementsInput({
+class SortElementsField extends StatelessWidget {
+  const SortElementsField({
     Key? key,
     required this.elements,
     required this.onElementsChanged,
@@ -43,7 +43,6 @@ class SortElementsInput extends StatelessWidget {
 
   void addElement(ElementContainer container, SortElement element) {
     final elementsCopy = copyElements(elements);
-    elementsCopy[container] ??= [];
     elementsCopy[container]!.add(element);
     onElementsChanged(elementsCopy);
   }

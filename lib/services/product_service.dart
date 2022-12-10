@@ -13,7 +13,7 @@ import 'package:wyrzutka/services/image_upload_service.dart';
 import 'package:wyrzutka/repositories/product_repository.dart';
 import 'package:wyrzutka/repositories/query_filter.dart';
 import 'package:wyrzutka/screens/product_form/product_form.dart';
-import 'package:wyrzutka/screens/widgets/sort_elements_input.dart';
+import 'package:wyrzutka/screens/widgets/sort_elements_field.dart';
 
 final productServiceProvider = Provider(ProductService.new);
 
@@ -203,7 +203,8 @@ class ProductService {
       sortProposals: {},
       verifiedBy: user,
     );
-    final updateData = newProduct.toJson()..removeWhere((key, value) => !['sort', 'sortProposals', 'verifiedBy'].contains(key));
+    final updateData = newProduct.toJson()
+      ..removeWhere((key, value) => !['sort', 'sortProposals', 'verifiedBy'].contains(key));
 
     await productRepository.update(product.id, updateData, newProduct);
   }
