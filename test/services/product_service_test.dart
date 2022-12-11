@@ -593,7 +593,7 @@ void main() {
 
       expect(updateData.keys.toList(), [sortProposalKey]);
       expect(updateData[sortProposalKey], FieldValue.delete());
-    }, skip: 'FakeFirebaseFirestore ruins FieldValue equality');
+    });
 
     test('Should remove sort proposal from product', () async {
       await productService.deleteSortProposal(productWithProposals, sortProposalId);

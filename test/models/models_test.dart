@@ -10,13 +10,13 @@ import 'package:wyrzutka/models/product_symbol/product_symbol.dart';
 import 'package:wyrzutka/models/firestore_date_time.dart';
 
 void main() {
+  late FakeFirebaseFirestore firestore;
+
+  setUp(() {
+    firestore = FakeFirebaseFirestore();
+  });
+
   group('Entities', () {
-    late FakeFirebaseFirestore firestore;
-
-    setUp(() {
-      firestore = FakeFirebaseFirestore();
-    });
-
     group('AppUser', () {
       final user = AppUser(
         id: 'id',
@@ -130,7 +130,6 @@ void main() {
     });
   });
 
-  // don't call FakeFirebaseFirestore in this group or otherwise tests will fail
   group('FirestoreDateTime', () {
     test('Should return FieldValue.serverTimestamp on serialization with serverTimestamp variant', () {
       final date = FirestoreDateTime.serverTimestamp();
