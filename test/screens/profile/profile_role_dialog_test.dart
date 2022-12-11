@@ -78,7 +78,7 @@ void main() {
     await tester.tap(find.byKey(ValueKey('Dropdown')));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(ValueKey(newRole.desc)).last);
+    await scrollToAndTap(tester, find.text(newRole.desc).last);
     await tester.pumpAndSettle();
 
     await scrollToAndTap(tester, find.text('Zapisz'));
