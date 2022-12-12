@@ -129,15 +129,16 @@ class ProductsScreen extends HookConsumerWidget {
                 canLoad: productIds.value.length >= Repository.batchSize && !fetchedAll.value,
                 onLoad: () => asyncCall(
                   context,
-                  () => productService
-                      .fetchNextForCustomFilters(
-                          filters: selectedFilters.value.values.toList(), startAfterDocument: products.last.snapshot!)
-                      .then((value) {
+                  () async {
+                    final fetchedProducts = await productService.fetchNextForCustomFilters(
+                      filters: selectedFilters.value.values.toList(),
+                      startAfterDocument: products.last.snapshot!,
+                    );
                     if (isMounted()) {
-                      productIds.value = [...productIds.value, ...value.map((product) => product.id)];
-                      fetchedAll.value = value.length < Repository.batchSize;
+                      productIds.value = [...productIds.value, ...fetchedProducts.map((product) => product.id)];
+                      fetchedAll.value = fetchedProducts.length < Repository.batchSize;
                     }
-                  }),
+                  },
                 ),
                 itemBuilder: (BuildContext context, int index) => ProductItem(product: products[index]),
                 loadingBuilder: (context) => ConditionalBuilder(
@@ -156,12 +157,16 @@ class ProductsScreen extends HookConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SvgPicture.asset(
-                      'assets/images/empty_cart.svg',
-                      width: MediaQuery.of(context).size.width * 0.5,
+                    Flexible(
+                      child: SvgPicture.asset(
+                        'assets/images/empty_cart.svg',
+                        width: MediaQuery.of(context).size.width * 0.5,
+                      ),
                     ),
                     const SizedBox(height: 24.0),
-                    Text('Nie znaleziono produktów', style: Theme.of(context).textTheme.bodyLarge),
+                    Flexible(
+                      child: Text('Nie znaleziono produktów', style: Theme.of(context).textTheme.bodyLarge),
+                    ),
                   ],
                 ),
               ),
