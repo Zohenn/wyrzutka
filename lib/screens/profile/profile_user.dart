@@ -21,7 +21,7 @@ class ProfileUser extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authUser = ref.watch(authUserProvider);
 
-    final bool isRole = (authUser?.role != Role.user || authUser?.role == Role.admin);
+    final bool isRole = (authUser != null) && (authUser.role != Role.user || authUser.role == Role.admin);
     final bool isProfile = ModalRoute.of(context).runtimeType != ModalBottomSheetRoute && authUser?.id == user.id;
     final bool isUserProfile = !isProfile && authUser?.id != user.id;
 
