@@ -4,10 +4,10 @@ Waste sorting mobile application.
 
 ## Gallery
 
-![Scanner](images/scanner_scr.png)
-![Product list](images/product_list.png)
-![Product](images/vote_scr.png)
-![Product form](images/product_form_info1.png)
-![Product form](images/product_form_info2.png)
-![Product form](images/product_form_symbols2.png)
-![Product form](images/product_form_sort2.png)
+<img src="images/scanner_scr.png" alt="Scanner" width="300">
+<img src="images/product_list.png" alt="Product list" width="300">
+<img src="images/vote_scr.png" alt="Product" width="300">
+<img src="images/product_form_info1.png" alt="Product form" width="300">
+<img src="images/product_form_info2.png" alt="Product form" width="300">
+<img src="images/product_form_symbols2.png" alt="Product form" width="300">
+<img src="images/product_form_sort2.png" alt="Product form" width="300">
